@@ -38,7 +38,17 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [userPreferences, setUserPreferences] = useState<UserPreferences | null>(null);
+  const [userPreferences, setUserPreferences] = useState<UserPreferences | null>(() => {
+    try {
+      const cached = localStorage.getItem('multicloud_user_preferences');
+      if (cached) {
+        return JSON.parse(cached);
+      }
+    } catch (e) {
+      console.warn('Failed to parse cached user preferences:', e);
+    }
+    return null;
+  });
   const [loading, setLoading] = useState(true);
   const [authError, setAuthError] = useState<string | null>(null);
   const [authErrorCode, setAuthErrorCode] = useState<string | null>(null);
@@ -85,32 +95,50 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           const prefs = await getUserPreferences(user.uid);
           if (prefs) {
             setUserPreferences(prefs);
+            try {
+              localStorage.setItem('multicloud_user_preferences', JSON.stringify(prefs));
+            } catch {}
           } else {
-            // First time login - initialize preferences
+            // First time login - read existing local preferences to migrate them
+            let localCache: Partial<UserPreferences> = {};
+            try {
+              const raw = localStorage.getItem('multicloud_user_preferences');
+              if (raw) localCache = JSON.parse(raw);
+            } catch {}
+
             const initialPrefs: UserPreferences = {
               userId: user.uid,
               email: user.email || '',
-              displayName: user.displayName || user.email?.split('@')[0] || 'Arquiteto Cloud',
-              theme: 'dark',
-              defaultCloud: 'all',
-              autoSave: true,
-              leftSidebarCollapsed: false,
-              rightSidebarCollapsed: false,
+              displayName: user.displayName || localCache.displayName || user.email?.split('@')[0] || 'Arquiteto Cloud',
+              theme: localCache.theme || 'light',
+              defaultCloud: localCache.defaultCloud || 'all',
+              autoSave: localCache.autoSave ?? true,
+              leftSidebarCollapsed: localCache.leftSidebarCollapsed ?? false,
+              rightSidebarCollapsed: localCache.rightSidebarCollapsed ?? false,
               defaultStamp: {
-                author: user.displayName || user.email?.split('@')[0] || 'Arquiteto Cloud',
-                role: 'Arquiteto de Soluções Cloud',
-                company: '',
-                showOnCanvas: true,
+                author: localCache.defaultStamp?.author || user.displayName || user.email?.split('@')[0] || 'Arquiteto Cloud',
+                role: localCache.defaultStamp?.role || 'Arquiteto de Soluções Cloud',
+                company: localCache.defaultStamp?.company || '',
+                showOnCanvas: localCache.defaultStamp?.showOnCanvas ?? true,
               },
             };
             await saveUserPreferences(user.uid, user.email || '', initialPrefs);
             setUserPreferences(initialPrefs);
+            try {
+              localStorage.setItem('multicloud_user_preferences', JSON.stringify(initialPrefs));
+            } catch {}
           }
         } catch (err) {
           console.error('Error fetching user preferences on auth change:', err);
         }
       } else {
-        setUserPreferences(null);
+        // Fall back to local preferences when user signs out or is guest
+        try {
+          const cached = localStorage.getItem('multicloud_user_preferences');
+          if (cached) {
+            setUserPreferences(JSON.parse(cached));
+          }
+        } catch {}
       }
       setLoading(false);
     });
@@ -228,13 +256,43 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const updatePreferences = async (prefs: Partial<UserPreferences>) => {
-    if (!currentUser) return;
-    try {
-      await saveUserPreferences(currentUser.uid, currentUser.email || '', prefs);
-      setUserPreferences((prev) => (prev ? { ...prev, ...prefs } : null));
-    } catch (error: any) {
-      console.error('Failed to update preferences in Firestore:', error);
-      throw error;
+    // 1. Immediately update local state and localStorage for instant responsiveness & guest support
+    setUserPreferences((prev) => {
+      const updated: UserPreferences = {
+        userId: currentUser?.uid || prev?.userId || 'guest',
+        email: currentUser?.email || prev?.email || '',
+        displayName: prefs.displayName ?? prev?.displayName ?? (currentUser?.email ? currentUser.email.split('@')[0] : 'Arquiteto Cloud'),
+        theme: prefs.theme ?? prev?.theme ?? 'light',
+        defaultCloud: prefs.defaultCloud ?? prev?.defaultCloud ?? 'all',
+        autoSave: prefs.autoSave ?? prev?.autoSave ?? true,
+        leftSidebarCollapsed: prefs.leftSidebarCollapsed ?? prev?.leftSidebarCollapsed ?? false,
+        rightSidebarCollapsed: prefs.rightSidebarCollapsed ?? prev?.rightSidebarCollapsed ?? false,
+        defaultStamp: {
+          author: prefs.defaultStamp?.author ?? prev?.defaultStamp?.author ?? '',
+          role: prefs.defaultStamp?.role ?? prev?.defaultStamp?.role ?? 'Arquiteto de Soluções Cloud',
+          company: prefs.defaultStamp?.company ?? prev?.defaultStamp?.company ?? '',
+          showOnCanvas: prefs.defaultStamp?.showOnCanvas ?? prev?.defaultStamp?.showOnCanvas ?? true,
+        },
+        createdAt: prev?.createdAt || new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+
+      try {
+        localStorage.setItem('multicloud_user_preferences', JSON.stringify(updated));
+      } catch (err) {
+        console.warn('Could not cache user preferences to localStorage:', err);
+      }
+      return updated;
+    });
+
+    // 2. If authenticated, persist to Firestore cloud profile
+    if (currentUser) {
+      try {
+        await saveUserPreferences(currentUser.uid, currentUser.email || '', prefs);
+      } catch (error: any) {
+        console.error('Failed to update preferences in Firestore:', error);
+        throw error;
+      }
     }
   };
 

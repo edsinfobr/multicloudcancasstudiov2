@@ -771,6 +771,25 @@ export const Navbar: React.FC<NavbarProps> = ({
                     </div>
                   </button>
 
+                  {onOpenProfilePreferencesModal && (
+                    <button
+                      id="menu-btn-profile-preferences"
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        onOpenProfilePreferencesModal();
+                      }}
+                      className={`w-full text-left px-3.5 py-2 text-xs flex items-center space-x-2.5 group transition-colors ${
+                        theme === 'light' ? 'text-slate-900 hover:bg-slate-100' : 'text-slate-200 hover:bg-white/5'
+                      }`}
+                    >
+                      <SlidersHorizontal className="w-4 h-4 text-blue-500 group-hover:scale-110 transition-transform" />
+                      <div>
+                        <span className="font-semibold block">Preferências do Perfil</span>
+                        <span className="text-[10px] text-slate-500">Tema, Menus & Carimbo Padrão</span>
+                      </div>
+                    </button>
+                  )}
+
                   <div className={`h-px my-1 ${theme === 'light' ? 'bg-slate-100' : 'bg-white/10'}`} />
 
                   <button

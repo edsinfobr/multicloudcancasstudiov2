@@ -53,24 +53,39 @@ export async function saveUserPreferences(
     const userRef = doc(db, 'users', userId);
     const now = new Date().toISOString();
     
-    // Fetch existing if present to preserve createdAt
-    const existingSnap = await getDoc(userRef);
-    const existingData = existingSnap.exists() ? existingSnap.data() : null;
+    // Fetch existing if present to preserve createdAt and existing values
+    let existingData: any = null;
+    try {
+      const existingSnap = await getDoc(userRef);
+      if (existingSnap.exists()) {
+        existingData = existingSnap.data();
+      }
+    } catch (readErr) {
+      console.warn('Could not read existing user preferences, will proceed to write:', readErr);
+    }
+
+    const safeEmail = (email || existingData?.email || '').slice(0, 150);
+    const safeDisplayName = (prefs.displayName ?? existingData?.displayName ?? (safeEmail ? safeEmail.split('@')[0] : 'Arquiteto Cloud')).slice(0, 100);
+
+    const safeAuthor = (prefs.defaultStamp?.author ?? existingData?.defaultStamp?.author ?? safeDisplayName).slice(0, 100);
+    const safeRole = (prefs.defaultStamp?.role ?? existingData?.defaultStamp?.role ?? 'Arquiteto de Soluções Cloud').slice(0, 100);
+    const safeCompany = (prefs.defaultStamp?.company ?? existingData?.defaultStamp?.company ?? '').slice(0, 100);
+    const safeShowOnCanvas = prefs.defaultStamp?.showOnCanvas ?? existingData?.defaultStamp?.showOnCanvas ?? true;
 
     const payload: UserPreferences = {
       userId,
-      email,
-      displayName: prefs.displayName ?? existingData?.displayName ?? email.split('@')[0],
-      theme: prefs.theme ?? existingData?.theme ?? 'dark',
+      email: safeEmail,
+      displayName: safeDisplayName,
+      theme: prefs.theme ?? existingData?.theme ?? 'light',
       defaultCloud: prefs.defaultCloud ?? existingData?.defaultCloud ?? 'all',
       autoSave: prefs.autoSave ?? existingData?.autoSave ?? true,
       leftSidebarCollapsed: prefs.leftSidebarCollapsed ?? existingData?.leftSidebarCollapsed ?? false,
       rightSidebarCollapsed: prefs.rightSidebarCollapsed ?? existingData?.rightSidebarCollapsed ?? false,
       defaultStamp: {
-        author: prefs.defaultStamp?.author ?? existingData?.defaultStamp?.author ?? (existingData?.displayName || email.split('@')[0] || ''),
-        role: prefs.defaultStamp?.role ?? existingData?.defaultStamp?.role ?? 'Arquiteto de Soluções Cloud',
-        company: prefs.defaultStamp?.company ?? existingData?.defaultStamp?.company ?? '',
-        showOnCanvas: prefs.defaultStamp?.showOnCanvas ?? existingData?.defaultStamp?.showOnCanvas ?? true,
+        author: safeAuthor,
+        role: safeRole,
+        company: safeCompany,
+        showOnCanvas: safeShowOnCanvas,
       },
       createdAt: existingData?.createdAt ?? now,
       updatedAt: now,

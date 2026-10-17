@@ -31,13 +31,15 @@ interface ProfilePreferencesModalProps {
   onClose: () => void;
   diagram: DiagramState;
   setDiagram: React.Dispatch<React.SetStateAction<DiagramState>>;
-  currentTheme: 'dark' | 'light';
-  onSetTheme: (theme: 'dark' | 'light') => void;
-  leftSidebarCollapsed: boolean;
-  setLeftSidebarCollapsed: (collapsed: boolean) => void;
-  rightSidebarCollapsed: boolean;
-  setRightSidebarCollapsed: (collapsed: boolean) => void;
-  onRecordHistory: () => void;
+  currentTheme?: 'dark' | 'light';
+  theme?: 'dark' | 'light';
+  onSetTheme?: (theme: 'dark' | 'light') => void;
+  onThemeChange?: (theme: 'dark' | 'light') => void;
+  leftSidebarCollapsed?: boolean;
+  setLeftSidebarCollapsed?: (collapsed: boolean) => void;
+  rightSidebarCollapsed?: boolean;
+  setRightSidebarCollapsed?: (collapsed: boolean) => void;
+  onRecordHistory?: () => void;
   showToast?: (message: string) => void;
 }
 
@@ -47,22 +49,25 @@ export const ProfilePreferencesModal: React.FC<ProfilePreferencesModalProps> = (
   diagram,
   setDiagram,
   currentTheme,
+  theme,
   onSetTheme,
-  leftSidebarCollapsed,
+  onThemeChange,
+  leftSidebarCollapsed = false,
   setLeftSidebarCollapsed,
-  rightSidebarCollapsed,
+  rightSidebarCollapsed = false,
   setRightSidebarCollapsed,
   onRecordHistory,
   showToast
 }) => {
   const { currentUser, userPreferences, updatePreferences } = useAuth();
-  const isLight = currentTheme === 'light';
+  const effectiveTheme: 'dark' | 'light' = currentTheme || theme || 'light';
+  const isLight = effectiveTheme === 'light';
 
   // Active section tab
   const [activeTab, setActiveTab] = useState<'theme' | 'sidebars' | 'stamp'>('stamp');
 
   // Form states initialized from userPreferences or sensible defaults
-  const [prefTheme, setPrefTheme] = useState<'dark' | 'light'>(currentTheme);
+  const [prefTheme, setPrefTheme] = useState<'dark' | 'light'>(effectiveTheme);
   const [prefLeftCollapsed, setPrefLeftCollapsed] = useState(leftSidebarCollapsed);
   const [prefRightCollapsed, setPrefRightCollapsed] = useState(rightSidebarCollapsed);
   
@@ -78,9 +83,9 @@ export const ProfilePreferencesModal: React.FC<ProfilePreferencesModalProps> = (
   // Sync state when modal opens or userPreferences change
   useEffect(() => {
     if (isOpen) {
-      setPrefTheme(userPreferences?.theme || currentTheme);
-      setPrefLeftCollapsed(userPreferences?.leftSidebarCollapsed ?? leftSidebarCollapsed);
-      setPrefRightCollapsed(userPreferences?.rightSidebarCollapsed ?? rightSidebarCollapsed);
+      setPrefTheme(userPreferences?.theme || effectiveTheme);
+      setPrefLeftCollapsed(userPreferences?.leftSidebarCollapsed ?? leftSidebarCollapsed ?? false);
+      setPrefRightCollapsed(userPreferences?.rightSidebarCollapsed ?? rightSidebarCollapsed ?? false);
 
       const existingStamp = userPreferences?.defaultStamp;
       setStampAuthor(
@@ -91,11 +96,11 @@ export const ProfilePreferencesModal: React.FC<ProfilePreferencesModalProps> = (
         ''
       );
       setStampRole(existingStamp?.role ?? 'Arquiteto de Soluções Cloud');
-      setStampCompany(existingStamp?.company ?? 'EdsInfoBR Consultoria');
+      setStampCompany(existingStamp?.company ?? '');
       setStampShowOnCanvas(existingStamp?.showOnCanvas ?? true);
       setSaveSuccess(false);
     }
-  }, [isOpen, userPreferences, currentTheme, leftSidebarCollapsed, rightSidebarCollapsed, currentUser]);
+  }, [isOpen, userPreferences, effectiveTheme, leftSidebarCollapsed, rightSidebarCollapsed, currentUser]);
 
   if (!isOpen) return null;
 
@@ -112,7 +117,7 @@ export const ProfilePreferencesModal: React.FC<ProfilePreferencesModalProps> = (
         showOnCanvas: stampShowOnCanvas
       };
 
-      // 1. Update Cloud Profile in Firestore
+      // 1. Update Profile in LocalStorage and in Firestore (if logged in)
       await updatePreferences({
         theme: prefTheme,
         leftSidebarCollapsed: prefLeftCollapsed,
@@ -120,14 +125,28 @@ export const ProfilePreferencesModal: React.FC<ProfilePreferencesModalProps> = (
         defaultStamp: updatedStamp
       });
 
-      // 2. Apply theme & sidebar states to current live session
-      onSetTheme(prefTheme);
-      setLeftSidebarCollapsed(prefLeftCollapsed);
-      setRightSidebarCollapsed(prefRightCollapsed);
+      // 2. Safely apply theme & sidebar states to current live session
+      if (typeof onSetTheme === 'function') {
+        onSetTheme(prefTheme);
+      } else if (typeof onThemeChange === 'function') {
+        onThemeChange(prefTheme);
+      }
+
+      if (typeof setLeftSidebarCollapsed === 'function') {
+        setLeftSidebarCollapsed(prefLeftCollapsed);
+      }
+
+      if (typeof setRightSidebarCollapsed === 'function') {
+        setRightSidebarCollapsed(prefRightCollapsed);
+      }
 
       setSaveSuccess(true);
       if (showToast) {
-        showToast('Preferências salvas com sucesso no seu perfil do Firestore!');
+        showToast(
+          currentUser
+            ? 'Preferências salvas e sincronizadas na nuvem!'
+            : 'Preferências salvas com sucesso no seu navegador!'
+        );
       }
 
       setTimeout(() => {
@@ -136,7 +155,7 @@ export const ProfilePreferencesModal: React.FC<ProfilePreferencesModalProps> = (
     } catch (err: any) {
       console.error('Failed to save preferences:', err);
       if (showToast) {
-        showToast('Erro ao salvar preferências na nuvem. Verifique a conexão.');
+        showToast(`Erro ao salvar preferências: ${err?.message || 'Verifique sua conexão.'}`);
       }
     } finally {
       setIsSaving(false);
@@ -145,7 +164,9 @@ export const ProfilePreferencesModal: React.FC<ProfilePreferencesModalProps> = (
 
   // Quick Action: Apply current default stamp to the active diagram
   const handleApplyStampToCurrentDiagram = () => {
-    onRecordHistory();
+    if (typeof onRecordHistory === 'function') {
+      onRecordHistory();
+    }
     setDiagram((prev) => ({
       ...prev,
       metadata: {

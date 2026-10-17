@@ -265,27 +265,21 @@ export default function App() {
     setIsManualThemeOverride(true);
     const nextTheme = theme === 'dark' ? 'light' : 'dark';
     setTheme(nextTheme);
-    if (currentUser) {
-      updatePreferences({ theme: nextTheme }).catch((err) => console.warn('Could not sync theme preference', err));
-    }
+    updatePreferences({ theme: nextTheme }).catch((err) => console.warn('Could not sync theme preference', err));
   };
 
   const handleToggleLeftSidebar = (collapsed: boolean) => {
     setLeftSidebarCollapsed(collapsed);
-    if (currentUser) {
-      updatePreferences({ leftSidebarCollapsed: collapsed }).catch((err) =>
-        console.warn('Could not sync left sidebar preference', err)
-      );
-    }
+    updatePreferences({ leftSidebarCollapsed: collapsed }).catch((err) =>
+      console.warn('Could not sync left sidebar preference', err)
+    );
   };
 
   const handleToggleRightSidebar = (collapsed: boolean) => {
     setRightSidebarCollapsed(collapsed);
-    if (currentUser) {
-      updatePreferences({ rightSidebarCollapsed: collapsed }).catch((err) =>
-        console.warn('Could not sync right sidebar preference', err)
-      );
-    }
+    updatePreferences({ rightSidebarCollapsed: collapsed }).catch((err) =>
+      console.warn('Could not sync right sidebar preference', err)
+    );
   };
 
   // Auto-save mechanism: persists current diagram state to local storage every 30 seconds
@@ -1247,11 +1241,21 @@ export default function App() {
       <ProfilePreferencesModal
         isOpen={isProfilePreferencesModalOpen}
         onClose={() => setIsProfilePreferencesModalOpen(false)}
+        currentTheme={theme}
         theme={theme}
+        onSetTheme={(newTheme) => {
+          setIsManualThemeOverride(true);
+          setTheme(newTheme);
+        }}
         onThemeChange={(newTheme) => {
           setIsManualThemeOverride(true);
           setTheme(newTheme);
         }}
+        leftSidebarCollapsed={leftSidebarCollapsed}
+        setLeftSidebarCollapsed={setLeftSidebarCollapsed}
+        rightSidebarCollapsed={rightSidebarCollapsed}
+        setRightSidebarCollapsed={setRightSidebarCollapsed}
+        onRecordHistory={recordHistory}
         showToast={showToast}
         diagram={diagram}
         setDiagram={setDiagram}
