@@ -1,0 +1,124 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile with preference flags and settings",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "The unique Firebase Auth UID"
+        },
+        "email": {
+          "type": "string",
+          "description": "The user email address"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Display name or username of the user"
+        },
+        "defaultCloud": {
+          "type": "string",
+          "description": "Default cloud provider selected by user"
+        },
+        "theme": {
+          "type": "string",
+          "description": "User theme preference: dark or light"
+        },
+        "leftSidebarCollapsed": {
+          "type": "boolean",
+          "description": "Whether the left sidebar (toolbox/catalog) is collapsed by default"
+        },
+        "rightSidebarCollapsed": {
+          "type": "boolean",
+          "description": "Whether the right sidebar (inspector/properties) is collapsed by default"
+        },
+        "defaultStamp": {
+          "type": "object",
+          "description": "Default diagram stamp settings for author, role, company, and canvas visibility",
+          "properties": {
+            "author": { "type": "string" },
+            "role": { "type": "string" },
+            "company": { "type": "string" },
+            "showOnCanvas": { "type": "boolean" }
+          }
+        },
+        "autoSave": {
+          "type": "boolean",
+          "description": "Whether changes auto-sync to Firestore"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp of user creation"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp of last update"
+        }
+      },
+      "required": ["userId", "email"]
+    },
+    "Architecture": {
+      "title": "Architecture",
+      "description": "User cloud architecture project diagram, metadata, and canvas components",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique architecture project identifier"
+        },
+        "userId": {
+          "type": "string",
+          "description": "Owner Firebase Auth UID"
+        },
+        "name": {
+          "type": "string",
+          "description": "Project title or system name"
+        },
+        "description": {
+          "type": "string",
+          "description": "Architecture description or notes"
+        },
+        "nodesCount": {
+          "type": "number",
+          "description": "Total number of nodes"
+        },
+        "containersCount": {
+          "type": "number",
+          "description": "Total number of containers"
+        },
+        "linksCount": {
+          "type": "number",
+          "description": "Total number of links"
+        },
+        "diagram": {
+          "type": "object",
+          "description": "Complete JSON diagram state"
+        },
+        "tags": {
+          "type": "array",
+          "description": "Architecture tags"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp of creation"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp of last update"
+        }
+      },
+      "required": ["id", "userId", "name", "diagram", "createdAt", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Private user profile and editor preferences"
+    },
+    "/users/{userId}/architectures/{architectureId}": {
+      "schema": "Architecture",
+      "description": "Architectures saved by the user with diagram state and metadata"
+    }
+  }
+}

@@ -1,0 +1,154 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    background-color: #0a0b0e;
+    color: #cbd5e1;
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+}
+
+/* Custom scrollbar for dark theme */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #0a0b0e;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #252a33;
+  border-radius: 3px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #3b4252;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Clean Export Mode: Completely transparent canvas background with all buttons and UI controls hidden */
+[data-clean-export="true"],
+[data-light-export="true"] {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+[data-light-export="true"] .node-card {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 4px 10px -2px rgba(15, 23, 42, 0.08) !important;
+}
+
+[data-light-export="true"] .node-card span,
+[data-light-export="true"] .node-card div {
+  color: #0f172a !important;
+}
+
+[data-light-export="true"] .node-card .instance-badge {
+  background-color: #f1f5f9 !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #334155 !important;
+}
+
+[data-light-export="true"] .container-box {
+  background-color: rgba(248, 250, 252, 0.7) !important;
+  box-shadow: none !important;
+}
+
+[data-light-export="true"] .container-label {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06) !important;
+}
+
+[data-light-export="true"] .metadata-stamp {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 4px 10px -2px rgba(15, 23, 42, 0.08) !important;
+}
+
+[data-light-export="true"] .metadata-stamp span {
+  color: #0f172a !important;
+}
+
+[data-light-export="true"] .link-label-bg {
+  fill: #ffffff !important;
+  stroke: #cbd5e1 !important;
+}
+
+[data-light-export="true"] .link-label-text {
+  fill: #0f172a !important;
+}
+
+/* Hide interactive buttons, handles, toolbars, and selection highlights during export */
+[data-clean-export="true"] button,
+[data-clean-export="true"] .interactive-control,
+[data-clean-export="true"] .resize-handle,
+[data-clean-export="true"] .selection-indicator,
+[data-clean-export="true"] .connection-target-overlay,
+[data-clean-export="true"] .drag-ghost-preview,
+[data-clean-export="true"] .marquee-box,
+[data-clean-export="true"] .animate-ping,
+[data-clean-export="true"] .animate-pulse,
+[data-clean-export="true"] #floating-selection-toolbar,
+[data-clean-export="true"] #btn-toggle-snap-grid,
+[data-clean-export="true"] [class*="cursor-nwse-resize"],
+[data-clean-export="true"] [class*="cursor-nesw-resize"],
+[data-clean-export="true"] [class*="cursor-ns-resize"],
+[data-clean-export="true"] [class*="cursor-ew-resize"],
+[data-light-export="true"] button,
+[data-light-export="true"] .interactive-control,
+[data-light-export="true"] .resize-handle,
+[data-light-export="true"] .selection-indicator,
+[data-light-export="true"] .connection-target-overlay,
+[data-light-export="true"] .drag-ghost-preview,
+[data-light-export="true"] .marquee-box,
+[data-light-export="true"] .animate-ping,
+[data-light-export="true"] .animate-pulse,
+[data-light-export="true"] #floating-selection-toolbar,
+[data-light-export="true"] #btn-toggle-snap-grid,
+[data-light-export="true"] [class*="cursor-nwse-resize"],
+[data-light-export="true"] [class*="cursor-nesw-resize"],
+[data-light-export="true"] [class*="cursor-ns-resize"],
+[data-light-export="true"] [class*="cursor-ew-resize"] {
+  display: none !important;
+}
+
+/* Presentation Mode: Distraction-free architectural view hiding all editor tools and handles */
+[data-presentation-mode="true"] #architecture-canvas-stage button,
+[data-presentation-mode="true"] .interactive-control,
+[data-presentation-mode="true"] .resize-handle,
+[data-presentation-mode="true"] .selection-indicator,
+[data-presentation-mode="true"] .connection-target-overlay,
+[data-presentation-mode="true"] .drag-ghost-preview,
+[data-presentation-mode="true"] .marquee-box,
+[data-presentation-mode="true"] #floating-selection-toolbar,
+[data-presentation-mode="true"] #canvas-zoom-toolbar,
+[data-presentation-mode="true"] #btn-toggle-snap-grid,
+[data-presentation-mode="true"] [class*="cursor-nwse-resize"],
+[data-presentation-mode="true"] [class*="cursor-nesw-resize"],
+[data-presentation-mode="true"] [class*="cursor-ns-resize"],
+[data-presentation-mode="true"] [class*="cursor-ew-resize"] {
+  display: none !important;
+}
+
+[data-clean-export="true"] .ring-2,
+[data-clean-export="true"] .ring-4,
+[data-light-export="true"] .ring-2,
+[data-light-export="true"] .ring-4,
+[data-presentation-mode="true"]:not([data-active-inspect="true"]) .ring-2,
+[data-presentation-mode="true"]:not([data-active-inspect="true"]) .ring-4 {
+  --tw-ring-shadow: none !important;
+  box-shadow: 0 4px 10px -2px rgba(15, 23, 42, 0.08) !important;
+}
