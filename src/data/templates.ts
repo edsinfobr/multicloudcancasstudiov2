@@ -2,6 +2,893 @@ import { DiagramState } from '../types';
 
 export const STARTER_TEMPLATES: DiagramState[] = [
   // ==========================================
+  // ARTIFICIAL INTELLIGENCE (GenAI & LLMs)
+  // OpenAI, Anthropic Claude, Google Gemini & Meta Llama
+  // ==========================================
+  {
+    id: 'template_ai_openai',
+    title: 'OpenAI Enterprise Platform (GPT-4o, Assistants & RAG)',
+    description: 'Arquitetura corporativa de inteligência artificial com OpenAI GPT-4o e Assistants API, Pinecone Vector DB para recuperação de contexto RAG, orquestração LangChain, cache semântico Redis e base de conhecimento no S3.',
+    primaryProvider: 'generic',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    containers: [
+      {
+        id: 'c_oai_clients',
+        name: 'Camada de Clientes & Gateway Seguro',
+        provider: 'generic',
+        type: 'resource_group',
+        x: 40,
+        y: 50,
+        width: 900,
+        height: 130,
+        color: '#10A37F'
+      },
+      {
+        id: 'c_oai_orch',
+        name: 'Orquestração de Agentes & Cache Semântico',
+        provider: 'generic',
+        type: 'cluster',
+        x: 40,
+        y: 200,
+        width: 440,
+        height: 350,
+        color: '#00A67E'
+      },
+      {
+        id: 'c_oai_models',
+        name: 'OpenAI Cloud & Modelos Fundacionais',
+        provider: 'generic',
+        type: 'cloud_group',
+        x: 500,
+        y: 200,
+        width: 440,
+        height: 350,
+        color: '#10A37F'
+      }
+    ],
+    nodes: [
+      {
+        id: 'no_user',
+        name: 'Aplicações & Usuários',
+        provider: 'generic',
+        category: 'networking',
+        iconKey: 'generic_user',
+        resourceType: 'generic_user',
+        x: 80,
+        y: 80,
+        containerId: 'c_oai_clients',
+        specs: { count: 10000 }
+      },
+      {
+        id: 'no_apigw',
+        name: 'API Gateway & JWT Auth',
+        provider: 'aws',
+        category: 'networking',
+        iconKey: 'aws_api_gateway',
+        resourceType: 'aws_api_gateway_rest_api',
+        x: 380,
+        y: 80,
+        containerId: 'c_oai_clients',
+        specs: { count: 1 }
+      },
+      {
+        id: 'no_s3',
+        name: 'Document Lake S3 (PDFs & Base)',
+        provider: 'aws',
+        category: 'storage',
+        iconKey: 'aws_s3',
+        resourceType: 'aws_s3_bucket',
+        x: 700,
+        y: 80,
+        containerId: 'c_oai_clients',
+        specs: { storageGb: 1000 }
+      },
+      {
+        id: 'no_fastapi',
+        name: 'FastAPI Backend Service',
+        provider: 'aws',
+        category: 'compute',
+        iconKey: 'aws_lambda',
+        resourceType: 'aws_lambda_function',
+        x: 80,
+        y: 240,
+        containerId: 'c_oai_orch',
+        specs: { count: 4, runtime: 'python3.11' }
+      },
+      {
+        id: 'no_redis',
+        name: 'Cache Semântico Redis',
+        provider: 'aws',
+        category: 'database',
+        iconKey: 'aws_elasticache',
+        resourceType: 'aws_elasticache_cluster',
+        x: 80,
+        y: 390,
+        containerId: 'c_oai_orch',
+        specs: { count: 2, nodeType: 'cache.r6g.large' }
+      },
+      {
+        id: 'no_langchain',
+        name: 'LangChain & LangSmith',
+        provider: 'generic',
+        category: 'ai',
+        iconKey: 'ai_langchain',
+        resourceType: 'langchain_runnable_chain',
+        x: 280,
+        y: 240,
+        containerId: 'c_oai_orch',
+        specs: { framework: 'LangChain-v0.3', tracing: true }
+      },
+      {
+        id: 'no_pinecone',
+        name: 'Pinecone Vector DB (RAG)',
+        provider: 'generic',
+        category: 'ai',
+        iconKey: 'ai_pinecone',
+        resourceType: 'pinecone_index',
+        x: 280,
+        y: 390,
+        containerId: 'c_oai_orch',
+        specs: { dimension: 3072, metric: 'cosine', podType: 'serverless' }
+      },
+      {
+        id: 'no_gpt4o',
+        name: 'OpenAI GPT-4o (Chat & Vision)',
+        provider: 'generic',
+        category: 'ai',
+        iconKey: 'ai_openai',
+        resourceType: 'openai_chat_completion',
+        x: 540,
+        y: 240,
+        containerId: 'c_oai_models',
+        specs: { model: 'gpt-4o', contextWindow: '128k', maxTokens: 4096 }
+      },
+      {
+        id: 'no_embed',
+        name: 'OpenAI text-embedding-3',
+        provider: 'generic',
+        category: 'ai',
+        iconKey: 'ai_openai',
+        resourceType: 'openai_chat_completion',
+        x: 740,
+        y: 240,
+        containerId: 'c_oai_models',
+        specs: { model: 'text-embedding-3-large', dimension: 3072 }
+      },
+      {
+        id: 'no_assistants',
+        name: 'OpenAI Assistants & Tools',
+        provider: 'generic',
+        category: 'ai',
+        iconKey: 'ai_openai',
+        resourceType: 'openai_chat_completion',
+        x: 640,
+        y: 390,
+        containerId: 'c_oai_models',
+        specs: { model: 'gpt-4o', tools: ['code_interpreter', 'file_search'] }
+      }
+    ],
+    links: [
+      { id: 'lo1', from: 'no_user', to: 'no_apigw', label: 'HTTPS / 443', style: 'solid', protocol: 'HTTPS' },
+      { id: 'lo2', from: 'no_apigw', to: 'no_fastapi', label: 'REST Proxy', style: 'solid', protocol: 'HTTP' },
+      { id: 'lo3', from: 'no_fastapi', to: 'no_redis', label: 'Fuzzy Cache Check', style: 'dashed', protocol: 'Redis' },
+      { id: 'lo4', from: 'no_fastapi', to: 'no_langchain', label: 'Dispatch Chain', style: 'solid', protocol: 'Internal' },
+      { id: 'lo5', from: 'no_s3', to: 'no_langchain', label: 'Doc Ingestion ETL', style: 'dashed', protocol: 'HTTPS' },
+      { id: 'lo6', from: 'no_langchain', to: 'no_embed', label: 'Generate Embeddings', style: 'solid', protocol: 'HTTPS' },
+      { id: 'lo7', from: 'no_embed', to: 'no_pinecone', label: 'Upsert & Match Vectors', style: 'solid', protocol: 'gRPC' },
+      { id: 'lo8', from: 'no_pinecone', to: 'no_langchain', label: 'Context Chunks (Top-K)', style: 'dashed', protocol: 'gRPC' },
+      { id: 'lo9', from: 'no_langchain', to: 'no_gpt4o', label: 'Context Prompt Completion', style: 'solid', protocol: 'HTTPS' },
+      { id: 'lo10', from: 'no_langchain', to: 'no_assistants', label: 'Execute Code & File Tasks', style: 'solid', protocol: 'HTTPS' }
+    ]
+  },
+  {
+    id: 'template_ai_claude',
+    title: 'Anthropic Claude Agentic Swarm (Sonnet 3.5 & 3.7 + CrewAI)',
+    description: 'Sistema de agentes autônomos e raciocínio profundo com Anthropic Claude 3.5 Sonnet e Claude 3.7 no AWS Bedrock, orquestração multiagente CrewAI, banco vetorial Qdrant, fila assíncrona SQS e persistência de sessões no DynamoDB.',
+    primaryProvider: 'aws',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    containers: [
+      {
+        id: 'c_cld_ingress',
+        name: 'Ingresso & Fila de Tarefas Assíncronas',
+        provider: 'aws',
+        type: 'vpc',
+        x: 40,
+        y: 50,
+        width: 900,
+        height: 130,
+        color: '#D97706'
+      },
+      {
+        id: 'c_cld_agents',
+        name: 'Enxame de Agentes Autônomos (CrewAI)',
+        provider: 'generic',
+        type: 'cluster',
+        x: 40,
+        y: 200,
+        width: 440,
+        height: 350,
+        color: '#EA580C'
+      },
+      {
+        id: 'c_cld_models',
+        name: 'Anthropic Claude & AWS Bedrock Services',
+        provider: 'aws',
+        type: 'cloud_group',
+        x: 500,
+        y: 200,
+        width: 440,
+        height: 350,
+        color: '#D97706'
+      }
+    ],
+    nodes: [
+      {
+        id: 'nc_user',
+        name: 'Aplicações & Webhooks',
+        provider: 'generic',
+        category: 'networking',
+        iconKey: 'generic_user',
+        resourceType: 'generic_user',
+        x: 80,
+        y: 80,
+        containerId: 'c_cld_ingress',
+        specs: { count: 8000 }
+      },
+      {
+        id: 'nc_alb',
+        name: 'Application Load Balancer',
+        provider: 'aws',
+        category: 'networking',
+        iconKey: 'aws_alb',
+        resourceType: 'aws_lb',
+        x: 380,
+        y: 80,
+        containerId: 'c_cld_ingress',
+        specs: { count: 1, isPublic: true }
+      },
+      {
+        id: 'nc_sqs',
+        name: 'Fila SQS de Tarefas dos Agentes',
+        provider: 'aws',
+        category: 'integration',
+        iconKey: 'aws_sqs',
+        resourceType: 'aws_sqs_queue',
+        x: 700,
+        y: 80,
+        containerId: 'c_cld_ingress',
+        specs: { count: 1 }
+      },
+      {
+        id: 'nc_crew',
+        name: 'CrewAI Multi-Agent Swarm',
+        provider: 'generic',
+        category: 'ai',
+        iconKey: 'ai_crewai',
+        resourceType: 'crewai_multi_agent_system',
+        x: 80,
+        y: 240,
+        containerId: 'c_cld_agents',
+        specs: { agentsCount: 4, process: 'hierarchical' }
+      },
+      {
+        id: 'nc_planner',
+        name: 'Agent Workers no ECS Fargate',
+        provider: 'aws',
+        category: 'container',
+        iconKey: 'aws_ecs',
+        resourceType: 'aws_ecs_cluster',
+        x: 80,
+        y: 390,
+        containerId: 'c_cld_agents',
+        specs: { instanceType: 'Fargate', count: 4 }
+      },
+      {
+        id: 'nc_qdrant',
+        name: 'Qdrant Vector Engine (Hybrid RAG)',
+        provider: 'generic',
+        category: 'ai',
+        iconKey: 'ai_qdrant',
+        resourceType: 'qdrant_collection',
+        x: 280,
+        y: 240,
+        containerId: 'c_cld_agents',
+        specs: { distance: 'Cosine', vectors: '1536' }
+      },
+      {
+        id: 'nc_dynamo',
+        name: 'DynamoDB (Sessões & Memória)',
+        provider: 'aws',
+        category: 'database',
+        iconKey: 'aws_dynamodb',
+        resourceType: 'aws_dynamodb_table',
+        x: 280,
+        y: 390,
+        containerId: 'c_cld_agents',
+        specs: { storageGb: 100 }
+      },
+      {
+        id: 'nc_sonnet',
+        name: 'Claude 3.5 Sonnet (Tool Use)',
+        provider: 'generic',
+        category: 'ai',
+        iconKey: 'ai_claude',
+        resourceType: 'anthropic_claude_messages',
+        x: 540,
+        y: 240,
+        containerId: 'c_cld_models',
+        specs: { model: 'claude-3-5-sonnet', contextWindow: '200k', maxTokens: 8192 }
+      },
+      {
+        id: 'nc_opus',
+        name: 'Claude 3.7 Reasoning (Lógica)',
+        provider: 'generic',
+        category: 'ai',
+        iconKey: 'ai_claude',
+        resourceType: 'anthropic_claude_messages',
+        x: 740,
+        y: 240,
+        containerId: 'c_cld_models',
+        specs: { model: 'claude-3-7-sonnet', contextWindow: '200k', thinkingBudget: 16000 }
+      },
+      {
+        id: 'nc_bedrock',
+        name: 'AWS Bedrock Knowledge Bases',
+        provider: 'aws',
+        category: 'ai',
+        iconKey: 'aws_bedrock',
+        resourceType: 'aws_bedrock_custom_model',
+        x: 640,
+        y: 390,
+        containerId: 'c_cld_models',
+        specs: { provider: 'Anthropic', region: 'us-east-1' }
+      }
+    ],
+    links: [
+      { id: 'lc1', from: 'nc_user', to: 'nc_alb', label: 'HTTPS / 443', style: 'solid', protocol: 'HTTPS' },
+      { id: 'lc2', from: 'nc_alb', to: 'nc_sqs', label: 'Enqueue Agent Workflows', style: 'solid', protocol: 'SQS' },
+      { id: 'lc3', from: 'nc_sqs', to: 'nc_crew', label: 'Poll Work Orders', style: 'solid', protocol: 'SQS' },
+      { id: 'lc4', from: 'nc_crew', to: 'nc_planner', label: 'Spawn Worker Threads', style: 'solid', protocol: 'Internal' },
+      { id: 'lc5', from: 'nc_crew', to: 'nc_dynamo', label: 'Checkpoint Task State', style: 'dashed', protocol: 'DynamoDB' },
+      { id: 'lc6', from: 'nc_crew', to: 'nc_sonnet', label: 'Dispatch Tool Calling', style: 'solid', protocol: 'HTTPS' },
+      { id: 'lc7', from: 'nc_crew', to: 'nc_opus', label: 'Complex Multi-Step Logic', style: 'solid', protocol: 'HTTPS' },
+      { id: 'lc8', from: 'nc_sonnet', to: 'nc_qdrant', label: 'Domain Knowledge Retrieval', style: 'dashed', protocol: 'gRPC' },
+      { id: 'lc9', from: 'nc_opus', to: 'nc_bedrock', label: 'Managed Enterprise RAG', style: 'solid', protocol: 'HTTPS' }
+    ]
+  },
+  {
+    id: 'template_ai_gemini',
+    title: 'Google Gemini Multimodal AI & Vertex AI (1.5 / 2.0 Flash)',
+    description: 'Solução multimodal em nuvem Google com Gemini 2.0 Flash e 1.5 Pro com janela de 1 milhão de tokens, Google Search Grounding em tempo real, Cloud Run serverless, Cloud Storage e BigQuery Vector Search.',
+    primaryProvider: 'gcp',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    containers: [
+      {
+        id: 'c_gem_edge',
+        name: 'Google Cloud Edge & Ingestão de Mídia',
+        provider: 'gcp',
+        type: 'vpc',
+        x: 40,
+        y: 50,
+        width: 900,
+        height: 130,
+        color: '#4285F4'
+      },
+      {
+        id: 'c_gem_apps',
+        name: 'Microsserviços Serverless no Cloud Run',
+        provider: 'gcp',
+        type: 'cluster',
+        x: 40,
+        y: 200,
+        width: 440,
+        height: 350,
+        color: '#34A853'
+      },
+      {
+        id: 'c_gem_ai',
+        name: 'Google Vertex AI & Gemini Foundation Hub',
+        provider: 'gcp',
+        type: 'cloud_group',
+        x: 500,
+        y: 200,
+        width: 440,
+        height: 350,
+        color: '#1A73E8'
+      }
+    ],
+    nodes: [
+      {
+        id: 'ng_user',
+        name: 'Usuários Multimodais (Áudio & Vídeo)',
+        provider: 'generic',
+        category: 'networking',
+        iconKey: 'generic_user',
+        resourceType: 'generic_user',
+        x: 80,
+        y: 80,
+        containerId: 'c_gem_edge',
+        specs: { count: 12000 }
+      },
+      {
+        id: 'ng_lb',
+        name: 'Cloud Load Balancing & Armor',
+        provider: 'gcp',
+        category: 'networking',
+        iconKey: 'gcp_cloud_load_balancing',
+        resourceType: 'google_compute_global_forwarding_rule',
+        x: 380,
+        y: 80,
+        containerId: 'c_gem_edge',
+        specs: { count: 1, isPublic: true }
+      },
+      {
+        id: 'ng_gcs',
+        name: 'Cloud Storage (Vídeos 4K & PDFs)',
+        provider: 'gcp',
+        category: 'storage',
+        iconKey: 'gcp_cloud_storage',
+        resourceType: 'google_storage_bucket',
+        x: 700,
+        y: 80,
+        containerId: 'c_gem_edge',
+        specs: { storageGb: 5000 }
+      },
+      {
+        id: 'ng_run',
+        name: 'API Backend no Cloud Run',
+        provider: 'gcp',
+        category: 'compute',
+        iconKey: 'gcp_computeengine',
+        resourceType: 'google_compute_instance',
+        x: 80,
+        y: 240,
+        containerId: 'c_gem_apps',
+        specs: { count: 5, instanceType: 'e2-standard-4' }
+      },
+      {
+        id: 'ng_pubsub',
+        name: 'Cloud Pub/Sub Event Streaming',
+        provider: 'gcp',
+        category: 'integration',
+        iconKey: 'gcp_pubsub',
+        resourceType: 'google_pubsub_topic',
+        x: 80,
+        y: 390,
+        containerId: 'c_gem_apps',
+        specs: { count: 1 }
+      },
+      {
+        id: 'ng_bq',
+        name: 'BigQuery Vector Search & ML',
+        provider: 'gcp',
+        category: 'analytics',
+        iconKey: 'gcp_bigquery',
+        resourceType: 'google_bigquery_dataset',
+        x: 280,
+        y: 240,
+        containerId: 'c_gem_apps',
+        specs: { storageGb: 3000 }
+      },
+      {
+        id: 'ng_vertex',
+        name: 'Vertex AI Platform & Feature Store',
+        provider: 'gcp',
+        category: 'ai',
+        iconKey: 'gcp_vertexai',
+        resourceType: 'google_vertex_ai_endpoint',
+        x: 280,
+        y: 390,
+        containerId: 'c_gem_apps',
+        specs: { count: 1, acceleratorType: 'NVIDIA_TESLA_T4' }
+      },
+      {
+        id: 'ng_flash',
+        name: 'Gemini 2.0 Flash (Baixa Latência)',
+        provider: 'gcp',
+        category: 'ai',
+        iconKey: 'ai_gemini',
+        resourceType: 'google_gemini_generate_content',
+        x: 540,
+        y: 240,
+        containerId: 'c_gem_ai',
+        specs: { model: 'gemini-2.0-flash', contextWindow: '1M', liveApi: true }
+      },
+      {
+        id: 'ng_pro',
+        name: 'Gemini 1.5 Pro (1M+ Tokens Contexto)',
+        provider: 'gcp',
+        category: 'ai',
+        iconKey: 'ai_gemini',
+        resourceType: 'google_gemini_generate_content',
+        x: 740,
+        y: 240,
+        containerId: 'c_gem_ai',
+        specs: { model: 'gemini-1.5-pro', contextWindow: '2M' }
+      },
+      {
+        id: 'ng_ground',
+        name: 'Google Search Grounding Service',
+        provider: 'generic',
+        category: 'ai',
+        iconKey: 'ai_perplexity',
+        resourceType: 'perplexity_sonar_search',
+        x: 640,
+        y: 390,
+        containerId: 'c_gem_ai',
+        specs: { onlineSearch: true }
+      }
+    ],
+    links: [
+      { id: 'lg1', from: 'ng_user', to: 'ng_lb', label: 'HTTPS / WebSockets (Live API)', style: 'solid', protocol: 'HTTPS' },
+      { id: 'lg2', from: 'ng_user', to: 'ng_gcs', label: 'Direct Media Upload (Signed URL)', style: 'dashed', protocol: 'HTTPS' },
+      { id: 'lg3', from: 'ng_lb', to: 'ng_run', label: 'Forward Traffic', style: 'solid', protocol: 'HTTP' },
+      { id: 'lg4', from: 'ng_run', to: 'ng_pubsub', label: 'Async Media Task', style: 'solid', protocol: 'Internal' },
+      { id: 'lg5', from: 'ng_run', to: 'ng_vertex', label: 'Vertex AI Pipeline', style: 'solid', protocol: 'gRPC' },
+      { id: 'lg6', from: 'ng_vertex', to: 'ng_bq', label: 'Vector Similarity Retrieval', style: 'dashed', protocol: 'SQL' },
+      { id: 'lg7', from: 'ng_vertex', to: 'ng_flash', label: 'Real-Time Voice & Chat Inquiries', style: 'solid', protocol: 'gRPC' },
+      { id: 'lg8', from: 'ng_vertex', to: 'ng_pro', label: 'Deep Video/Doc Ingestion (1M Tokens)', style: 'solid', protocol: 'HTTPS' },
+      { id: 'lg9', from: 'ng_pro', to: 'ng_gcs', label: 'Stream Large Video Artifacts', style: 'dashed', protocol: 'HTTPS' },
+      { id: 'lg10', from: 'ng_flash', to: 'ng_ground', label: 'Grounding with Real-time Web', style: 'dashed', protocol: 'HTTPS' }
+    ]
+  },
+  {
+    id: 'template_ai_meta',
+    title: 'Meta Llama 3.3 Private Cloud (vLLM, NVIDIA GPUs & Ollama)',
+    description: 'Ambiente corporativo de IA soberana e privada com Meta Llama 3.3 (70B/405B) em cluster GPU NVIDIA H100 com vLLM, banco vetorial ChromaDB, Ollama edge e moderação de conteúdo com Llama Guard.',
+    primaryProvider: 'generic',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    containers: [
+      {
+        id: 'c_mt_net',
+        name: 'Rede Corporativa Segura & Gateway Interno',
+        provider: 'generic',
+        type: 'vpc',
+        x: 40,
+        y: 50,
+        width: 900,
+        height: 130,
+        color: '#0468D7'
+      },
+      {
+        id: 'c_mt_gpu',
+        name: 'Cluster de Inferência Acelerada (vLLM & NVIDIA)',
+        provider: 'generic',
+        type: 'cluster',
+        x: 40,
+        y: 200,
+        width: 440,
+        height: 350,
+        color: '#76B900'
+      },
+      {
+        id: 'c_mt_rag',
+        name: 'Model Registry & RAG Privado On-Premise',
+        provider: 'generic',
+        type: 'resource_group',
+        x: 500,
+        y: 200,
+        width: 440,
+        height: 350,
+        color: '#0468D7'
+      }
+    ],
+    nodes: [
+      {
+        id: 'nm_user',
+        name: 'Equipes & Aplicações Corporativas',
+        provider: 'generic',
+        category: 'networking',
+        iconKey: 'generic_user',
+        resourceType: 'generic_user',
+        x: 80,
+        y: 80,
+        containerId: 'c_mt_net',
+        specs: { count: 3500 }
+      },
+      {
+        id: 'nm_gw',
+        name: 'API Gateway Privado (Kong / NGINX)',
+        provider: 'generic',
+        category: 'networking',
+        iconKey: 'generic_res_management_console',
+        resourceType: 'generic_res_management_console',
+        x: 380,
+        y: 80,
+        containerId: 'c_mt_net',
+        specs: { count: 1 }
+      },
+      {
+        id: 'nm_ollama',
+        name: 'Ollama Edge Local Runner (Llama 8B)',
+        provider: 'generic',
+        category: 'ai',
+        iconKey: 'ai_ollama',
+        resourceType: 'ollama_local_service',
+        x: 700,
+        y: 80,
+        containerId: 'c_mt_net',
+        specs: { model: 'llama3.2-3b', quant: 'Q4_K_M' }
+      },
+      {
+        id: 'nm_nvidia',
+        name: 'NVIDIA NIM / Tensor Core H100',
+        provider: 'generic',
+        category: 'ai',
+        iconKey: 'ai_nvidia_nim',
+        resourceType: 'nvidia_nim_container',
+        x: 80,
+        y: 240,
+        containerId: 'c_mt_gpu',
+        specs: { gpuType: 'H100-80GB', count: 4, precision: 'FP8' }
+      },
+      {
+        id: 'nm_llama',
+        name: 'Meta Llama 3.3 (70B Instruct / vLLM)',
+        provider: 'generic',
+        category: 'ai',
+        iconKey: 'ai_meta_llama',
+        resourceType: 'meta_llama_inference',
+        x: 280,
+        y: 240,
+        containerId: 'c_mt_gpu',
+        specs: { model: 'llama-3.3-70b-instruct', openWeights: true }
+      },
+      {
+        id: 'nm_guard',
+        name: 'Llama Guard 3 (Filtro de Segurança)',
+        provider: 'generic',
+        category: 'security',
+        iconKey: 'generic_res_alert',
+        resourceType: 'generic_res_alert',
+        x: 80,
+        y: 390,
+        containerId: 'c_mt_gpu',
+        specs: { model: 'llama-guard-3-8b' }
+      },
+      {
+        id: 'nm_grafana',
+        name: 'Grafana & Prometheus (GPU Stats)',
+        provider: 'generic',
+        category: 'devops',
+        iconKey: 'generic_grafana_metrics',
+        resourceType: 'generic_grafana_metrics',
+        x: 280,
+        y: 390,
+        containerId: 'c_mt_gpu',
+        specs: { count: 1 }
+      },
+      {
+        id: 'nm_hf',
+        name: 'Hugging Face Model Registry & LoRA',
+        provider: 'generic',
+        category: 'ai',
+        iconKey: 'ai_huggingface',
+        resourceType: 'huggingface_inference_endpoint',
+        x: 540,
+        y: 240,
+        containerId: 'c_mt_rag',
+        specs: { cacheDirectory: '/models/cache' }
+      },
+      {
+        id: 'nm_chroma',
+        name: 'ChromaDB Private Vector Store',
+        provider: 'generic',
+        category: 'ai',
+        iconKey: 'ai_chromadb',
+        resourceType: 'chroma_collection',
+        x: 740,
+        y: 240,
+        containerId: 'c_mt_rag',
+        specs: { persistDirectory: '/data/chroma' }
+      },
+      {
+        id: 'nm_storage',
+        name: 'Armazenamento de Pesos & Embeddings',
+        provider: 'aws',
+        category: 'storage',
+        iconKey: 'aws_s3',
+        resourceType: 'aws_s3_bucket',
+        x: 640,
+        y: 390,
+        containerId: 'c_mt_rag',
+        specs: { storageGb: 2000 }
+      }
+    ],
+    links: [
+      { id: 'lm1', from: 'nm_user', to: 'nm_gw', label: 'HTTPS / Mutual TLS', style: 'solid', protocol: 'HTTPS' },
+      { id: 'lm2', from: 'nm_gw', to: 'nm_guard', label: 'Prompt Inspection Filter', style: 'solid', protocol: 'HTTP' },
+      { id: 'lm3', from: 'nm_guard', to: 'nm_llama', label: 'Forward Validated Prompt', style: 'solid', protocol: 'gRPC' },
+      { id: 'lm4', from: 'nm_gw', to: 'nm_ollama', label: 'Route Edge Desktop Requests', style: 'dashed', protocol: 'HTTP' },
+      { id: 'lm5', from: 'nm_llama', to: 'nm_nvidia', label: 'TensorRT-LLM GPU Kernel', style: 'solid', protocol: 'Internal' },
+      { id: 'lm6', from: 'nm_llama', to: 'nm_chroma', label: 'Private Document Retrieval', style: 'dashed', protocol: 'Internal' },
+      { id: 'lm7', from: 'nm_hf', to: 'nm_llama', label: 'Hot-load LoRA Weights', style: 'dashed', protocol: 'Internal' },
+      { id: 'lm8', from: 'nm_chroma', to: 'nm_storage', label: 'Persist Vectors', style: 'solid', protocol: 'Internal' },
+      { id: 'lm9', from: 'nm_nvidia', to: 'nm_grafana', label: 'VRAM, Tokens/s & Power', style: 'dashed', protocol: 'Internal' }
+    ]
+  },
+  {
+    id: 'template_ai_multimodel_gateway',
+    title: 'Multi-LLM Enterprise Gateway (OpenAI + Claude + Gemini + Meta)',
+    description: 'Roteador e gateway corporativo unificado com failover automático, otimização de custos e latência entre OpenAI GPT-4o, Anthropic Claude 3.5, Google Gemini 2.0 e Meta Llama 3.3 com cache semântico.',
+    primaryProvider: 'generic',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    containers: [
+      {
+        id: 'c_mg_edge',
+        name: 'Ingresso de Requisições & Cache Semântico',
+        provider: 'generic',
+        type: 'resource_group',
+        x: 40,
+        y: 50,
+        width: 900,
+        height: 130,
+        color: '#3B82F6'
+      },
+      {
+        id: 'c_mg_router',
+        name: 'Roteador Inteligente & Otimizador de Custo',
+        provider: 'generic',
+        type: 'cluster',
+        x: 40,
+        y: 200,
+        width: 440,
+        height: 350,
+        color: '#8B5CF6'
+      },
+      {
+        id: 'c_mg_models',
+        name: 'Soluções de IA Fundacionais (Multi-Provider)',
+        provider: 'generic',
+        type: 'cloud_group',
+        x: 500,
+        y: 200,
+        width: 440,
+        height: 350,
+        color: '#10B981'
+      }
+    ],
+    nodes: [
+      {
+        id: 'nmg_user',
+        name: 'Aplicações & Sistemas da Empresa',
+        provider: 'generic',
+        category: 'networking',
+        iconKey: 'generic_user',
+        resourceType: 'generic_user',
+        x: 80,
+        y: 80,
+        containerId: 'c_mg_edge',
+        specs: { count: 25000 }
+      },
+      {
+        id: 'nmg_gateway',
+        name: 'AI Gateway (Kong / LiteLLM Proxy)',
+        provider: 'aws',
+        category: 'networking',
+        iconKey: 'aws_api_gateway',
+        resourceType: 'aws_api_gateway_rest_api',
+        x: 380,
+        y: 80,
+        containerId: 'c_mg_edge',
+        specs: { count: 1 }
+      },
+      {
+        id: 'nmg_redis',
+        name: 'Cache Semântico Redis',
+        provider: 'aws',
+        category: 'database',
+        iconKey: 'aws_elasticache',
+        resourceType: 'aws_elasticache_cluster',
+        x: 700,
+        y: 80,
+        containerId: 'c_mg_edge',
+        specs: { count: 2, nodeType: 'cache.r6g.large' }
+      },
+      {
+        id: 'nmg_orchestrator',
+        name: 'LangChain Multi-Model Router',
+        provider: 'generic',
+        category: 'ai',
+        iconKey: 'ai_langchain',
+        resourceType: 'langchain_runnable_chain',
+        x: 80,
+        y: 240,
+        containerId: 'c_mg_router',
+        specs: { framework: 'LangChain-v0.3', routingStrategy: 'cost-latency-quality' }
+      },
+      {
+        id: 'nmg_pinecone',
+        name: 'Pinecone Shared Vector Store',
+        provider: 'generic',
+        category: 'ai',
+        iconKey: 'ai_pinecone',
+        resourceType: 'pinecone_index',
+        x: 280,
+        y: 240,
+        containerId: 'c_mg_router',
+        specs: { metric: 'cosine', podType: 'serverless' }
+      },
+      {
+        id: 'nmg_metrics',
+        name: 'Dashboard de Custos & Latência',
+        provider: 'generic',
+        category: 'devops',
+        iconKey: 'generic_grafana_metrics',
+        resourceType: 'generic_grafana_metrics',
+        x: 180,
+        y: 390,
+        containerId: 'c_mg_router',
+        specs: { count: 1 }
+      },
+      {
+        id: 'nmg_openai',
+        name: 'OpenAI GPT-4o (Geral & Coding)',
+        provider: 'generic',
+        category: 'ai',
+        iconKey: 'ai_openai',
+        resourceType: 'openai_chat_completion',
+        x: 540,
+        y: 230,
+        containerId: 'c_mg_models',
+        specs: { model: 'gpt-4o', contextWindow: '128k' }
+      },
+      {
+        id: 'nmg_claude',
+        name: 'Anthropic Claude 3.5 (Raciocínio)',
+        provider: 'generic',
+        category: 'ai',
+        iconKey: 'ai_claude',
+        resourceType: 'anthropic_claude_messages',
+        x: 740,
+        y: 230,
+        containerId: 'c_mg_models',
+        specs: { model: 'claude-3-5-sonnet', contextWindow: '200k' }
+      },
+      {
+        id: 'nmg_gemini',
+        name: 'Google Gemini 2.0 (Multimodal & 1M)',
+        provider: 'gcp',
+        category: 'ai',
+        iconKey: 'ai_gemini',
+        resourceType: 'google_gemini_generate_content',
+        x: 540,
+        y: 380,
+        containerId: 'c_mg_models',
+        specs: { model: 'gemini-2.0-flash', contextWindow: '1M' }
+      },
+      {
+        id: 'nmg_llama',
+        name: 'Meta Llama 3.3 (Privacidade & Custo)',
+        provider: 'generic',
+        category: 'ai',
+        iconKey: 'ai_meta_llama',
+        resourceType: 'meta_llama_inference',
+        x: 740,
+        y: 380,
+        containerId: 'c_mg_models',
+        specs: { model: 'llama-3.3-70b-instruct', openWeights: true }
+      }
+    ],
+    links: [
+      { id: 'lmg1', from: 'nmg_user', to: 'nmg_gateway', label: 'HTTPS / 443', style: 'solid', protocol: 'HTTPS' },
+      { id: 'lmg2', from: 'nmg_gateway', to: 'nmg_redis', label: 'Semantic Cache Hit (0ms / $0)', style: 'dashed', protocol: 'Redis' },
+      { id: 'lmg3', from: 'nmg_gateway', to: 'nmg_orchestrator', label: 'Forward on Cache Miss', style: 'solid', protocol: 'HTTP' },
+      { id: 'lmg4', from: 'nmg_orchestrator', to: 'nmg_pinecone', label: 'Augment via RAG', style: 'solid', protocol: 'gRPC' },
+      { id: 'lmg5', from: 'nmg_orchestrator', to: 'nmg_openai', label: 'Route: Coding & Assistants', style: 'solid', protocol: 'HTTPS' },
+      { id: 'lmg6', from: 'nmg_orchestrator', to: 'nmg_claude', label: 'Route: Logic & Creative Writing', style: 'solid', protocol: 'HTTPS' },
+      { id: 'lmg7', from: 'nmg_orchestrator', to: 'nmg_gemini', label: 'Route: Video/Audio & 1M Tokens', style: 'solid', protocol: 'HTTPS' },
+      { id: 'lmg8', from: 'nmg_orchestrator', to: 'nmg_llama', label: 'Route: Sensitive On-Prem Data', style: 'solid', protocol: 'gRPC' },
+      { id: 'lmg9', from: 'nmg_orchestrator', to: 'nmg_metrics', label: 'Log Tokens, Latency & Cost', style: 'dashed', protocol: 'Internal' }
+    ]
+  },
+
+  // ==========================================
   // AWS TEMPLATES
   // ==========================================
   {

@@ -10,6 +10,23 @@ export interface ChangelogEntry {
 
 export const CHANGELOG_DATA: ChangelogEntry[] = [
   {
+    version: 'v1.11.0',
+    date: '17/10/2026',
+    title: 'Templates Corporativos de IA: OpenAI, Anthropic Claude, Google Gemini e Meta Llama',
+    highlight: 'Adição de templates prontos de arquitetura para as soluções de IA generativa mais famosas do mundo (OpenAI, Claude, Gemini e Meta), com busca rápida e filtro por abas no catálogo de templates.',
+    added: [
+      'Template OpenAI Enterprise Platform: arquitetura completa com GPT-4o, Assistants API, Pinecone Vector DB para RAG, LangChain, cache semântico Redis e S3',
+      'Template Anthropic Claude Agentic Swarm: enxame de agentes autônomos com Claude 3.5 & 3.7 Sonnet no AWS Bedrock, orquestração CrewAI, Qdrant e DynamoDB',
+      'Template Google Gemini Multimodal AI: processamento de áudio, vídeo 4K e 1M+ tokens de contexto com Gemini 2.0 Flash e 1.5 Pro, Vertex AI Search e BigQuery',
+      'Template Meta Llama 3.3 Private Cloud: inferência soberana e privada de Llama 3.3 (70B/405B) com cluster GPU NVIDIA H100 vLLM, ChromaDB e Llama Guard',
+      'Template Multi-LLM Enterprise Gateway: roteador central unificado com failover automático e balanceamento de custos/latência integrando OpenAI, Claude, Gemini e Meta',
+      'Aba de Filtro "Soluções de IA" e Campo de Busca em Tempo Real no modal de seleção de templates arquiteturais'
+    ],
+    changed: [
+      'Galeria de templates aprimorada com badges coloridos por provedor de IA e tags de componentes-chave'
+    ]
+  },
+  {
     version: 'v1.10.0',
     date: '06/10/2026',
     title: 'Calculadora de Custos com Modos Separados: Arquitetura Atual & Comparativo de Provedores',
