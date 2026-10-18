@@ -1131,10 +1131,11 @@ export default function App() {
               <span className="text-slate-500 flex items-center space-x-1">
                 <span>Criado e mantido por</span>
                 <a
-                  href="https://github.com/edsinfobr"
+                  href="https://www.linkedin.com/in/edsinfobr/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="font-bold text-blue-500 hover:text-blue-400 hover:underline transition-colors"
+                  title="Perfil no LinkedIn (edsinfobr)"
                 >
                   @edsinfobr
                 </a>
