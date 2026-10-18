@@ -47,6 +47,8 @@ import { DiagramState, CloudProvider, ProposalType } from '../types';
 import { exportCanvasToPng, exportCanvasToJpg, exportCanvasToSvg, exportArchitecturePdf, exportProjectToJson } from '../utils/exportUtils';
 import { GoogleUser } from '../services/googleDrive';
 import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../i18n/LanguageContext';
+import { LanguageSelector } from './LanguageSelector';
 
 interface NavbarProps {
   diagram: DiagramState;
@@ -128,6 +130,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenProposalModal
 }) => {
   const { currentUser, logout, userPreferences } = useAuth();
+  const { t } = useLanguage();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSecurityMenuOpen, setIsSecurityMenuOpen] = useState(false);
   const [isExportOpen, setIsExportOpen] = useState(false);
@@ -448,6 +451,9 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
           </div>
 
+          {/* Language Selector */}
+          <LanguageSelector variant="compact" theme={theme} />
+
           {/* Theme Mode Switcher */}
           {onToggleTheme && (
             <button
@@ -458,17 +464,17 @@ export const Navbar: React.FC<NavbarProps> = ({
                   ? 'bg-amber-100 hover:bg-amber-200 border-amber-400 text-amber-950 shadow-sm'
                   : 'bg-indigo-950/40 hover:bg-indigo-900/60 border-indigo-500/40 text-indigo-300'
               }`}
-              title={theme === 'light' ? 'Modo Claro Ativo (Clique para Modo Escuro)' : 'Modo Escuro Ativo (Clique para Modo Claro)'}
+              title={theme === 'light' ? t.nav.darkTheme : t.nav.lightTheme}
             >
               {theme === 'light' ? (
                 <>
                   <Sun className="w-3.5 h-3.5 text-amber-700" />
-                  <span className="hidden xl:inline">Claro</span>
+                  <span className="hidden xl:inline">{t.nav.lightTheme}</span>
                 </>
               ) : (
                 <>
                   <Moon className="w-3.5 h-3.5 text-indigo-400" />
-                  <span className="hidden xl:inline">Escuro</span>
+                  <span className="hidden xl:inline">{t.nav.darkTheme}</span>
                 </>
               )}
             </button>
@@ -688,7 +694,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               }`}
             >
               <Layers className={`w-3.5 h-3.5 ${theme === 'light' ? 'text-blue-700' : 'text-blue-400'}`} />
-              <span>Arquivo</span>
+              <span>{t.nav.architecture}</span>
               <ChevronDown className={`w-3 h-3 transform transition-transform ${isMenuOpen ? 'rotate-180' : ''} ${theme === 'light' ? 'text-blue-700' : 'text-blue-400'}`} />
             </button>
 
@@ -713,7 +719,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   >
                     <Plus className="w-4 h-4 text-blue-500 group-hover:scale-110 transition-transform" />
                     <div>
-                      <span className="font-semibold block">Nova Arquitetura</span>
+                      <span className="font-semibold block">{t.nav.newDiagram}</span>
                       <span className="text-[10px] text-slate-500">Limpar e criar novo diagrama</span>
                     </div>
                   </button>
@@ -730,9 +736,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                   >
                     <Save className="w-4 h-4 text-emerald-500 group-hover:scale-110 transition-transform" />
                     <div>
-                      <span className="font-semibold block">Salvar Arquitetura</span>
+                      <span className="font-semibold block">{t.nav.saveCloud}</span>
                       <span className="text-[10px] text-slate-500">
-                        {currentUser ? 'Nuvem Firestore e local' : 'Armazenamento local'}
+                        {currentUser ? t.nav.cloudSaved : t.nav.localSaved}
                       </span>
                     </div>
                   </button>
@@ -749,7 +755,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   >
                     <FolderOpen className="w-4 h-4 text-amber-500 group-hover:scale-110 transition-transform" />
                     <div>
-                      <span className="font-semibold block">Minhas Arquiteturas</span>
+                      <span className="font-semibold block">{t.nav.savedArchitectures}</span>
                       <span className="text-[10px] text-slate-500">Projetos salvos e versões</span>
                     </div>
                   </button>
@@ -766,7 +772,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   >
                     <FileSignature className="w-4 h-4 text-purple-500 group-hover:scale-110 transition-transform" />
                     <div>
-                      <span className="font-semibold block">Dados do Diagrama</span>
+                      <span className="font-semibold block">{t.nav.metadataStamp}</span>
                       <span className="text-[10px] text-slate-500">Autor, Data, Cargo e Empresa</span>
                     </div>
                   </button>
@@ -784,7 +790,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     >
                       <SlidersHorizontal className="w-4 h-4 text-blue-500 group-hover:scale-110 transition-transform" />
                       <div>
-                        <span className="font-semibold block">Preferências do Perfil</span>
+                        <span className="font-semibold block">{t.nav.preferences}</span>
                         <span className="text-[10px] text-slate-500">Tema, Menus & Carimbo Padrão</span>
                       </div>
                     </button>
@@ -804,8 +810,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                   >
                     <Upload className="w-4 h-4 text-sky-500 group-hover:scale-110 transition-transform" />
                     <div>
-                      <span className="font-semibold block">Importar Projeto JSON</span>
-                      <span className="text-[10px] text-slate-500">Carregar arquivo .json do disco</span>
+                      <span className="font-semibold block">{t.nav.importJson}</span>
+                      <span className="text-[10px] text-slate-500">Carregar arquivo .json</span>
                     </div>
                   </button>
 
@@ -818,7 +824,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   >
                     <Download className="w-4 h-4 text-emerald-500 group-hover:scale-110 transition-transform" />
                     <div>
-                      <span className="font-semibold block">Baixar Arquivo JSON</span>
+                      <span className="font-semibold block">{t.nav.exportJson}</span>
                       <span className="text-[10px] text-slate-500">Backup offline do projeto</span>
                     </div>
                   </button>
@@ -920,7 +926,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             title="Modelos e Padrões Arquiteturais Prontos"
           >
             <LayoutTemplate className="w-3.5 h-3.5 text-sky-500" />
-            <span className="hidden sm:inline">Templates</span>
+            <span className="hidden sm:inline">{t.nav.templates}</span>
           </button>
 
           {/* Segurança & Auditoria Dropdown */}
@@ -942,7 +948,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               title="Auditoria de Segurança, Alta Disponibilidade e Linter de Topologia"
             >
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-              <span className="hidden md:inline">Segurança</span>
+              <span className="hidden md:inline">{t.nav.securityLinter}</span>
               <ChevronDown className={`w-3 h-3 transition-transform ${isSecurityMenuOpen ? 'rotate-180' : ''}`} />
             </button>
 
@@ -1015,7 +1021,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             title="Calculadora de Custos Mensais FinOps Multi-Cloud"
           >
             <DollarSign className={`w-3.5 h-3.5 ${theme === 'light' ? 'text-amber-700' : 'text-amber-400'}`} />
-            <span className="hidden sm:inline">Custos</span>
+            <span className="hidden sm:inline">{t.nav.costs}</span>
           </button>
 
           {/* Hub Unificado de Exportação & Propostas */}
@@ -1033,7 +1039,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               title="Central de Exportação: Propostas Word, PDF, Terraform IaC e Imagens"
             >
               <Download className="w-3.5 h-3.5" />
-              <span>Exportar</span>
+              <span>{t.nav.export}</span>
               <ChevronDown className={`w-3 h-3 transition-transform ${isExportOpen ? 'rotate-180' : ''}`} />
             </button>
 

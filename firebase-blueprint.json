@@ -25,6 +25,10 @@
           "type": "string",
           "description": "User theme preference: dark or light"
         },
+        "language": {
+          "type": "string",
+          "description": "User interface language: pt, en, or es"
+        },
         "leftSidebarCollapsed": {
           "type": "boolean",
           "description": "Whether the left sidebar (toolbox/catalog) is collapsed by default"

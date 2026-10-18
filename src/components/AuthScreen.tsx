@@ -23,9 +23,12 @@ import {
   HelpCircle,
   ChevronDown,
   ChevronUp,
-  BookOpen
+  BookOpen,
+  Globe,
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../i18n/LanguageContext';
+import { LanguageSelector } from './LanguageSelector';
 import { LATEST_APP_VERSION } from '../data/changelogData';
 
 interface AuthScreenProps {
@@ -44,6 +47,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
   onOpenDocumentation,
 }) => {
   const isLight = theme === 'light';
+  const { t } = useLanguage();
   const {
     signInWithEmail,
     signUpWithEmail,
@@ -82,7 +86,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
     clearAuthError();
 
     if (!email.trim()) {
-      setLocalMessage({ type: 'error', text: 'Por favor, informe seu endereço de e-mail.' });
+      setLocalMessage({ type: 'error', text: t.auth.fillEmailError });
       return;
     }
 
@@ -92,10 +96,10 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
         await sendPasswordReset(email.trim());
         setLocalMessage({
           type: 'success',
-          text: 'E-mail de recuperação enviado com sucesso! Verifique sua caixa de entrada.',
+          text: t.auth.resetSuccess,
         });
       } catch (err: any) {
-        setLocalMessage({ type: 'error', text: err.message || 'Falha ao enviar e-mail de recuperação.' });
+        setLocalMessage({ type: 'error', text: err.message || t.auth.authError });
       } finally {
         setSubmitting(false);
       }
@@ -103,17 +107,17 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
     }
 
     if (!password) {
-      setLocalMessage({ type: 'error', text: 'Por favor, insira sua senha.' });
+      setLocalMessage({ type: 'error', text: t.auth.fillPassError });
       return;
     }
 
     if (mode === 'signup') {
       if (password.length < 6) {
-        setLocalMessage({ type: 'error', text: 'A senha deve conter no mínimo 6 caracteres.' });
+        setLocalMessage({ type: 'error', text: t.auth.passMinError });
         return;
       }
       if (password !== confirmPassword) {
-        setLocalMessage({ type: 'error', text: 'As senhas informadas não coincidem.' });
+        setLocalMessage({ type: 'error', text: t.auth.passMismatchError });
         return;
       }
     }
@@ -126,11 +130,11 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
         await signUpWithEmail(email.trim(), password, displayName.trim());
         setLocalMessage({
           type: 'success',
-          text: 'Conta criada com sucesso! Redirecionando para o estúdio...',
+          text: t.auth.accountCreatedSuccess,
         });
       }
     } catch (err: any) {
-      setLocalMessage({ type: 'error', text: err.message || 'Erro ao processar autenticação.' });
+      setLocalMessage({ type: 'error', text: err.message || t.auth.authError });
     } finally {
       setSubmitting(false);
     }
@@ -231,7 +235,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
               id="btn-auth-open-docs"
               type="button"
               onClick={onOpenDocumentation}
-              title="Manual e Documentação do Produto"
+              title={t.nav.docs}
               className={`flex items-center space-x-1.5 px-3 py-2 rounded-xl border text-xs font-semibold transition-all ${
                 isLight
                   ? 'bg-blue-50 hover:bg-blue-100 border-blue-200 text-blue-800'
@@ -239,9 +243,12 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
               }`}
             >
               <BookOpen className="w-4 h-4 text-blue-500" />
-              <span className="hidden sm:inline">Documentação</span>
+              <span className="hidden sm:inline">{t.nav.docs}</span>
             </button>
           )}
+
+          {/* Language Selector in Header */}
+          <LanguageSelector variant="pill" theme={theme} />
 
           {/* Theme Toggle Button */}
           {onToggleTheme && (
@@ -249,7 +256,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
               id="btn-auth-theme-toggle"
               type="button"
               onClick={onToggleTheme}
-              title={isLight ? 'Mudar para Modo Escuro' : 'Mudar para Modo Claro'}
+              title={isLight ? t.nav.darkTheme : t.nav.lightTheme}
               className={`p-2 rounded-xl border transition-all ${
                 isLight
                   ? 'bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-700'
@@ -270,18 +277,18 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
           <div className="lg:col-span-6 space-y-6 text-left">
             <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-500 border border-blue-500/20">
               <Sparkles className="w-3.5 h-3.5 text-blue-500" />
-              <span>Plataforma Corporativa de Arquitetura</span>
+              <span>{t.auth.appSubtitle}</span>
             </div>
 
             <div className="space-y-3">
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight leading-tight">
-                Modele e projete sistemas com precisão{' '}
+                {t.auth.appName}{' '}
                 <span className="bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-400 bg-clip-text text-transparent">
                   MultiCloud
                 </span>
               </h1>
               <p className={`text-xs sm:text-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
-                Acesse suas arquiteturas salvas na nuvem com autenticação segura. Projete diagramas para AWS, Azure, Google Cloud e Oracle Cloud com estimativa de custos e geração de IaC.
+                {t.auth.appDescription}
               </p>
             </div>
 
@@ -294,10 +301,10 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
               >
                 <div className="flex items-center space-x-2.5 text-blue-500 font-bold text-xs">
                   <Layers className="w-4 h-4 shrink-0" />
-                  <span>Diagramas MultiCloud</span>
+                  <span>{t.auth.feature1Title}</span>
                 </div>
                 <p className={`text-[11px] mt-1 leading-snug ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-                  Centenas de ícones oficiais categorizados por provedor com agrupamento inteligente.
+                  {t.auth.feature1Desc}
                 </p>
               </div>
 
@@ -308,10 +315,10 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
               >
                 <div className="flex items-center space-x-2.5 text-amber-500 font-bold text-xs">
                   <DollarSign className="w-4 h-4 shrink-0" />
-                  <span>Calculadora FinOps</span>
+                  <span>{t.auth.feature3Title}</span>
                 </div>
                 <p className={`text-[11px] mt-1 leading-snug ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-                  Estimativa automática de custos mensais em tempo real conforme a topologia desenhada.
+                  {t.auth.feature3Desc}
                 </p>
               </div>
 
@@ -322,10 +329,10 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
               >
                 <div className="flex items-center space-x-2.5 text-indigo-500 font-bold text-xs">
                   <FileCode2 className="w-4 h-4 shrink-0" />
-                  <span>Exportação IaC & Docs</span>
+                  <span>{t.auth.feature2Title}</span>
                 </div>
                 <p className={`text-[11px] mt-1 leading-snug ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-                  Geração instantânea de scripts Terraform (.tf) e propostas técnicas em Word (.docx).
+                  {t.auth.feature2Desc}
                 </p>
               </div>
 
@@ -335,11 +342,11 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
                 }`}
               >
                 <div className="flex items-center space-x-2.5 text-emerald-500 font-bold text-xs">
-                  <Cloud className="w-4 h-4 shrink-0" />
-                  <span>Sincronização Firestore</span>
+                  <ShieldCheck className="w-4 h-4 shrink-0" />
+                  <span>{t.auth.feature4Title}</span>
                 </div>
                 <p className={`text-[11px] mt-1 leading-snug ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-                  Seus diagramas, versões e preferências salvos na sua conta e acessíveis de qualquer lugar.
+                  {t.auth.feature4Desc}
                 </p>
               </div>
             </div>
@@ -359,13 +366,24 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
               <div className="h-1.5 w-full bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-400" />
 
               <div className="p-6 sm:p-8 space-y-5">
+                {/* Language Switcher Row in Card */}
+                <div className={`flex items-center justify-between pb-3 border-b ${
+                  isLight ? 'border-slate-200' : 'border-white/10'
+                }`}>
+                  <div className="flex items-center space-x-1.5 text-xs font-semibold opacity-80">
+                    <Globe className="w-3.5 h-3.5 text-blue-500" />
+                    <span>{t.auth.langSelectorTitle}</span>
+                  </div>
+                  <LanguageSelector variant="pill" theme={theme} />
+                </div>
+
                 {/* Header Titles */}
                 <div>
                   <div className="flex items-center justify-between mb-1">
                     <h2 className="text-xl font-bold tracking-tight">
-                      {mode === 'login' && 'Entrar na sua Conta'}
-                      {mode === 'signup' && 'Criar Nova Conta'}
-                      {mode === 'reset' && 'Redefinir Senha'}
+                      {mode === 'login' && t.auth.welcomeBack}
+                      {mode === 'signup' && t.auth.createYourAccount}
+                      {mode === 'reset' && t.auth.resetPasswordTitle}
                     </h2>
                     {mode === 'reset' && (
                       <button
@@ -374,14 +392,14 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
                         className="text-xs text-blue-500 hover:text-blue-400 flex items-center space-x-1 font-medium"
                       >
                         <ArrowLeft className="w-3.5 h-3.5" />
-                        <span>Voltar</span>
+                        <span>{t.auth.backToLogin}</span>
                       </button>
                     )}
                   </div>
                   <p className={`text-xs ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-                    {mode === 'login' && 'Digite suas credenciais para acessar o estúdio e seus diagramas.'}
-                    {mode === 'signup' && 'Crie sua conta para sincronizar projetos na nuvem Firestore.'}
-                    {mode === 'reset' && 'Informe seu e-mail cadastrado para receber o link de redefinição.'}
+                    {mode === 'login' && t.auth.appDescription}
+                    {mode === 'signup' && t.auth.guestHint}
+                    {mode === 'reset' && t.auth.resetSubtitle}
                   </p>
                 </div>
 
@@ -407,7 +425,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
                             : 'text-slate-400 hover:text-slate-200'
                         }`}
                       >
-                        Entrar
+                        {t.auth.loginTab}
                       </button>
                       <button
                         id="tab-auth-signup"
@@ -423,7 +441,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
                             : 'text-slate-400 hover:text-slate-200'
                         }`}
                       >
-                        Cadastrar-se
+                        {t.auth.signupTab}
                       </button>
                     </div>
 
@@ -535,7 +553,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
                           isLight ? 'text-slate-700' : 'text-slate-300'
                         }`}
                       >
-                        Nome Completo ou Apelido
+                        {t.auth.displayNameLabel}
                       </label>
                       <div className="relative">
                         <UserIcon
@@ -548,7 +566,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
                           type="text"
                           value={displayName}
                           onChange={(e) => setDisplayName(e.target.value)}
-                          placeholder="Ex: Arquiteto Cloud"
+                          placeholder={t.auth.displayNamePlaceholder}
                           className={`w-full pl-9 pr-3.5 py-2.5 rounded-xl text-xs border outline-none transition-all ${
                             isLight
                               ? 'bg-slate-50 border-slate-200 focus:border-blue-500 focus:bg-white'
@@ -565,7 +583,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
                         isLight ? 'text-slate-700' : 'text-slate-300'
                       }`}
                     >
-                      Endereço de E-mail
+                      {t.auth.emailLabel}
                     </label>
                     <div className="relative">
                       <Mail
@@ -579,7 +597,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
                         required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="seu.email@empresa.com"
+                        placeholder={t.auth.emailPlaceholder}
                         className={`w-full pl-9 pr-3.5 py-2.5 rounded-xl text-xs border outline-none transition-all ${
                           isLight
                             ? 'bg-slate-50 border-slate-200 focus:border-blue-500 focus:bg-white'
@@ -597,7 +615,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
                             isLight ? 'text-slate-700' : 'text-slate-300'
                           }`}
                         >
-                          Senha
+                          {t.auth.passwordLabel}
                         </label>
                         {mode === 'login' && (
                           <button
@@ -605,7 +623,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
                             onClick={() => handleModeChange('reset')}
                             className="text-[11px] text-blue-500 hover:text-blue-400 font-medium transition-colors"
                           >
-                            Esqueceu a senha?
+                            {t.auth.forgotPassword}
                           </button>
                         )}
                       </div>
@@ -621,7 +639,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
                           required
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
-                          placeholder={mode === 'signup' ? 'Mínimo de 6 caracteres' : 'Sua senha'}
+                          placeholder={mode === 'signup' ? t.auth.passMinError : t.auth.passwordPlaceholder}
                           className={`w-full pl-9 pr-10 py-2.5 rounded-xl text-xs border outline-none transition-all ${
                             isLight
                               ? 'bg-slate-50 border-slate-200 focus:border-blue-500 focus:bg-white'
@@ -648,7 +666,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
                           isLight ? 'text-slate-700' : 'text-slate-300'
                         }`}
                       >
-                        Confirmar Senha
+                        {t.auth.confirmPasswordLabel}
                       </label>
                       <div className="relative">
                         <Lock
@@ -662,7 +680,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
                           required
                           value={confirmPassword}
                           onChange={(e) => setConfirmPassword(e.target.value)}
-                          placeholder="Repita a mesma senha"
+                          placeholder={t.auth.confirmPasswordPlaceholder}
                           className={`w-full pl-9 pr-3.5 py-2.5 rounded-xl text-xs border outline-none transition-all ${
                             isLight
                               ? 'bg-slate-50 border-slate-200 focus:border-blue-500 focus:bg-white'
@@ -685,9 +703,9 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
                     ) : (
                       <>
                         <span>
-                          {mode === 'login' && 'Entrar no Studio'}
-                          {mode === 'signup' && 'Criar Conta e Acessar'}
-                          {mode === 'reset' && 'Enviar Link de Redefinição'}
+                          {mode === 'login' && t.auth.enterBtn}
+                          {mode === 'signup' && t.auth.createBtn}
+                          {mode === 'reset' && t.auth.sendResetBtn}
                         </span>
                         <ArrowRight className="w-4 h-4" />
                       </>
@@ -700,7 +718,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
                       <div className="flex items-center my-3">
                         <div className={`flex-1 border-t ${isLight ? 'border-slate-200' : 'border-white/10'}`} />
                         <span className={`px-3 text-[11px] uppercase tracking-wider font-semibold ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-                          Ou continue com
+                          {t.auth.orDivider}
                         </span>
                         <div className={`flex-1 border-t ${isLight ? 'border-slate-200' : 'border-white/10'}`} />
                       </div>
@@ -734,7 +752,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
                             d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
                           />
                         </svg>
-                        <span>Continuar com o Google</span>
+                        <span>{t.auth.continueWithGoogle}</span>
                       </button>
                     </>
                   )}
@@ -753,7 +771,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
                           : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
                       }`}
                     >
-                      Acessar como Convidado (Modo Offline / Sem Nuvem) →
+                      {t.auth.continueAsGuest} →
                     </button>
                   </div>
                 )}

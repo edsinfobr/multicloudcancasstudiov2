@@ -35,6 +35,7 @@ service cloud.firestore {
              data.email.size() <= 150 &&
              (!('displayName' in data) || (data.displayName is string && data.displayName.size() <= 100)) &&
              (!('theme' in data) || (data.theme in ['dark', 'light'])) &&
+             (!('language' in data) || (data.language in ['pt', 'en', 'es'])) &&
              (!('defaultCloud' in data) || (data.defaultCloud in ['aws', 'azure', 'gcp', 'oci', 'all'])) &&
              (!('autoSave' in data) || (data.autoSave is bool)) &&
              (!('leftSidebarCollapsed' in data) || (data.leftSidebarCollapsed is bool)) &&

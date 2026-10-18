@@ -21,9 +21,12 @@ import {
   SlidersHorizontal,
   RotateCcw,
   Layers,
-  ArrowRight
+  ArrowRight,
+  Globe,
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../i18n/LanguageContext';
+import { AppLanguage } from '../i18n/translations';
 import { DiagramState, DefaultStampPreferences } from '../types';
 
 interface ProfilePreferencesModalProps {
@@ -60,14 +63,16 @@ export const ProfilePreferencesModal: React.FC<ProfilePreferencesModalProps> = (
   showToast
 }) => {
   const { currentUser, userPreferences, updatePreferences } = useAuth();
+  const { language, setLanguage, t, supportedLanguages } = useLanguage();
   const effectiveTheme: 'dark' | 'light' = currentTheme || theme || 'light';
   const isLight = effectiveTheme === 'light';
 
-  // Active section tab
-  const [activeTab, setActiveTab] = useState<'theme' | 'sidebars' | 'stamp'>('stamp');
+  // Active section tab: stamp | language | theme | sidebars
+  const [activeTab, setActiveTab] = useState<'stamp' | 'language' | 'theme' | 'sidebars'>('stamp');
 
   // Form states initialized from userPreferences or sensible defaults
   const [prefTheme, setPrefTheme] = useState<'dark' | 'light'>(effectiveTheme);
+  const [prefLanguage, setPrefLanguage] = useState<AppLanguage>(language);
   const [prefLeftCollapsed, setPrefLeftCollapsed] = useState(leftSidebarCollapsed);
   const [prefRightCollapsed, setPrefRightCollapsed] = useState(rightSidebarCollapsed);
   
@@ -84,6 +89,7 @@ export const ProfilePreferencesModal: React.FC<ProfilePreferencesModalProps> = (
   useEffect(() => {
     if (isOpen) {
       setPrefTheme(userPreferences?.theme || effectiveTheme);
+      setPrefLanguage((userPreferences?.language as AppLanguage) || language || 'pt');
       setPrefLeftCollapsed(userPreferences?.leftSidebarCollapsed ?? leftSidebarCollapsed ?? false);
       setPrefRightCollapsed(userPreferences?.rightSidebarCollapsed ?? rightSidebarCollapsed ?? false);
 
@@ -100,7 +106,7 @@ export const ProfilePreferencesModal: React.FC<ProfilePreferencesModalProps> = (
       setStampShowOnCanvas(existingStamp?.showOnCanvas ?? true);
       setSaveSuccess(false);
     }
-  }, [isOpen, userPreferences, effectiveTheme, leftSidebarCollapsed, rightSidebarCollapsed, currentUser]);
+  }, [isOpen, userPreferences, effectiveTheme, leftSidebarCollapsed, rightSidebarCollapsed, currentUser, language]);
 
   if (!isOpen) return null;
 
@@ -120,12 +126,16 @@ export const ProfilePreferencesModal: React.FC<ProfilePreferencesModalProps> = (
       // 1. Update Profile in LocalStorage and in Firestore (if logged in)
       await updatePreferences({
         theme: prefTheme,
+        language: prefLanguage,
         leftSidebarCollapsed: prefLeftCollapsed,
         rightSidebarCollapsed: prefRightCollapsed,
         defaultStamp: updatedStamp
       });
 
-      // 2. Safely apply theme & sidebar states to current live session
+      // 2. Apply language changes to global i18n
+      await setLanguage(prefLanguage);
+
+      // 3. Safely apply theme & sidebar states to current live session
       if (typeof onSetTheme === 'function') {
         onSetTheme(prefTheme);
       } else if (typeof onThemeChange === 'function') {
@@ -222,18 +232,18 @@ export const ProfilePreferencesModal: React.FC<ProfilePreferencesModalProps> = (
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <h2 className="text-base font-bold tracking-tight">Preferências do Perfil</h2>
+                <h2 className="text-base font-bold tracking-tight">{t.preferences.modalTitle}</h2>
                 <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border flex items-center space-x-1 ${
                   currentUser
                     ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-500'
                     : 'bg-amber-500/15 border-amber-500/30 text-amber-500'
                 }`}>
                   <Cloud className="w-2.5 h-2.5" />
-                  <span>{currentUser ? 'Perfil Conectado' : 'Modo Convidado'}</span>
+                  <span>{currentUser ? t.preferences.connectedBadge : t.preferences.guestBadge}</span>
                 </span>
               </div>
               <p className={`text-xs ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-                {currentUser ? `${currentUser.email} • Salvo na nuvem MultiCloud Canvas` : 'Faça login para sincronizar suas preferências em qualquer dispositivo'}
+                {currentUser ? `${currentUser.email} • ${t.preferences.subtitleConnected}` : t.preferences.subtitleGuest}
               </p>
             </div>
           </div>
@@ -249,13 +259,13 @@ export const ProfilePreferencesModal: React.FC<ProfilePreferencesModalProps> = (
         </div>
 
         {/* Tab Navigation */}
-        <div className={`px-5 pt-3 border-b flex space-x-2 ${
+        <div className={`px-5 pt-3 border-b flex space-x-2 overflow-x-auto ${
           isLight ? 'border-slate-200 bg-slate-50/50' : 'border-white/5 bg-[#0e1017]/50'
         }`}>
           <button
             id="tab-btn-pref-stamp"
             onClick={() => setActiveTab('stamp')}
-            className={`flex items-center space-x-2 px-3.5 py-2 text-xs font-bold border-b-2 transition-all ${
+            className={`flex items-center space-x-2 px-3 py-2 text-xs font-bold border-b-2 whitespace-nowrap transition-all ${
               activeTab === 'stamp'
                 ? 'border-blue-500 text-blue-500'
                 : isLight
@@ -264,13 +274,28 @@ export const ProfilePreferencesModal: React.FC<ProfilePreferencesModalProps> = (
             }`}
           >
             <FileSignature className="w-4 h-4" />
-            <span>Carimbo do Diagrama Padrão</span>
+            <span>{t.preferences.tabStamp}</span>
+          </button>
+
+          <button
+            id="tab-btn-pref-language"
+            onClick={() => setActiveTab('language')}
+            className={`flex items-center space-x-2 px-3 py-2 text-xs font-bold border-b-2 whitespace-nowrap transition-all ${
+              activeTab === 'language'
+                ? 'border-blue-500 text-blue-500'
+                : isLight
+                ? 'border-transparent text-slate-500 hover:text-slate-900'
+                : 'border-transparent text-slate-400 hover:text-white'
+            }`}
+          >
+            <Globe className="w-4 h-4 text-blue-500" />
+            <span>{t.nav.language}</span>
           </button>
 
           <button
             id="tab-btn-pref-theme"
             onClick={() => setActiveTab('theme')}
-            className={`flex items-center space-x-2 px-3.5 py-2 text-xs font-bold border-b-2 transition-all ${
+            className={`flex items-center space-x-2 px-3 py-2 text-xs font-bold border-b-2 whitespace-nowrap transition-all ${
               activeTab === 'theme'
                 ? 'border-blue-500 text-blue-500'
                 : isLight
@@ -279,13 +304,13 @@ export const ProfilePreferencesModal: React.FC<ProfilePreferencesModalProps> = (
             }`}
           >
             {prefTheme === 'dark' ? <Moon className="w-4 h-4 text-indigo-400" /> : <Sun className="w-4 h-4 text-amber-500" />}
-            <span>Tema (Claro / Escuro)</span>
+            <span>{t.nav.toggleTheme}</span>
           </button>
 
           <button
             id="tab-btn-pref-sidebars"
             onClick={() => setActiveTab('sidebars')}
-            className={`flex items-center space-x-2 px-3.5 py-2 text-xs font-bold border-b-2 transition-all ${
+            className={`flex items-center space-x-2 px-3 py-2 text-xs font-bold border-b-2 whitespace-nowrap transition-all ${
               activeTab === 'sidebars'
                 ? 'border-blue-500 text-blue-500'
                 : isLight
@@ -294,7 +319,7 @@ export const ProfilePreferencesModal: React.FC<ProfilePreferencesModalProps> = (
             }`}
           >
             <Layers className="w-4 h-4" />
-            <span>Menus Laterais</span>
+            <span>{t.preferences.tabSidebars}</span>
           </button>
         </div>
 
@@ -497,7 +522,84 @@ export const ProfilePreferencesModal: React.FC<ProfilePreferencesModalProps> = (
             </div>
           )}
 
-          {/* TAB 2: TEMA CLARO OU ESCURO */}
+          {/* TAB: IDIOMA DA INTERFACE */}
+          {activeTab === 'language' && (
+            <div className="space-y-4 animate-fade-in">
+              <div className={`p-3.5 rounded-xl border flex items-start space-x-3 ${
+                isLight ? 'bg-blue-50/70 border-blue-200 text-blue-900' : 'bg-blue-500/10 border-blue-500/20 text-blue-200'
+              }`}>
+                <Globe className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
+                <div className="text-xs leading-relaxed">
+                  <p className="font-bold">{t.preferences.langHeader}</p>
+                  <p className="opacity-90 mt-0.5">
+                    {t.preferences.langDesc}
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                {supportedLanguages.map((langItem) => {
+                  const isSelected = prefLanguage === langItem.code;
+                  return (
+                    <button
+                      key={langItem.code}
+                      id={`pref-lang-card-${langItem.code}`}
+                      type="button"
+                      onClick={() => {
+                        setPrefLanguage(langItem.code);
+                        setLanguage(langItem.code);
+                      }}
+                      className={`p-4 rounded-xl border-2 text-left flex flex-col justify-between transition-all ${
+                        isSelected
+                          ? 'border-blue-500 bg-blue-500/10 shadow-lg shadow-blue-500/10 ring-1 ring-blue-500/30'
+                          : isLight
+                          ? 'border-slate-200 bg-slate-50 hover:border-slate-300 hover:bg-white'
+                          : 'border-white/10 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.05]'
+                      }`}
+                    >
+                      <div>
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-3xl">{langItem.flag}</span>
+                          {isSelected && (
+                            <span className="w-5 h-5 rounded-full bg-blue-500 text-white flex items-center justify-center text-xs font-bold shadow-sm">
+                              <Check className="w-3 h-3 stroke-[3]" />
+                            </span>
+                          )}
+                        </div>
+                        <h4 className={`text-sm font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>
+                          {langItem.nativeName}
+                        </h4>
+                        <p className={`text-[11px] font-semibold mt-0.5 ${isSelected ? 'text-blue-500' : isLight ? 'text-slate-500' : 'text-slate-400'}`}>
+                          {langItem.code === 'pt' ? 'Português (Brasil)' : langItem.code === 'en' ? 'English (Global)' : 'Español (Latinoamérica / ES)'}
+                        </p>
+                      </div>
+                      <div className={`mt-3 pt-2 border-t text-[10px] uppercase tracking-wider font-bold ${
+                        isSelected ? 'border-blue-500/30 text-blue-500' : 'border-inherit opacity-60'
+                      }`}>
+                        {isSelected ? '✓ ' + (langItem.code === 'pt' ? 'Idioma Ativo' : langItem.code === 'en' ? 'Active Language' : 'Idioma Activo') : (langItem.code === 'pt' ? 'Selecionar Idioma' : langItem.code === 'en' ? 'Select Language' : 'Seleccionar Idioma')}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Information notification */}
+              <div className={`p-3 rounded-xl border text-[11px] flex items-center space-x-2 ${
+                isLight ? 'bg-slate-100 border-slate-200 text-slate-600' : 'bg-white/5 border-white/10 text-slate-400'
+              }`}>
+                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                <span>
+                  {prefLanguage === 'pt'
+                    ? 'O estúdio, menus de exportação, auditoria FinOps e catálogo estão em Português.'
+                    : prefLanguage === 'en'
+                    ? 'The studio, export menus, FinOps calculator, and resource catalog are set to English.'
+                    : 'El estudio, menús de exportación, auditoría FinOps y catálogo están configurados en Español.'}
+                </span>
+              </div>
+            </div>
+          )}
+
+          {/* TAB: TEMA CLARO OU ESCURO */}
           {activeTab === 'theme' && (
             <div className="space-y-4 animate-fade-in">
               <div className={`p-3.5 rounded-xl border flex items-start space-x-3 ${
@@ -724,11 +826,11 @@ export const ProfilePreferencesModal: React.FC<ProfilePreferencesModalProps> = (
             {saveSuccess ? (
               <span className="flex items-center space-x-1.5 text-xs text-emerald-500 font-semibold animate-pulse">
                 <CheckCircle2 className="w-4 h-4" />
-                <span>Salvo e sincronizado no Firestore!</span>
+                <span>{currentUser ? t.preferences.successSavedCloud : t.preferences.successSavedLocal}</span>
               </span>
             ) : (
               <span className="text-[11px] text-slate-500">
-                Alterações salvas ficam vinculadas à sua conta de usuário.
+                {currentUser ? t.preferences.subtitleConnected : t.preferences.subtitleGuest}
               </span>
             )}
           </div>
@@ -741,7 +843,7 @@ export const ProfilePreferencesModal: React.FC<ProfilePreferencesModalProps> = (
                 isLight ? 'text-slate-600 hover:bg-slate-200' : 'text-slate-300 hover:bg-white/10'
               }`}
             >
-              Cancelar
+              {t.common.cancel}
             </button>
 
             <button
@@ -752,7 +854,7 @@ export const ProfilePreferencesModal: React.FC<ProfilePreferencesModalProps> = (
               className="flex items-center space-x-2 px-5 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-bold shadow-lg shadow-blue-600/30 transition-all active:scale-95 disabled:opacity-50"
             >
               <Save className="w-4 h-4" />
-              <span>{isSaving ? 'Salvando na Nuvem...' : 'Salvar Preferências'}</span>
+              <span>{isSaving ? t.preferences.savingBtn : t.preferences.saveBtn}</span>
             </button>
           </div>
         </div>

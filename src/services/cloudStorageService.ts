@@ -17,6 +17,7 @@ export interface UserPreferences {
   email: string;
   displayName?: string;
   theme?: 'dark' | 'light';
+  language?: 'pt' | 'en' | 'es';
   defaultCloud?: 'aws' | 'azure' | 'gcp' | 'oci' | 'all';
   autoSave?: boolean;
   leftSidebarCollapsed?: boolean;
@@ -77,6 +78,7 @@ export async function saveUserPreferences(
       email: safeEmail,
       displayName: safeDisplayName,
       theme: prefs.theme ?? existingData?.theme ?? 'light',
+      language: prefs.language ?? existingData?.language ?? 'pt',
       defaultCloud: prefs.defaultCloud ?? existingData?.defaultCloud ?? 'all',
       autoSave: prefs.autoSave ?? existingData?.autoSave ?? true,
       leftSidebarCollapsed: prefs.leftSidebarCollapsed ?? existingData?.leftSidebarCollapsed ?? false,

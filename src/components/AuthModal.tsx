@@ -14,8 +14,11 @@ import {
   Sparkles,
   ExternalLink,
   HelpCircle,
+  Globe,
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../i18n/LanguageContext';
+import { LanguageSelector } from './LanguageSelector';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -31,6 +34,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   initialMode = 'login',
 }) => {
   const isLight = theme === 'light';
+  const { t } = useLanguage();
   const {
     signInWithEmail,
     signUpWithEmail,
@@ -65,7 +69,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     clearAuthError();
 
     if (!email.trim()) {
-      setLocalMessage({ type: 'error', text: 'Por favor, informe seu endereço de e-mail.' });
+      setLocalMessage({ type: 'error', text: t.auth.fillEmailError });
       return;
     }
 
@@ -75,10 +79,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         await sendPasswordReset(email.trim());
         setLocalMessage({
           type: 'success',
-          text: 'E-mail de recuperação enviado com sucesso! Verifique sua caixa de entrada e spam.',
+          text: t.auth.resetSuccess,
         });
       } catch (err: any) {
-        setLocalMessage({ type: 'error', text: err.message || 'Falha ao enviar recuperação.' });
+        setLocalMessage({ type: 'error', text: err.message || t.auth.authError });
       } finally {
         setSubmitting(false);
       }
@@ -86,17 +90,17 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     }
 
     if (!password) {
-      setLocalMessage({ type: 'error', text: 'Por favor, insira sua senha.' });
+      setLocalMessage({ type: 'error', text: t.auth.fillPassError });
       return;
     }
 
     if (mode === 'signup') {
       if (password.length < 6) {
-        setLocalMessage({ type: 'error', text: 'A senha deve ter no mínimo 6 caracteres.' });
+        setLocalMessage({ type: 'error', text: t.auth.passMinError });
         return;
       }
       if (password !== confirmPassword) {
-        setLocalMessage({ type: 'error', text: 'As senhas digitadas não coincidem.' });
+        setLocalMessage({ type: 'error', text: t.auth.passMismatchError });
         return;
       }
     }
@@ -110,14 +114,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         await signUpWithEmail(email.trim(), password, displayName.trim());
         setLocalMessage({
           type: 'success',
-          text: 'Conta criada com sucesso! Suas arquiteturas serão salvas na nuvem.',
+          text: t.auth.accountCreatedSuccess,
         });
         setTimeout(() => {
           onClose();
         }, 1200);
       }
     } catch (err: any) {
-      setLocalMessage({ type: 'error', text: err.message || 'Erro ao autenticar.' });
+      setLocalMessage({ type: 'error', text: err.message || t.auth.authError });
     } finally {
       setSubmitting(false);
     }
@@ -131,7 +135,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       await signInWithGoogle();
       onClose();
     } catch (err: any) {
-      setLocalMessage({ type: 'error', text: err.message || 'Erro no login com Google.' });
+      setLocalMessage({ type: 'error', text: err.message || t.auth.authError });
     } finally {
       setSubmitting(false);
     }
@@ -156,41 +160,48 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         <div className="h-1.5 w-full bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-400" />
 
         {/* Header */}
-        <div className="relative px-6 pt-6 pb-4">
-          <button
-            onClick={onClose}
-            className={`absolute right-4 top-4 p-2 rounded-lg transition-colors ${
-              isLight
-                ? 'text-slate-400 hover:text-slate-700 hover:bg-slate-100'
-                : 'text-slate-400 hover:text-slate-100 hover:bg-white/5'
-            }`}
-          >
-            <X className="w-5 h-5" />
-          </button>
+        <div className="relative px-6 pt-5 pb-3">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center space-x-1.5 text-xs font-semibold opacity-75">
+              <Globe className="w-3.5 h-3.5 text-blue-500" />
+              <span>{t.auth.langSelectorTitle}</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <LanguageSelector variant="pill" theme={theme} />
+              <button
+                onClick={onClose}
+                className={`p-1.5 rounded-lg transition-colors ${
+                  isLight
+                    ? 'text-slate-400 hover:text-slate-700 hover:bg-slate-100'
+                    : 'text-slate-400 hover:text-slate-100 hover:bg-white/5'
+                }`}
+                title="Fechar"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
 
-          <div className="flex items-center space-x-3 mb-2">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
+          <div className="flex items-center space-x-3 mb-1.5">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
               <Cloud className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-lg font-bold tracking-tight">
-                {mode === 'login' && 'Entrar na sua Conta'}
-                {mode === 'signup' && 'Criar Nova Conta'}
-                {mode === 'reset' && 'Redefinir Senha'}
+              <h2 className="text-base font-bold tracking-tight">
+                {mode === 'login' && t.auth.welcomeBack}
+                {mode === 'signup' && t.auth.createYourAccount}
+                {mode === 'reset' && t.auth.resetPasswordTitle}
               </h2>
-              <p className={`text-xs ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-                MultiCloud Canvas Studio
+              <p className={`text-[11px] ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
+                {t.auth.appName}
               </p>
             </div>
           </div>
 
           <p className={`text-xs mt-1 leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-            {mode === 'login' &&
-              'Acesse suas arquiteturas, preferências e metadados salvos na nuvem.'}
-            {mode === 'signup' &&
-              'Cadastre-se com e-mail e senha para salvar e sincronizar seus projetos e preferências para acessos futuros.'}
-            {mode === 'reset' &&
-              'Digite seu e-mail para receber as instruções de redefinição de senha.'}
+            {mode === 'login' && t.auth.appDescription}
+            {mode === 'signup' && t.auth.guestHint}
+            {mode === 'reset' && t.auth.resetSubtitle}
           </p>
         </div>
 
@@ -208,14 +219,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 className={`py-2 rounded-lg transition-all ${
                   mode === 'login'
                     ? isLight
-                      ? 'bg-white text-blue-600 shadow-sm'
-                      : 'bg-blue-600 text-white shadow-sm'
+                      ? 'bg-white text-blue-600 shadow-sm font-bold'
+                      : 'bg-blue-600 text-white shadow-sm font-bold'
                     : isLight
                     ? 'text-slate-600 hover:text-slate-900'
                     : 'text-slate-400 hover:text-slate-200'
                 }`}
               >
-                Entrar
+                {t.auth.loginTab}
               </button>
               <button
                 type="button"
@@ -223,14 +234,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 className={`py-2 rounded-lg transition-all ${
                   mode === 'signup'
                     ? isLight
-                      ? 'bg-white text-blue-600 shadow-sm'
-                      : 'bg-blue-600 text-white shadow-sm'
+                      ? 'bg-white text-blue-600 shadow-sm font-bold'
+                      : 'bg-blue-600 text-white shadow-sm font-bold'
                     : isLight
                     ? 'text-slate-600 hover:text-slate-900'
                     : 'text-slate-400 hover:text-slate-200'
                 }`}
               >
-                Cadastrar-se
+                {t.auth.signupTab}
               </button>
             </div>
           </div>
@@ -308,7 +319,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   isLight ? 'text-slate-700' : 'text-slate-300'
                 }`}
               >
-                Nome Completo ou Apelido
+                {t.auth.displayNameLabel}
               </label>
               <div className="relative">
                 <UserIcon
@@ -321,7 +332,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   type="text"
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
-                  placeholder="Ex: Arquiteto Cloud"
+                  placeholder={t.auth.displayNamePlaceholder}
                   className={`w-full pl-9 pr-3.5 py-2 rounded-xl text-xs border outline-none transition-all ${
                     isLight
                       ? 'bg-slate-50 border-slate-200 focus:border-blue-500 focus:bg-white'
@@ -338,7 +349,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 isLight ? 'text-slate-700' : 'text-slate-300'
               }`}
             >
-              Endereço de E-mail
+              {t.auth.emailLabel}
             </label>
             <div className="relative">
               <Mail
@@ -352,7 +363,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="seu.email@exemplo.com"
+                placeholder={t.auth.emailPlaceholder}
                 className={`w-full pl-9 pr-3.5 py-2 rounded-xl text-xs border outline-none transition-all ${
                   isLight
                     ? 'bg-slate-50 border-slate-200 focus:border-blue-500 focus:bg-white'
@@ -370,7 +381,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     isLight ? 'text-slate-700' : 'text-slate-300'
                   }`}
                 >
-                  Senha
+                  {t.auth.passwordLabel}
                 </label>
                 {mode === 'login' && (
                   <button
@@ -378,7 +389,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     onClick={() => handleModeChange('reset')}
                     className="text-[11px] text-blue-500 hover:text-blue-400 font-medium transition-colors"
                   >
-                    Esqueceu a senha?
+                    {t.auth.forgotPassword}
                   </button>
                 )}
               </div>
@@ -394,7 +405,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder={mode === 'signup' ? 'Mínimo de 6 caracteres' : 'Sua senha'}
+                  placeholder={mode === 'signup' ? t.auth.passMinError : t.auth.passwordPlaceholder}
                   className={`w-full pl-9 pr-10 py-2 rounded-xl text-xs border outline-none transition-all ${
                     isLight
                       ? 'bg-slate-50 border-slate-200 focus:border-blue-500 focus:bg-white'
@@ -421,7 +432,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   isLight ? 'text-slate-700' : 'text-slate-300'
                 }`}
               >
-                Confirmar Senha
+                {t.auth.confirmPasswordLabel}
               </label>
               <div className="relative">
                 <Lock
@@ -435,7 +446,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   required
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Repita a senha"
+                  placeholder={t.auth.confirmPasswordPlaceholder}
                   className={`w-full pl-9 pr-3.5 py-2 rounded-xl text-xs border outline-none transition-all ${
                     isLight
                       ? 'bg-slate-50 border-slate-200 focus:border-blue-500 focus:bg-white'
@@ -458,9 +469,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             ) : (
               <>
                 <span>
-                  {mode === 'login' && 'Entrar na Conta'}
-                  {mode === 'signup' && 'Criar Conta e Sincronizar'}
-                  {mode === 'reset' && 'Enviar Link de Redefinição'}
+                  {mode === 'login' && t.auth.enterBtn}
+                  {mode === 'signup' && t.auth.createBtn}
+                  {mode === 'reset' && t.auth.sendResetBtn}
                 </span>
                 <ArrowRight className="w-4 h-4" />
               </>
@@ -473,7 +484,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               onClick={() => handleModeChange('login')}
               className="w-full text-center text-xs text-blue-500 hover:underline pt-1"
             >
-              Voltar ao login
+              {t.auth.backToLogin}
             </button>
           )}
 
@@ -483,7 +494,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               <div className="flex items-center my-3">
                 <div className={`flex-1 border-t ${isLight ? 'border-slate-200' : 'border-white/10'}`} />
                 <span className={`px-3 text-[11px] uppercase tracking-wider font-semibold ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
-                  Ou acesse com
+                  {t.auth.orDivider}
                 </span>
                 <div className={`flex-1 border-t ${isLight ? 'border-slate-200' : 'border-white/10'}`} />
               </div>
@@ -518,7 +529,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
                   />
                 </svg>
-                <span>Entrar com conta Google</span>
+                <span>{t.auth.continueWithGoogle}</span>
               </button>
             </>
           )}
