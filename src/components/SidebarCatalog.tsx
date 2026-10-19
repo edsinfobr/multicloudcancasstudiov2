@@ -493,26 +493,26 @@ export const SidebarCatalog: React.FC<SidebarCatalogProps> = ({
       <aside
         id="sidebar-catalog-collapsed"
         className={`w-12 border-r flex flex-col items-center py-4 select-none transition-all duration-200 z-20 ${
-          isLight ? 'bg-slate-50 border-slate-200 text-slate-800' : 'bg-[#12141A] border-white/10 text-slate-300'
+          isLight ? 'bg-[#F8FCFD] border-[#ADE8F4] text-[#03045E]' : 'bg-[#020B24] border-[#023E8A]/40 text-slate-300'
         }`}
       >
         <button
           onClick={() => setIsCollapsed(false)}
           className={`p-2 rounded-xl transition-all shadow-md border ${
             isLight
-              ? 'bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-300'
-              : 'bg-blue-600/20 hover:bg-blue-600/40 text-blue-400 border-blue-500/30'
+              ? 'bg-[#ADE8F4]/30 hover:bg-[#ADE8F4]/60 text-[#023E8A] border-[#ADE8F4]'
+              : 'bg-[#023E8A]/30 hover:bg-[#023E8A]/50 text-[#48CAE4] border-[#0077B6]/30'
           }`}
           title="Expandir Canvas Tools & Catálogo (clique para abrir para a direita)"
         >
-          <ChevronRight className="w-5 h-5 text-blue-500" />
+          <ChevronRight className="w-5 h-5 text-[#0077B6] dark:text-[#48CAE4]" />
         </button>
 
         <div className="flex-1 flex flex-col items-center justify-center space-y-6">
-          <Box className={`w-4 h-4 ${isLight ? 'text-slate-600' : 'text-slate-400'}`} />
+          <Box className={`w-4 h-4 ${isLight ? 'text-[#023E8A]' : 'text-[#48CAE4]'}`} />
           <span
             className={`text-[10px] font-bold uppercase tracking-widest whitespace-nowrap ${
-              isLight ? 'text-slate-800' : 'text-slate-400'
+              isLight ? 'text-[#03045E]' : 'text-[#ADE8F4]'
             }`}
             style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}
           >
@@ -525,11 +525,11 @@ export const SidebarCatalog: React.FC<SidebarCatalogProps> = ({
 
   return (
     <aside id="sidebar-catalog" className={`w-80 border-r flex flex-col h-full z-20 shadow-xl select-none transition-colors ${
-      isLight ? 'bg-slate-50 border-slate-200 text-slate-900' : 'bg-[#12141A] border-white/10 text-slate-300'
+      isLight ? 'bg-[#F8FCFD] border-[#ADE8F4] text-[#03045E]' : 'bg-[#020B24] border-[#023E8A]/40 text-slate-100'
     }`}>
       {/* Quick Action Tools: Containers & Connector */}
       <div className={`p-3 border-b space-y-2 ${
-        isLight ? 'border-slate-200 bg-slate-100/70' : 'border-white/10 bg-black/20'
+        isLight ? 'border-[#ADE8F4]/80 bg-[#ADE8F4]/15' : 'border-[#023E8A]/30 bg-[#03045E]/30'
       }`}>
         <div className="flex items-center justify-between px-1">
           <span className={`text-[10px] font-bold uppercase tracking-wider block ${

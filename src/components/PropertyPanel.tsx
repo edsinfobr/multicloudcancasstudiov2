@@ -133,9 +133,9 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
 
     return (
       <aside className={`w-80 border-l p-4 text-xs flex flex-col h-full overflow-y-auto select-none space-y-4 transition-colors ${
-        isLight ? 'bg-white border-slate-200 text-slate-900' : 'bg-[#12141A] border-white/10 text-slate-300'
+        isLight ? 'bg-[#F8FCFD] border-[#ADE8F4] text-[#03045E]' : 'bg-[#020B24] border-[#023E8A]/40 text-slate-100'
       }`}>
-        <div className={`flex items-center justify-between pb-3 border-b ${isLight ? 'border-slate-200' : 'border-white/10'}`}>
+        <div className={`flex items-center justify-between pb-3 border-b ${isLight ? 'border-[#ADE8F4]/80' : 'border-[#023E8A]/30'}`}>
           <div className="flex items-center space-x-2">
             <div className={`p-2 rounded-lg border ${
               isLight ? 'bg-blue-50 text-blue-700 border-blue-300' : 'bg-blue-600/20 text-blue-400 border-blue-500/30'
@@ -383,11 +383,11 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
 
   return (
     <aside id="property-inspector-panel" className={`w-80 border-l flex flex-col h-full z-20 shadow-xl select-none transition-colors ${
-      isLight ? 'bg-white border-slate-200 text-slate-900' : 'bg-[#12141A] border-white/10 text-slate-200'
+      isLight ? 'bg-[#F8FCFD] border-[#ADE8F4] text-[#03045E]' : 'bg-[#020B24] border-[#023E8A]/40 text-slate-100'
     }`}>
       {/* Inspector Header */}
       <div className={`p-3.5 border-b flex items-center justify-between ${
-        isLight ? 'border-slate-200 bg-slate-100/80' : 'border-white/10 bg-black/20'
+        isLight ? 'border-[#ADE8F4]/80 bg-[#ADE8F4]/15' : 'border-[#023E8A]/30 bg-[#03045E]/30'
       }`}>
         <div className="flex items-center space-x-2">
           <Sliders className="w-4 h-4 text-blue-600" />

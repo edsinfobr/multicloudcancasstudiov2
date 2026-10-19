@@ -28,8 +28,8 @@ export const VersionTabsBar: React.FC<VersionTabsBarProps> = ({
       id="version-tabs-bar"
       className={`border-t px-3 py-1 flex items-center justify-between gap-3 text-xs select-none shrink-0 z-20 overflow-x-auto transition-colors ${
         theme === 'dark'
-          ? 'bg-[#0f1118] border-white/10 text-slate-300'
-          : 'bg-white border-slate-200 text-slate-700 shadow-inner'
+          ? 'bg-[#020B24] border-[#023E8A]/40 text-slate-300'
+          : 'bg-[#F8FCFD] border-[#ADE8F4] text-[#03045E] shadow-inner'
       }`}
     >
       {/* Left: Tab list containing all version tabs */}
@@ -39,15 +39,15 @@ export const VersionTabsBar: React.FC<VersionTabsBarProps> = ({
             id="btn-open-changelog-from-tabs"
             type="button"
             onClick={onOpenChangelog}
-            className="flex items-center space-x-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 hover:text-indigo-400 transition-colors mr-1 shrink-0 group"
+            className="flex items-center space-x-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 hover:text-[#48CAE4] transition-colors mr-1 shrink-0 group"
             title="Abrir Registro de Mudanças das Versões (CHANGELOG.md)"
           >
-            <GitBranch className="w-3.5 h-3.5 text-indigo-400 group-hover:rotate-12 transition-transform" />
+            <GitBranch className="w-3.5 h-3.5 text-[#0096C7] group-hover:rotate-12 transition-transform" />
             <span className="hidden sm:inline">Versões:</span>
           </button>
         ) : (
           <div className="flex items-center space-x-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 mr-1 shrink-0">
-            <GitBranch className="w-3.5 h-3.5 text-indigo-400" />
+            <GitBranch className="w-3.5 h-3.5 text-[#0096C7]" />
             <span className="hidden sm:inline">Versões:</span>
           </div>
         )}
@@ -64,11 +64,11 @@ export const VersionTabsBar: React.FC<VersionTabsBarProps> = ({
               className={`group relative flex items-center space-x-2 px-3 py-1 rounded-lg border text-xs font-semibold cursor-pointer transition-all shrink-0 ${
                 isActive
                   ? theme === 'light'
-                    ? 'bg-blue-50 border-blue-400 text-blue-950 shadow-sm ring-1 ring-blue-400/30 font-bold'
-                    : 'bg-blue-600/25 border-blue-500/60 text-blue-100 shadow-md ring-1 ring-blue-500/40 font-bold'
+                    ? 'bg-[#ADE8F4]/35 border-[#0096C7] text-[#03045E] shadow-sm ring-1 ring-[#0077B6]/30 font-bold'
+                    : 'bg-[#023E8A]/40 border-[#0077B6] text-white shadow-md ring-1 ring-[#48CAE4]/40 font-bold'
                   : theme === 'light'
-                    ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-700'
-                    : 'bg-white/5 hover:bg-white/10 border-white/10 text-slate-400'
+                    ? 'bg-white hover:bg-[#ADE8F4]/20 border-[#ADE8F4] text-[#023E8A]'
+                    : 'bg-[#03045E]/40 hover:bg-[#023E8A]/30 border-[#023E8A]/40 text-slate-400'
               }`}
             >
               {/* Active Pulsing Indicator */}

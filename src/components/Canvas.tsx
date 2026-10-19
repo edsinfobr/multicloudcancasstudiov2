@@ -1799,8 +1799,8 @@ export const Canvas: React.FC<CanvasProps> = ({
           id="canvas-zoom-toolbar"
           className={`absolute bottom-5 left-1/2 -translate-x-1/2 z-30 border backdrop-blur-md px-2.5 py-1.5 rounded-xl shadow-2xl flex items-center flex-nowrap space-x-2 text-xs max-w-[calc(100%-2rem)] overflow-x-auto sm:overflow-visible transition-all ${
             isLight
-              ? 'bg-white/95 border-slate-300 text-slate-800'
-              : 'bg-[#12141A]/90 border-white/15 text-slate-200'
+              ? 'bg-white/95 border-[#ADE8F4] text-[#03045E]'
+              : 'bg-[#03045E]/85 border-[#023E8A]/60 text-slate-100 shadow-black/80'
           }`}
         >
           {/* 2 Botões: Desfazer e Refazer Alterações (Apenas setas) */}
@@ -1817,8 +1817,8 @@ export const Canvas: React.FC<CanvasProps> = ({
                   className={`p-1.5 rounded-lg border flex items-center justify-center transition-all ${
                     canUndo
                       ? isLight
-                        ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-800 shadow-sm active:scale-95'
-                        : 'bg-white/5 hover:bg-white/10 border-white/10 text-slate-200 shadow-sm active:scale-95'
+                        ? 'bg-white hover:bg-[#ADE8F4]/30 border-[#ADE8F4] text-[#023E8A] shadow-sm active:scale-95'
+                        : 'bg-[#023E8A]/30 hover:bg-[#023E8A]/50 border-[#023E8A]/40 text-slate-200 shadow-sm active:scale-95'
                       : 'opacity-30 cursor-not-allowed border-transparent text-slate-400'
                   }`}
                 >
@@ -1834,8 +1834,8 @@ export const Canvas: React.FC<CanvasProps> = ({
                   className={`p-1.5 rounded-lg border flex items-center justify-center transition-all ${
                     canRedo
                       ? isLight
-                        ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-800 shadow-sm active:scale-95'
-                        : 'bg-white/5 hover:bg-white/10 border-white/10 text-slate-200 shadow-sm active:scale-95'
+                        ? 'bg-white hover:bg-[#ADE8F4]/30 border-[#ADE8F4] text-[#023E8A] shadow-sm active:scale-95'
+                        : 'bg-[#023E8A]/30 hover:bg-[#023E8A]/50 border-[#023E8A]/40 text-slate-200 shadow-sm active:scale-95'
                       : 'opacity-30 cursor-not-allowed border-transparent text-slate-400'
                   }`}
                 >
@@ -1843,7 +1843,7 @@ export const Canvas: React.FC<CanvasProps> = ({
                 </button>
               </div>
 
-              <div className={`w-[1px] h-4 my-auto ${isLight ? 'bg-slate-300' : 'bg-white/10'}`} />
+              <div className={`w-[1px] h-4 my-auto ${isLight ? 'bg-[#ADE8F4]' : 'bg-[#023E8A]/50'}`} />
             </>
           )}
 
@@ -1855,12 +1855,10 @@ export const Canvas: React.FC<CanvasProps> = ({
               onClick={() => setCanvasTool('select')}
               className={`px-2 py-1 rounded-lg text-xs font-bold border flex items-center space-x-1 transition-all shadow-sm ${
                 canvasTool === 'select' && !isSpacePressed
-                  ? isLight
-                    ? 'bg-blue-600 text-white border-blue-600'
-                    : 'bg-blue-500/30 text-blue-300 border-blue-500/60'
+                  ? 'bg-[#0077B6] text-white border-[#0096C7]'
                   : isLight
-                  ? 'bg-slate-100 text-slate-600 border-slate-300 hover:bg-slate-200'
-                  : 'bg-white/5 text-slate-400 border-white/10 hover:text-slate-200'
+                  ? 'bg-white text-[#023E8A] border-[#ADE8F4] hover:bg-[#ADE8F4]/30'
+                  : 'bg-[#023E8A]/30 text-slate-300 border-[#023E8A]/40 hover:bg-[#023E8A]/50 hover:text-white'
               }`}
               title="Ferramenta de Seleção (Atalho: V) - Selecionar e editar elementos"
             >
@@ -1875,12 +1873,10 @@ export const Canvas: React.FC<CanvasProps> = ({
               onClick={() => setCanvasTool('hand')}
               className={`px-2 py-1 rounded-lg text-xs font-bold border flex items-center space-x-1 transition-all shadow-sm ${
                 canvasTool === 'hand' || isSpacePressed
-                  ? isLight
-                    ? 'bg-emerald-600 text-white border-emerald-600'
-                    : 'bg-emerald-500/30 text-emerald-300 border-emerald-500/60'
+                  ? 'bg-[#0077B6] text-white border-[#0096C7]'
                   : isLight
-                  ? 'bg-slate-100 text-slate-600 border-slate-300 hover:bg-slate-200'
-                  : 'bg-white/5 text-slate-400 border-white/10 hover:text-slate-200'
+                  ? 'bg-white text-[#023E8A] border-[#ADE8F4] hover:bg-[#ADE8F4]/30'
+                  : 'bg-[#023E8A]/30 text-slate-300 border-[#023E8A]/40 hover:bg-[#023E8A]/50 hover:text-white'
               }`}
               title="Ferramenta Mão Panorâmica (Atalho: H ou segurar Barra de Espaço) - Movimentar todo o desenho livremente para direita, esquerda, cima e baixo"
             >
@@ -1890,7 +1886,7 @@ export const Canvas: React.FC<CanvasProps> = ({
             </button>
           </div>
 
-          <div className={`w-[1px] h-4 my-auto ${isLight ? 'bg-slate-300' : 'bg-white/10'}`} />
+          <div className={`w-[1px] h-4 my-auto ${isLight ? 'bg-[#ADE8F4]' : 'bg-[#023E8A]/50'}`} />
 
           {/* Line Routing Selector Toolbar */}
           <div className="flex items-center space-x-1 shrink-0">
@@ -1914,12 +1910,10 @@ export const Canvas: React.FC<CanvasProps> = ({
                   onClick={() => setPreferredLineType(item.id as any)}
                   className={`px-2 py-1 rounded-lg text-xs font-bold border flex items-center space-x-1 transition-all whitespace-nowrap shrink-0 ${
                     isAct
-                      ? isLight
-                        ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
-                        : 'bg-blue-500/30 text-blue-300 border-blue-500/60 shadow-sm'
+                      ? 'bg-[#0077B6] text-white border-[#0096C7] shadow-sm'
                       : isLight
-                      ? 'bg-slate-100 text-slate-700 border-slate-300 hover:bg-slate-200'
-                      : 'bg-white/5 text-slate-400 border-white/10 hover:text-slate-200'
+                      ? 'bg-white text-[#023E8A] border-[#ADE8F4] hover:bg-[#ADE8F4]/30'
+                      : 'bg-[#023E8A]/30 text-slate-300 border-[#023E8A]/40 hover:bg-[#023E8A]/50 hover:text-white'
                   }`}
                   title={`${item.title} (Clique para definir estilo padrão)`}
                 >
@@ -1935,8 +1929,8 @@ export const Canvas: React.FC<CanvasProps> = ({
                 onClick={() => handleApplyLineTypeToAll(preferredLineType)}
                 className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition-all whitespace-nowrap shrink-0 flex items-center ${
                   isLight
-                    ? 'bg-amber-50 text-amber-900 border-amber-300 hover:bg-amber-100 shadow-sm'
-                    : 'bg-amber-500/20 text-amber-300 border-amber-500/40 hover:bg-amber-500/30 shadow-sm'
+                    ? 'bg-[#ADE8F4]/30 text-[#023E8A] border-[#0096C7]/40 hover:bg-[#ADE8F4]/60 shadow-sm'
+                    : 'bg-[#023E8A]/40 text-[#48CAE4] border-[#0077B6]/40 hover:bg-[#023E8A]/60 shadow-sm'
                 }`}
                 title={`Aplicar estilo ${preferredLineType} a todas as ${diagram.links.length} ligações do diagrama`}
               >
@@ -1945,7 +1939,7 @@ export const Canvas: React.FC<CanvasProps> = ({
             )}
           </div>
 
-          <div className={`w-[1px] h-4 my-auto ${isLight ? 'bg-slate-300' : 'bg-white/10'}`} />
+          <div className={`w-[1px] h-4 my-auto ${isLight ? 'bg-[#ADE8F4]' : 'bg-[#023E8A]/50'}`} />
 
           <button
             type="button"
@@ -1954,15 +1948,15 @@ export const Canvas: React.FC<CanvasProps> = ({
             className={`px-2.5 py-1 rounded-lg text-xs font-bold border flex items-center space-x-1.5 transition-all shadow-sm whitespace-nowrap shrink-0 ${
               gridType !== 'none'
                 ? isLight
-                  ? 'bg-blue-600 text-white border-blue-600 shadow-blue-500/20'
-                  : 'bg-blue-500/25 text-blue-300 border-blue-500/50'
+                  ? 'bg-[#0077B6] text-white border-[#0096C7] shadow-[#0077B6]/20'
+                  : 'bg-[#0077B6] text-white border-[#0096C7]'
                 : isLight
-                ? 'bg-slate-100 text-slate-700 border-slate-300 hover:text-slate-900 hover:bg-slate-200'
-                : 'bg-white/5 text-slate-400 border-white/10 hover:text-slate-200'
+                ? 'bg-white text-[#023E8A] border-[#ADE8F4] hover:bg-[#ADE8F4]/30'
+                : 'bg-[#023E8A]/30 text-slate-300 border-[#023E8A]/40 hover:text-white hover:bg-[#023E8A]/50'
             }`}
             title="Opções de Grade da Lousa (Quadriculado, Pontilhado, Cruzes, Milimetrado, Em Branco)"
           >
-            <Grid className={`w-3.5 h-3.5 shrink-0 ${gridType !== 'none' ? (isLight ? 'text-white' : 'text-blue-400') : 'text-slate-400'}`} />
+            <Grid className={`w-3.5 h-3.5 shrink-0 ${gridType !== 'none' ? (isLight ? 'text-white' : 'text-[#48CAE4]') : 'text-slate-400'}`} />
             <span className="whitespace-nowrap">Grade: {gridType === 'none' ? 'OFF' : GRID_OPTIONS.find((o) => o.id === gridType)?.label || 'ON'}</span>
             <ChevronDown className={`w-3 h-3 shrink-0 transition-transform duration-150 ${isGridMenuOpen ? 'rotate-180' : ''}`} />
           </button>
@@ -2074,7 +2068,7 @@ export const Canvas: React.FC<CanvasProps> = ({
               setPanOffset({ x: 0, y: 0 });
             }}
             className={`px-2 py-0.5 rounded text-[11px] font-mono font-bold ${
-              isLight ? 'hover:bg-slate-100 text-amber-600' : 'hover:bg-white/10 text-amber-400'
+              isLight ? 'hover:bg-[#ADE8F4]/30 text-[#0077B6]' : 'hover:bg-[#023E8A]/40 text-[#48CAE4]'
             }`}
             title="Resetar Zoom (100%) e Posição Inicial"
           >

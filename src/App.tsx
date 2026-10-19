@@ -874,7 +874,7 @@ export default function App() {
       <div
         id="auth-loading-screen"
         className={`flex flex-col items-center justify-center h-screen w-screen font-sans select-none transition-colors ${
-          theme === 'light' ? 'bg-slate-50 text-slate-900' : 'bg-[#090B10] text-slate-100'
+          theme === 'light' ? 'bg-[#F4FBFC] text-[#03045E]' : 'bg-[#02081F] text-slate-100'
         }`}
       >
         <div className="flex flex-col items-center space-y-4">
@@ -924,14 +924,14 @@ export default function App() {
 
   return (
     <div className={`flex flex-col h-screen w-screen font-sans overflow-hidden select-none transition-colors ${
-      theme === 'light' ? 'bg-slate-100 text-slate-900' : 'bg-[#0A0B0E] text-slate-100'
+      theme === 'light' ? 'bg-[#F4FBFC] text-slate-900' : 'bg-[#02081F] text-slate-100'
     }`}>
       {/* Full-Screen Presentation Mode View */}
       {isPresentationMode ? (
         <div
           id="presentation-mode-fullscreen"
           className={`fixed inset-0 w-screen h-screen z-50 flex flex-col overflow-hidden select-none ${
-            theme === 'light' ? 'bg-white text-slate-900' : 'bg-[#0E1015] text-slate-100'
+            theme === 'light' ? 'bg-[#F4FBFC] text-slate-900' : 'bg-[#02081F] text-slate-100'
           }`}
         >
           <Canvas
@@ -1083,7 +1083,7 @@ export default function App() {
 
           {/* Application Footer */}
           <footer className={`h-8 border-t px-4 flex items-center justify-between text-[11px] select-none z-10 shrink-0 ${
-            theme === 'dark' ? 'bg-[#0e1017] border-white/10 text-slate-400' : 'bg-white border-slate-200 text-slate-600'
+            theme === 'dark' ? 'bg-[#010618] border-[#023E8A]/40 text-slate-400' : 'bg-white/95 border-[#ADE8F4] text-[#023E8A]'
           }`}>
             <div className="flex items-center space-x-2 truncate">
               <span className="text-slate-500 hidden md:inline">Consultoria:</span>
@@ -1101,7 +1101,7 @@ export default function App() {
               <button
                 id="footer-btn-documentation"
                 onClick={() => setIsDocumentationModalOpen(true)}
-                className="font-semibold text-blue-500 hover:text-blue-400 dark:text-blue-400 dark:hover:text-blue-300 hover:underline transition-colors flex items-center space-x-1"
+                className="font-semibold text-[#0077B6] hover:text-[#0096C7] dark:text-[#48CAE4] dark:hover:text-[#ADE8F4] hover:underline transition-colors flex items-center space-x-1"
                 title="Visualizar Manual e Documentação do Produto (DOCUMENTACAO.md)"
               >
                 <BookOpen className="w-3.5 h-3.5" />
@@ -1111,7 +1111,7 @@ export default function App() {
               <button
                 id="footer-btn-changelog"
                 onClick={() => setIsChangelogModalOpen(true)}
-                className="font-semibold text-indigo-500 hover:text-indigo-400 dark:text-indigo-400 dark:hover:text-indigo-300 hover:underline transition-colors flex items-center space-x-1"
+                className="font-semibold text-[#0096C7] hover:text-[#48CAE4] dark:text-[#48CAE4] dark:hover:text-[#ADE8F4] hover:underline transition-colors flex items-center space-x-1"
                 title={`Visualizar Registro de Mudanças das Versões (${LATEST_APP_VERSION})`}
               >
                 <span>Changelog ({LATEST_APP_VERSION})</span>
@@ -1143,7 +1143,7 @@ export default function App() {
                   href="https://www.linkedin.com/in/edsinfobr/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-bold text-blue-500 hover:text-blue-400 hover:underline transition-colors"
+                  className="font-bold text-[#0077B6] hover:text-[#0096C7] dark:text-[#48CAE4] dark:hover:text-[#ADE8F4] hover:underline transition-colors"
                   title="Perfil no LinkedIn (edsinfobr)"
                 >
                   @edsinfobr

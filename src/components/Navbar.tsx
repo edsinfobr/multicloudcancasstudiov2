@@ -187,11 +187,11 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header id="main-navbar" className={`border-b z-30 select-none shadow-md transition-colors ${
-      theme === 'light' ? 'bg-white border-slate-200 text-slate-800' : 'bg-[#12141A] border-white/10 text-slate-200'
+      theme === 'light' ? 'bg-[#F8FCFD] border-[#ADE8F4] text-[#03045E]' : 'bg-[#02081F] border-[#023E8A]/40 text-slate-100'
     }`}>
       {/* ROW 1: TOP BRAND HEADER (App Name & Logo prominently positioned above buttons) */}
       <div className={`px-4 py-2 border-b flex items-center justify-between gap-4 ${
-        theme === 'light' ? 'border-slate-200 bg-slate-50/60' : 'border-white/5 bg-[#0e1017]'
+        theme === 'light' ? 'border-[#ADE8F4]/80 bg-white/70' : 'border-[#023E8A]/30 bg-[#03045E]/30'
       }`}>
         {/* Left: App Logo & Prominent App Title */}
         <div className="flex items-center space-x-3">
@@ -199,8 +199,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div className="relative group flex items-center justify-center shrink-0">
             <div className={`absolute -inset-1 rounded-2xl opacity-70 blur-sm transition duration-500 group-hover:opacity-100 ${
               theme === 'light' 
-                ? 'bg-gradient-to-r from-blue-400 via-indigo-400 to-cyan-400' 
-                : 'bg-gradient-to-r from-blue-600 via-indigo-500 to-cyan-500'
+                ? 'bg-gradient-to-r from-[#ADE8F4] via-[#0096C7] to-[#0077B6]' 
+                : 'bg-gradient-to-r from-[#023E8A] via-[#0077B6] to-[#48CAE4]'
             }`} />
             <div className="relative transition-transform duration-200 group-hover:scale-105 filter drop-shadow-md cursor-pointer">
               <MultiCloudLogo className="w-9 h-9" />
@@ -212,13 +212,13 @@ export const Navbar: React.FC<NavbarProps> = ({
             <div className="flex items-center space-x-2">
               <h1 className={`text-base md:text-lg font-black tracking-tight ${
                 theme === 'light'
-                  ? 'bg-gradient-to-r from-blue-700 via-indigo-800 to-slate-900 bg-clip-text text-transparent'
-                  : 'bg-gradient-to-r from-blue-400 via-indigo-300 to-cyan-300 bg-clip-text text-transparent'
+                  ? 'bg-gradient-to-r from-[#03045E] via-[#023E8A] to-[#0077B6] bg-clip-text text-transparent'
+                  : 'bg-gradient-to-r from-[#48CAE4] via-[#ADE8F4] to-[#0096C7] bg-clip-text text-transparent'
               }`}>
                 MultiCloud Canvas Studio
               </h1>
             </div>
-            <span className={`text-[10px] font-medium hidden lg:inline ${theme === 'light' ? 'text-slate-500' : 'text-slate-400'}`}>
+            <span className={`text-[10px] font-medium hidden lg:inline ${theme === 'light' ? 'text-[#023E8A]/70' : 'text-[#ADE8F4]/80'}`}>
               Modelador de Arquitetura Multi-Nuvem, Estimativas de Custos e IaC Terraform
             </span>
           </div>
@@ -228,10 +228,10 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="flex-1 flex items-center justify-center max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl mx-2">
           <div className={`flex items-center space-x-2 px-3 py-1 rounded-xl border transition-all ${
             theme === 'light'
-              ? 'bg-white/90 border-slate-300 shadow-sm hover:border-blue-400 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-400/20'
-              : 'bg-[#181c28] border-white/15 shadow-inner hover:border-blue-500/50 focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-500/20'
+              ? 'bg-white border-[#ADE8F4] shadow-sm hover:border-[#0077B6] focus-within:border-[#0077B6] focus-within:ring-2 focus-within:ring-[#0077B6]/20'
+              : 'bg-[#03045E]/60 border-[#023E8A]/60 shadow-inner hover:border-[#0096C7]/60 focus-within:border-[#48CAE4] focus-within:ring-2 focus-within:ring-[#0077B6]/30'
           }`}>
-            <Tag className={`w-3.5 h-3.5 shrink-0 ${theme === 'light' ? 'text-blue-600' : 'text-blue-400'}`} />
+            <Tag className={`w-3.5 h-3.5 shrink-0 ${theme === 'light' ? 'text-[#0077B6]' : 'text-[#48CAE4]'}`} />
 
             {/* Architecture Title Input */}
             <input
@@ -241,18 +241,18 @@ export const Navbar: React.FC<NavbarProps> = ({
               onChange={handleTitleChange}
               className={`text-xs sm:text-sm font-normal bg-transparent border-none outline-none text-center w-28 sm:w-48 md:w-60 lg:w-72 truncate ${
                 theme === 'light'
-                  ? 'text-slate-900 placeholder-slate-400'
-                  : 'text-white placeholder-slate-500'
+                  ? 'text-[#03045E] placeholder-[#0077B6]/50'
+                  : 'text-white placeholder-[#ADE8F4]/50'
               }`}
               placeholder="Nome da Arquitetura"
               title="Clique para editar o nome da arquitetura"
             />
 
-            <span className={`text-xs ${theme === 'light' ? 'text-slate-300' : 'text-white/20'}`}>|</span>
+            <span className={`text-xs ${theme === 'light' ? 'text-[#ADE8F4]' : 'text-[#023E8A]'}`}>|</span>
 
             {/* Version Badge & Input */}
             <div className="flex items-center space-x-1 shrink-0" title="Versão atual da arquitetura">
-              <GitBranch className="w-3.5 h-3.5 text-indigo-400" />
+              <GitBranch className={`w-3.5 h-3.5 ${theme === 'light' ? 'text-[#0077B6]' : 'text-[#48CAE4]'}`} />
               <input
                 id="top-center-architecture-version"
                 type="text"
@@ -260,8 +260,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onChange={handleVersionChange}
                 className={`text-xs font-mono font-black px-2 py-0.5 rounded-md outline-none border transition-colors w-16 text-center ${
                   theme === 'light'
-                    ? 'bg-indigo-50 border-indigo-200 text-indigo-900 focus:border-indigo-500'
-                    : 'bg-indigo-950/60 border-indigo-500/40 text-indigo-300 focus:border-indigo-400'
+                    ? 'bg-[#ADE8F4]/25 border-[#ADE8F4] text-[#023E8A] focus:border-[#0077B6]'
+                    : 'bg-[#03045E]/80 border-[#023E8A] text-[#48CAE4] focus:border-[#48CAE4]'
                 }`}
                 placeholder="v1.0"
                 title="Clique para alterar a versão (ex: v1.0, v2.0)"
@@ -638,7 +638,9 @@ export const Navbar: React.FC<NavbarProps> = ({
       </div>
 
       {/* ROW 2: CONTROLS & ACTION BUTTONS TOOLBAR */}
-      <div className="px-4 py-1.5 flex items-center justify-between gap-3 min-h-[42px] relative z-30">
+      <div className={`px-4 py-1.5 flex items-center justify-between gap-3 min-h-[42px] relative z-30 ${
+        theme === 'light' ? 'bg-white/80 border-t border-[#ADE8F4]/60' : 'bg-[#020C2D]/80 border-t border-[#023E8A]/30'
+      }`}>
         {/* Left Section: Architecture Dropdown, Undo/Redo & Provider Badges */}
         <div className="flex items-center space-x-2 shrink-0">
           {/* Main Architecture Dropdown Menu */}
@@ -654,13 +656,13 @@ export const Navbar: React.FC<NavbarProps> = ({
               }}
               className={`flex items-center space-x-1.5 px-2.5 py-1 rounded-md text-xs font-semibold transition-all border ${
                 theme === 'light'
-                  ? 'bg-blue-50 hover:bg-blue-100 border-blue-300 text-blue-900'
-                  : 'bg-blue-600/20 hover:bg-blue-600/30 border-blue-500/30 text-blue-300'
+                  ? 'bg-[#ADE8F4]/30 hover:bg-[#ADE8F4]/60 border-[#0096C7]/30 text-[#023E8A]'
+                  : 'bg-[#023E8A]/30 hover:bg-[#023E8A]/50 border-[#0077B6]/30 text-[#48CAE4]'
               }`}
             >
-              <Layers className={`w-3.5 h-3.5 ${theme === 'light' ? 'text-blue-700' : 'text-blue-400'}`} />
+              <Layers className={`w-3.5 h-3.5 ${theme === 'light' ? 'text-[#0077B6]' : 'text-[#48CAE4]'}`} />
               <span>{t.nav.architecture}</span>
-              <ChevronDown className={`w-3 h-3 transform transition-transform ${isMenuOpen ? 'rotate-180' : ''} ${theme === 'light' ? 'text-blue-700' : 'text-blue-400'}`} />
+              <ChevronDown className={`w-3 h-3 transform transition-transform ${isMenuOpen ? 'rotate-180' : ''} ${theme === 'light' ? 'text-[#0077B6]' : 'text-[#48CAE4]'}`} />
             </button>
 
             {isMenuOpen && (
@@ -872,10 +874,10 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             id="btn-ai-prompt"
             onClick={onOpenAiModal}
-            className="flex items-center space-x-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white px-2.5 py-1.5 rounded-md text-xs font-bold shadow-sm transition-all active:scale-95"
+            className="flex items-center space-x-1.5 bg-gradient-to-r from-[#023E8A] via-[#0077B6] to-[#0096C7] hover:from-[#0077B6] hover:to-[#48CAE4] text-white px-2.5 py-1.5 rounded-md text-xs font-bold shadow-sm shadow-[#0077B6]/25 transition-all active:scale-95"
             title="Gerador de Arquitetura por Inteligência Artificial"
           >
-            <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
+            <Sparkles className="w-3.5 h-3.5 text-[#ADE8F4] animate-pulse" />
             <span>AI Generator</span>
           </button>
 
@@ -885,12 +887,12 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={onOpenTemplateModal}
             className={`flex items-center space-x-1.5 px-2.5 py-1.5 rounded-md text-xs font-semibold transition-all border ${
               theme === 'light'
-                ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-900'
-                : 'bg-white/5 hover:bg-white/10 border-white/10 text-slate-200'
+                ? 'bg-[#ADE8F4]/20 hover:bg-[#ADE8F4]/40 border-[#ADE8F4] text-[#023E8A]'
+                : 'bg-[#03045E]/40 hover:bg-[#023E8A]/40 border-[#023E8A]/50 text-[#ADE8F4]'
             }`}
             title="Modelos e Padrões Arquiteturais Prontos"
           >
-            <LayoutTemplate className="w-3.5 h-3.5 text-sky-500" />
+            <LayoutTemplate className={`w-3.5 h-3.5 ${theme === 'light' ? 'text-[#0077B6]' : 'text-[#48CAE4]'}`} />
             <span className="hidden sm:inline">{t.nav.templates}</span>
           </button>
 
@@ -1000,7 +1002,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 setIsHelpOpen(false);
                 setIsUserMenuOpen(false);
               }}
-              className="flex items-center space-x-1.5 bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-md text-xs font-bold shadow-sm transition-all"
+              className="flex items-center space-x-1.5 bg-[#0077B6] hover:bg-[#0096C7] text-white px-3 py-1.5 rounded-md text-xs font-bold shadow-md shadow-[#0077B6]/25 transition-all"
               title="Central de Exportação: Propostas Word, PDF, Terraform IaC e Imagens"
             >
               <Download className="w-3.5 h-3.5" />
@@ -1188,19 +1190,19 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={onEnterPresentationMode}
               className={`flex items-center space-x-1.5 px-2.5 py-1.5 rounded-md text-xs font-semibold transition-all border shadow-sm ${
                 theme === 'light'
-                  ? 'bg-purple-50 hover:bg-purple-100 border-purple-300 text-purple-950 font-bold'
-                  : 'bg-purple-500/15 hover:bg-purple-500/25 border-purple-500/30 text-purple-300'
+                  ? 'bg-[#ADE8F4]/30 hover:bg-[#ADE8F4]/60 border-[#0096C7]/30 text-[#023E8A] font-bold'
+                  : 'bg-[#023E8A]/30 hover:bg-[#023E8A]/50 border-[#0077B6]/30 text-[#48CAE4]'
               }`}
               title="Modo de Apresentação em Tela Cheia (Navegação limpa para reuniões e clientes)"
             >
-              <Presentation className={`w-3.5 h-3.5 ${theme === 'light' ? 'text-purple-700' : 'text-purple-400'}`} />
+              <Presentation className={`w-3.5 h-3.5 ${theme === 'light' ? 'text-[#0077B6]' : 'text-[#48CAE4]'}`} />
               <span className="hidden sm:inline">Apresentação</span>
             </button>
           )}
 
           {/* Zoom Controls */}
           <div className={`flex items-center rounded-md p-0.5 border text-xs ${
-            theme === 'light' ? 'bg-slate-100 border-slate-200' : 'bg-black/40 border-white/5'
+            theme === 'light' ? 'bg-[#ADE8F4]/20 border-[#ADE8F4]' : 'bg-[#03045E]/40 border-[#023E8A]/40'
           }`}>
             <button
               id="btn-zoom-out"
