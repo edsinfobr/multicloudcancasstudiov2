@@ -49,6 +49,7 @@ import { GoogleUser } from '../services/googleDrive';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../i18n/LanguageContext';
 import { LanguageSelector } from './LanguageSelector';
+import { MultiCloudLogo } from './MultiCloudLogo';
 
 interface NavbarProps {
   diagram: DiagramState;
@@ -196,46 +197,13 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="flex items-center space-x-3">
           {/* Custom MultiCloud Canvas Studio Logo */}
           <div className="relative group flex items-center justify-center shrink-0">
-            <div className={`absolute -inset-1 rounded-xl opacity-75 blur-sm transition duration-500 group-hover:opacity-100 ${
+            <div className={`absolute -inset-1 rounded-2xl opacity-70 blur-sm transition duration-500 group-hover:opacity-100 ${
               theme === 'light' 
                 ? 'bg-gradient-to-r from-blue-400 via-indigo-400 to-cyan-400' 
                 : 'bg-gradient-to-r from-blue-600 via-indigo-500 to-cyan-500'
             }`} />
-            <div className={`relative w-9 h-9 rounded-xl border flex items-center justify-center shadow-md transition-transform group-hover:scale-105 ${
-              theme === 'light' 
-                ? 'bg-gradient-to-br from-white to-blue-50 border-blue-300' 
-                : 'bg-gradient-to-br from-[#181c28] to-[#0d1017] border-blue-500/40'
-            }`}>
-              <svg viewBox="0 0 36 36" fill="none" className="w-6 h-6">
-                <path d="M4 12H32M4 24H32M12 4V32M24 4V32" stroke="currentColor" strokeOpacity="0.12" strokeWidth="1" strokeDasharray="2 2" />
-                <path
-                  d="M10 21C8.34315 21 7 19.6569 7 18C7 16.5818 7.98592 15.3934 9.31752 15.0847C9.72893 12.7214 11.7826 11 14.25 11C15.6888 11 16.9818 11.6033 17.8926 12.5638C18.6666 11.6111 19.8398 11 21.1667 11C23.3758 11 25.1667 12.7909 25.1667 15C26.7315 15 28 16.2685 28 17.8333C28 19.3981 26.7315 20.6667 25.1667 20.6667H10Z"
-                  fill="url(#cloudGrad)"
-                  fillOpacity="0.25"
-                  stroke="url(#cloudGrad)"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <circle cx="10" cy="18" r="2.2" fill="#FF9900" />
-                <circle cx="15" cy="13" r="2.2" fill="#0078D4" />
-                <circle cx="21" cy="13" r="2.2" fill="#34A853" />
-                <circle cx="25" cy="18" r="2.2" fill="#C74634" />
-                <path d="M10 18L15 13L21 13L25 18" stroke="url(#nodeLineGrad)" strokeWidth="1.2" strokeLinecap="round" />
-                <defs>
-                  <linearGradient id="cloudGrad" x1="7" y1="11" x2="28" y2="21" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#3B82F6" />
-                    <stop offset="0.5" stopColor="#6366F1" />
-                    <stop offset="1" stopColor="#06B6D4" />
-                  </linearGradient>
-                  <linearGradient id="nodeLineGrad" x1="10" y1="18" x2="25" y2="18" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#FF9900" />
-                    <stop offset="0.33" stopColor="#0078D4" />
-                    <stop offset="0.66" stopColor="#34A853" />
-                    <stop offset="1" stopColor="#C74634" />
-                  </linearGradient>
-                </defs>
-              </svg>
+            <div className="relative transition-transform duration-200 group-hover:scale-105 filter drop-shadow-md cursor-pointer">
+              <MultiCloudLogo className="w-9 h-9" />
             </div>
           </div>
 
@@ -249,9 +217,6 @@ export const Navbar: React.FC<NavbarProps> = ({
               }`}>
                 MultiCloud Canvas Studio
               </h1>
-              <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-sm tracking-wider uppercase">
-                STUDIO
-              </span>
             </div>
             <span className={`text-[10px] font-medium hidden lg:inline ${theme === 'light' ? 'text-slate-500' : 'text-slate-400'}`}>
               Modelador de Arquitetura Multi-Nuvem, Estimativas de Custos e IaC Terraform

@@ -76,9 +76,25 @@ export const calculateNodeCost = (node: DiagramNode): CostItem => {
   } else if (node.iconKey === 'aws_acm_certificate_authority') {
     monthlyCost = 400 * count;
     details = `${count}x Private Certificate Authority ($400/mo/CA)`;
-  } else if (node.iconKey === 'aws_network_firewall_endpoints') {
-    monthlyCost = 47.50 * count;
-    details = `${count}x Network Firewall Endpoint (~$0.065/hr)`;
+  } else if (node.iconKey === 'aws_network_firewall' || node.iconKey === 'aws_network_firewall_endpoints') {
+    monthlyCost = (47.50 + (transferGb * 0.065)) * count;
+    details = `${count}x AWS Network Firewall Endpoints (~$47.50/mês + DPI traffic)`;
+  } else if (node.iconKey === 'aws_guardduty') {
+    monthlyCost = 32 * count;
+    details = `GuardDuty Análise Inteligente de DNS, Flow Logs e CloudTrail (~$32/mês/conta)`;
+  } else if (node.iconKey === 'aws_config') {
+    monthlyCost = 14 * count;
+    details = `AWS Config gravação contínua de CI e avaliações de regras (~$14/mês)`;
+  } else if (node.iconKey === 'aws_control_tower') {
+    monthlyCost = 0;
+    details = `AWS Control Tower (Sem custo adicional direto; paga pelos recursos subjacentes)`;
+  } else if (node.iconKey === 'aws_iam_identity_center') {
+    monthlyCost = 0;
+    details = `IAM Identity Center (Incluso no AWS Organizations sem custo adicional)`;
+  } else if (node.iconKey === 'aws_central_log_archive_s3') {
+    const pricePerGb = 0.023;
+    monthlyCost = (storageGb * pricePerGb) + (transferGb * 0.05);
+    details = `Central Log Archive S3 (${storageGb} GB com Object Lock & KMS CMK)`;
   } else if (node.iconKey?.startsWith('aws_directory_service')) {
     monthlyCost = 45 * count;
     details = `${count}x Directory Service Controller/Connector (~$45/mo)`;

@@ -10,6 +10,29 @@ export interface ChangelogEntry {
 
 export const CHANGELOG_DATA: ChangelogEntry[] = [
   {
+    version: 'v1.12.0',
+    date: '19/10/2026',
+    title: 'Novos Ícones AWS: Landing Zone, Governança & Segurança (Control Tower, IAM Identity Center, GuardDuty, Config, S3 Log Archive & Network Firewall)',
+    highlight: 'Adição dos 6 serviços essenciais para arquiteturas multi-conta e AWS Security Reference Architecture (AWS SRA), com suporte a Terraform IaC, cálculo FinOps e novo template corporativo.',
+    added: [
+      'AWS Control Tower: setup automatizado de Landing Zone multi-conta com guardrails preventivos/detectivos e governança de contas',
+      'IAM Identity Center: autenticação unificada, Single Sign-On (SSO) corporativo e federação SAML 2.0 / OIDC multi-conta',
+      'Central Log Archive (S3): bucket S3 imutável com Object Lock e criptografia KMS CMK dedicado à auditoria e retenção segura de logs',
+      'Amazon GuardDuty: detecção inteligente contínua de ameaças e anomalias com ML em DNS, VPC Flow Logs, CloudTrail e EKS',
+      'AWS Config: inventário contínuo de recursos, histórico detalhado de mudanças e avaliação de conformidade de regras',
+      'AWS Network Firewall: firewall com inspeção profunda de pacotes (DPI) e prevenção contra invasões (IPS) com regras Suricata na VPC',
+      'Novo Template Oficial: AWS Landing Zone & Security Architecture (SRA) demonstrando a integração completa dos novos serviços',
+      'Geração de IaC Terraform: suporte a declaração de recursos para todos os novos serviços com configurações recomendadas',
+      'Cálculo de Custos FinOps: estimativas precisas de custo mensal para cada serviço no canvas',
+      'Auto-Layout Inteligente de Arquitetura: novo botão com 1 clique no canvas e na navbar que organiza toda a arquitetura, eliminando sobreposições de ícones e contêineres',
+      'Rótulos de Conexão Orientados & Compactos: rótulos de protocolo/porta acompanham dinamicamente o fluxo horizontal ou vertical das linhas com tipografia compacta e legível'
+    ],
+    changed: [
+      'Catálogo lateral e busca em tempo real atualizados com tags de governança e segurança corporativa AWS',
+      'Espaçamento otimizado entre nós para desobstruir crachás de protocolos e linhas de fluxo'
+    ]
+  },
+  {
     version: 'v1.11.0',
     date: '17/10/2026',
     title: 'Templates Corporativos de IA: OpenAI, Anthropic Claude, Google Gemini e Meta Llama',

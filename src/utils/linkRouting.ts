@@ -15,6 +15,7 @@ export interface RouteResult {
   angleEnd: number;
   midX: number;
   midY: number;
+  isVertical?: boolean;
 }
 
 export interface NodeBounds {
@@ -155,7 +156,8 @@ export function calculateLinkRoute(
         angleStart,
         angleEnd,
         midX: cp.x,
-        midY: cp.y
+        midY: cp.y,
+        isVertical: absDy > absDx
       };
     }
 
@@ -247,7 +249,8 @@ export function calculateLinkRoute(
       }
     }
 
-    return { pathD, x1, y1, x2, y2, angleStart, angleEnd, midX, midY };
+    const isVertical = absDy > absDx;
+    return { pathD, x1, y1, x2, y2, angleStart, angleEnd, midX, midY, isVertical };
   }
 
   // Calculate default contact points on component borders
@@ -277,7 +280,8 @@ export function calculateLinkRoute(
         angleStart,
         angleEnd,
         midX: controlPoint.x,
-        midY: controlPoint.y
+        midY: controlPoint.y,
+        isVertical: Math.abs(y2 - y1) > Math.abs(x2 - x1)
       };
     }
 
@@ -291,7 +295,8 @@ export function calculateLinkRoute(
       angleStart: directAngle + 180,
       angleEnd: directAngle,
       midX: (x1 + x2) / 2,
-      midY: (y1 + y2) / 2
+      midY: (y1 + y2) / 2,
+      isVertical: Math.abs(segDy) > Math.abs(segDx)
     };
   }
 
@@ -350,7 +355,7 @@ export function calculateLinkRoute(
     const midX = 0.25 * x1 + 0.5 * cx + 0.25 * x2;
     const midY = 0.25 * y1 + 0.5 * cy + 0.25 * y2;
 
-    return { pathD, x1, y1, x2, y2, angleStart, angleEnd, midX, midY };
+    return { pathD, x1, y1, x2, y2, angleStart, angleEnd, midX, midY, isVertical: Math.abs(y2 - y1) > Math.abs(x2 - x1) };
   }
 
   // --- 4. SMOOTH CURVE / CUBIC BÉZIER (Default) ---
@@ -371,7 +376,8 @@ export function calculateLinkRoute(
       angleStart,
       angleEnd,
       midX: controlPoint.x,
-      midY: controlPoint.y
+      midY: controlPoint.y,
+      isVertical: Math.abs(y2 - y1) > Math.abs(x2 - x1)
     };
   }
 
@@ -416,7 +422,8 @@ export function calculateLinkRoute(
     angleStart,
     angleEnd,
     midX: (x1 + x2) / 2,
-    midY: (y1 + y2) / 2
+    midY: (y1 + y2) / 2,
+    isVertical: absDy > absDx
   };
 }
 

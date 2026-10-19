@@ -900,5 +900,72 @@ export const AWS_MANAGEMENT_ICONS: CloudIconDefinition[] = [
       <circle cx="46" cy="42" r="2" fill="#CC2264"/>
       <line x1="46" y1="44" x2="46" y2="47" stroke="#CC2264" stroke-width="2" stroke-linecap="round"/>
     </svg>`
+  },
+
+  // AWS Control Tower (Landing Zone, Multi-Account Governance & Guardrails)
+  {
+    key: 'aws_control_tower',
+    name: 'AWS Control Tower',
+    provider: 'aws',
+    category: 'devops',
+    brandColor: '#CC2264',
+    defaultResourceType: 'aws_controltower_control',
+    defaultSpecs: { count: 1, region: 'us-east-1' },
+    description: 'Governança automatizada e orquestração de ambiente multi-conta seguro (Landing Zone) com guardrails preventivos e detectivos',
+    svg: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="64" height="64" rx="12" fill="#CC2264" fill-opacity="0.12" stroke="#CC2264" stroke-width="1.5"/>
+      <!-- Concentric Radar/Governance Signal Arcs -->
+      <path d="M18 18C13.5 22.5 13.5 31.5 18 36" stroke="#CC2264" stroke-width="2" stroke-linecap="round" fill="none"/>
+      <path d="M46 18C50.5 22.5 50.5 31.5 46 36" stroke="#CC2264" stroke-width="2" stroke-linecap="round" fill="none"/>
+      <!-- Outer Guardrail Circle -->
+      <circle cx="32" cy="27" r="19" stroke="#CC2264" stroke-width="1.5" stroke-dasharray="3 3" fill="none"/>
+      <!-- Observation Tower Core -->
+      <path d="M24 52L28 38H36L40 52" stroke="#CC2264" stroke-width="2.5" stroke-linejoin="round" fill="#CC2264" fill-opacity="0.15"/>
+      <line x1="26" y1="45" x2="38" y2="45" stroke="#CC2264" stroke-width="2"/>
+      <rect x="23" y="27" width="18" height="11" rx="2" stroke="#CC2264" stroke-width="2.5" fill="white"/>
+      <line x1="27" y1="32.5" x2="37" y2="32.5" stroke="#CC2264" stroke-width="1.8" stroke-linecap="round"/>
+      <!-- Antenna Mast & Beacon -->
+      <line x1="32" y1="14" x2="32" y2="27" stroke="#CC2264" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="32" cy="12" r="3" fill="#CC2264"/>
+      <!-- Multi-Account Node Satellites -->
+      <circle cx="12" cy="44" r="3.5" stroke="#CC2264" stroke-width="2" fill="white"/>
+      <line x1="15.5" y1="43" x2="24" y2="42" stroke="#CC2264" stroke-width="1.5" stroke-dasharray="1 1"/>
+      <circle cx="52" cy="44" r="3.5" stroke="#CC2264" stroke-width="2" fill="white"/>
+      <line x1="48.5" y1="43" x2="40" y2="42" stroke="#CC2264" stroke-width="1.5" stroke-dasharray="1 1"/>
+    </svg>`
+  },
+
+  // AWS Config (Resource Inventory, Compliance Rules & History Recorder)
+  {
+    key: 'aws_config',
+    name: 'AWS Config',
+    provider: 'aws',
+    category: 'devops',
+    brandColor: '#CC2264',
+    defaultResourceType: 'aws_config_configuration_recorder',
+    defaultSpecs: { count: 1, region: 'us-east-1' },
+    description: 'Auditoria contínua, histórico detalhado de alterações, inventário de recursos e avaliação automática de conformidade contra regras',
+    svg: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="64" height="64" rx="12" fill="#CC2264" fill-opacity="0.12" stroke="#CC2264" stroke-width="1.5"/>
+      <!-- Central Configuration Gear -->
+      <circle cx="32" cy="32" r="14" stroke="#CC2264" stroke-width="3" fill="#CC2264" fill-opacity="0.15"/>
+      <!-- Gear Teeth around perimeter -->
+      <rect x="30" y="14" width="4" height="5" rx="1" fill="#CC2264"/>
+      <rect x="30" y="45" width="4" height="5" rx="1" fill="#CC2264"/>
+      <rect x="14" y="30" width="5" height="4" rx="1" fill="#CC2264"/>
+      <rect x="45" y="30" width="5" height="4" rx="1" fill="#CC2264"/>
+      <rect x="19.5" y="19.5" width="4.5" height="4.5" rx="1" transform="rotate(45 21.7 21.7)" fill="#CC2264"/>
+      <rect x="40" y="40" width="4.5" height="4.5" rx="1" transform="rotate(45 42.2 42.2)" fill="#CC2264"/>
+      <rect x="40" y="19.5" width="4.5" height="4.5" rx="1" transform="rotate(-45 42.2 21.7)" fill="#CC2264"/>
+      <rect x="19.5" y="40" width="4.5" height="4.5" rx="1" transform="rotate(-45 21.7 42.2)" fill="#CC2264"/>
+      <!-- Inner Compliance Checklist & Checkmark Badge -->
+      <circle cx="32" cy="32" r="8" fill="white" stroke="#CC2264" stroke-width="2"/>
+      <path d="M28 32L31 35L36 29" stroke="#CC2264" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <!-- Timeline Tracking Points -->
+      <circle cx="12" cy="14" r="2.5" fill="#CC2264"/>
+      <line x1="15" y1="14" x2="26" y2="14" stroke="#CC2264" stroke-width="1.8" stroke-dasharray="1.5 1.5"/>
+      <circle cx="52" cy="50" r="2.5" fill="#CC2264"/>
+      <line x1="49" y1="50" x2="38" y2="50" stroke="#CC2264" stroke-width="1.8" stroke-dasharray="1.5 1.5"/>
+    </svg>`
   }
 ];

@@ -1797,7 +1797,7 @@ export const Canvas: React.FC<CanvasProps> = ({
       {!isPresentationMode && (
         <div
           id="canvas-zoom-toolbar"
-          className={`absolute bottom-5 right-5 z-30 border backdrop-blur-md px-2.5 py-1.5 rounded-xl shadow-2xl flex items-center space-x-2 text-xs ${
+          className={`absolute bottom-5 left-1/2 -translate-x-1/2 z-30 border backdrop-blur-md px-2.5 py-1.5 rounded-xl shadow-2xl flex items-center space-x-2 text-xs max-w-[calc(100%-2rem)] overflow-x-auto sm:overflow-visible transition-all ${
             isLight
               ? 'bg-white/95 border-slate-300 text-slate-800'
               : 'bg-[#12141A]/90 border-white/15 text-slate-200'
@@ -2102,26 +2102,6 @@ export const Canvas: React.FC<CanvasProps> = ({
           >
             <Maximize2 className="w-3.5 h-3.5" />
           </button>
-
-          {onEnterPresentationMode && (
-            <>
-              <div className={`w-[1px] h-4 my-auto ${isLight ? 'bg-slate-300' : 'bg-white/10'}`} />
-              <button
-                type="button"
-                id="btn-canvas-presentation"
-                onClick={onEnterPresentationMode}
-                className={`px-2.5 py-1 rounded-lg transition-all text-xs font-bold flex items-center space-x-1.5 shadow-sm border ${
-                  isLight
-                    ? 'bg-purple-50 hover:bg-purple-100 text-purple-900 border-purple-300'
-                    : 'bg-purple-500/15 hover:bg-purple-500/25 text-purple-200 border-purple-500/40'
-                }`}
-                title="Modo Apresentação em Tela Cheia (Foco exclusivo na arquitetura)"
-              >
-                <Presentation className="w-3.5 h-3.5 text-purple-400" />
-                <span className="hidden sm:inline">Apresentação</span>
-              </button>
-            </>
-          )}
         </div>
       )}
 
@@ -2213,7 +2193,13 @@ export const Canvas: React.FC<CanvasProps> = ({
             const notch = arrowSize * 0.75;
             const arrowPoints = `-${arrowSize},-${arrowWidth} 0,0 -${arrowSize},${arrowWidth} -${notch},0`;
 
-            const labelWidth = link.label ? Math.max(76, Math.min(180, link.label.length * 7 + 16)) : 0;
+            const labelText = link.label || (link.protocol ? (link.port ? `${link.protocol}:${link.port}` : link.protocol) : '');
+            const isVertical = route.isVertical !== undefined
+              ? route.isVertical
+              : Math.abs(y2 - y1) > Math.abs(x2 - x1);
+            const labelRotation = isVertical ? (y2 >= y1 ? 90 : -90) : 0;
+            const labelWidth = labelText ? Math.max(26, Math.min(140, Math.round(labelText.length * 4.9 + 12))) : 0;
+            const labelHeight = 15;
 
             return (
               <g
@@ -2284,30 +2270,35 @@ export const Canvas: React.FC<CanvasProps> = ({
                   />
                 )}
 
-                {/* Connection Protocol / Label Badge */}
-                {link.label && (
-                  <g transform={`translate(${midX}, ${midY})`}>
+                {/* Connection Protocol / Label Badge (Oriented along line: Horizontal or Vertical) */}
+                {labelText && (
+                  <g
+                    transform={`translate(${midX}, ${midY}) rotate(${labelRotation})`}
+                    className="link-label-badge filter drop-shadow-xs"
+                  >
                     <rect
                       className="link-label-bg"
                       x={-labelWidth / 2}
-                      y="-11"
+                      y={-labelHeight / 2}
                       width={labelWidth}
-                      height="22"
-                      rx="6"
+                      height={labelHeight}
+                      rx="3.5"
                       fill={isLight ? '#FFFFFF' : '#0F172A'}
-                      stroke={isSelected ? '#F59E0B' : (link.color || (isLight ? '#94A3B8' : '#334155'))}
-                      strokeWidth="1.5"
+                      stroke={isSelected ? '#F59E0B' : (link.color || (isLight ? '#CBD5E1' : '#334155'))}
+                      strokeWidth="1.2"
                     />
                     <text
                       className="link-label-text"
                       x="0"
-                      y="3.5"
-                      fill={isLight ? '#0F172A' : '#E2E8F0'}
-                      fontSize="9.5"
-                      fontWeight="bold"
+                      y="2.8"
+                      fill={isLight ? '#0F172A' : '#F1F5F9'}
+                      fontSize="8"
+                      fontWeight="700"
+                      letterSpacing="0.02em"
                       textAnchor="middle"
+                      style={{ userSelect: 'none' }}
                     >
-                      {link.label}
+                      {labelText}
                     </text>
                   </g>
                 )}

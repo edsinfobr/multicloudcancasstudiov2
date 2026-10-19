@@ -179,6 +179,9 @@ export const translations = {
       stampDate: 'Data',
       stampVersion: 'Versão',
       dragDropContainer: 'Solte dentro do contêiner para agrupar',
+      autoOrganize: 'Organizar Arquitetura',
+      autoOrganizeDesc: 'Organiza automaticamente toda a arquitetura para evitar sobreposição de ícones e desobstruir rótulos de conexões',
+      autoOrganizeToast: 'Arquitetura organizada automaticamente! Ícones e conexões perfeitamente alinhados.',
     },
 
     // Property Panel (Right Inspector)
@@ -503,6 +506,9 @@ export const translations = {
       stampDate: 'Date',
       stampVersion: 'Version',
       dragDropContainer: 'Drop inside container to group',
+      autoOrganize: 'Organize Architecture',
+      autoOrganizeDesc: 'Automatically organize the entire architecture to eliminate icon overlaps and clear connection labels',
+      autoOrganizeToast: 'Architecture auto-organized successfully! Clean alignment and zero overlaps.',
     },
 
     // Property Panel (Right Inspector)
@@ -827,6 +833,9 @@ export const translations = {
       stampDate: 'Fecha',
       stampVersion: 'Versión',
       dragDropContainer: 'Suelta dentro del contenedor para agrupar',
+      autoOrganize: 'Organizar Arquitectura',
+      autoOrganizeDesc: 'Organiza automáticamente toda la arquitectura para evitar superposiciones de iconos y despejar etiquetas de conexiones',
+      autoOrganizeToast: '¡Arquitectura organizada automáticamente con éxito! Alineación limpia y sin superposiciones.',
     },
 
     // Property Panel (Right Inspector)

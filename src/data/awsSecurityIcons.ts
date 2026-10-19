@@ -716,5 +716,95 @@ export const AWS_SECURITY_ICONS: CloudIconDefinition[] = [
       <!-- Cross Mark 3 -->
       <path d="M37 44L45 50M45 44L37 50" stroke="#DD344C" stroke-width="2.5" stroke-linecap="round"/>
     </svg>`
+  },
+
+  // 29. AWS IAM Identity Center (Successor to AWS Single Sign-On / AWS SSO)
+  {
+    key: 'aws_iam_identity_center',
+    name: 'IAM Identity Center',
+    provider: 'aws',
+    category: 'security',
+    brandColor: '#DD344C',
+    defaultResourceType: 'aws_ssoadmin_permission_set',
+    defaultSpecs: { count: 1, region: 'us-east-1' },
+    description: 'Gerenciamento centralizado de identidades, logon único (SSO), federação SAML 2.0 / OIDC e permissões de acesso multi-conta na AWS',
+    svg: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="64" height="64" rx="12" fill="#DD344C" fill-opacity="0.12" stroke="#DD344C" stroke-width="1.5"/>
+      <!-- ID Badge / Security Card Frame -->
+      <rect x="18" y="14" width="28" height="38" rx="4" stroke="#DD344C" stroke-width="2.5" fill="none"/>
+      <!-- Badge Lanyard Holder -->
+      <rect x="27" y="10" width="10" height="4" rx="1.5" stroke="#DD344C" stroke-width="2" fill="white"/>
+      <circle cx="32" cy="12" r="1" fill="#DD344C"/>
+      <!-- User Head & Shoulders -->
+      <circle cx="32" cy="23" r="5" fill="#DD344C"/>
+      <path d="M23 35C23 31 27 29.5 32 29.5C37 29.5 41 31 41 35" stroke="#DD344C" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- Keyhole / Single Sign-On Portal -->
+      <circle cx="32" cy="41" r="2.5" stroke="#DD344C" stroke-width="1.8" fill="white"/>
+      <path d="M31 43.5L30.5 47H33.5L33 43.5" stroke="#DD344C" stroke-width="1.5" stroke-linejoin="round" fill="#DD344C"/>
+      <!-- Radiating Multi-Account Federation Rays -->
+      <path d="M12 32H16M14 29L11 32L14 35" stroke="#DD344C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M52 32H48M50 29L53 32L50 35" stroke="#DD344C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="9" cy="32" r="2" fill="#DD344C"/>
+      <circle cx="55" cy="32" r="2" fill="#DD344C"/>
+    </svg>`
+  },
+
+  // 30. Amazon GuardDuty (Intelligent Threat Detection)
+  {
+    key: 'aws_guardduty',
+    name: 'GuardDuty',
+    provider: 'aws',
+    category: 'security',
+    brandColor: '#DD344C',
+    defaultResourceType: 'aws_guardduty_detector',
+    defaultSpecs: { count: 1, region: 'us-east-1' },
+    description: 'Detecção inteligente e contínua de ameaças e anomalias com Machine Learning analisando DNS, VPC Flow Logs, CloudTrail e EKS',
+    svg: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="64" height="64" rx="12" fill="#DD344C" fill-opacity="0.12" stroke="#DD344C" stroke-width="1.5"/>
+      <!-- GuardDuty Shield -->
+      <path d="M32 10L49 17V30C49 42 41 49.5 32 54C23 49.5 15 42 15 30V17L32 10Z" stroke="#DD344C" stroke-width="3" fill="#DD344C" fill-opacity="0.12" stroke-linejoin="round"/>
+      <!-- Radar Target Scanner Rings -->
+      <circle cx="32" cy="31" r="12" stroke="#DD344C" stroke-width="2" fill="none"/>
+      <circle cx="32" cy="31" r="6" stroke="#DD344C" stroke-width="1.5" fill="none"/>
+      <!-- Radar Crosshairs -->
+      <line x1="32" y1="17" x2="32" y2="45" stroke="#DD344C" stroke-width="1.8" stroke-dasharray="2 2"/>
+      <line x1="18" y1="31" x2="46" y2="31" stroke="#DD344C" stroke-width="1.8" stroke-dasharray="2 2"/>
+      <!-- Threat Detection Lock-on Beacon -->
+      <circle cx="37" cy="26" r="3.2" fill="#DD344C"/>
+      <circle cx="37" cy="26" r="5.5" stroke="#DD344C" stroke-width="1.2" stroke-dasharray="1.5 1.5"/>
+    </svg>`
+  },
+
+  // 31. AWS Network Firewall (Full Managed Network Firewall & IPS)
+  {
+    key: 'aws_network_firewall',
+    name: 'AWS Network Firewall',
+    provider: 'aws',
+    category: 'security',
+    brandColor: '#DD344C',
+    defaultResourceType: 'aws_networkfirewall_firewall',
+    defaultSpecs: { count: 1, region: 'us-east-1' },
+    description: 'Firewall de rede gerenciado com inspeção profunda de pacotes (DPI), prevenção contra invasões (IPS) com regras Suricata na VPC',
+    svg: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="64" height="64" rx="12" fill="#DD344C" fill-opacity="0.12" stroke="#DD344C" stroke-width="1.5"/>
+      <!-- Perimeter Arcs -->
+      <path d="M12 24C14 15 22 10 32 10C42 10 50 15 52 24" stroke="#DD344C" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M12 40C14 49 22 54 32 54C42 54 50 49 52 40" stroke="#DD344C" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- Firewall Brick Wall Core -->
+      <rect x="18" y="27" width="28" height="17" rx="2" stroke="#DD344C" stroke-width="2.5" fill="#DD344C" fill-opacity="0.2"/>
+      <line x1="18" y1="32.5" x2="46" y2="32.5" stroke="#DD344C" stroke-width="1.8"/>
+      <line x1="18" y1="38.5" x2="46" y2="38.5" stroke="#DD344C" stroke-width="1.8"/>
+      <line x1="32" y1="27" x2="32" y2="32.5" stroke="#DD344C" stroke-width="1.8"/>
+      <line x1="25" y1="32.5" x2="25" y2="38.5" stroke="#DD344C" stroke-width="1.8"/>
+      <line x1="39" y1="32.5" x2="39" y2="38.5" stroke="#DD344C" stroke-width="1.8"/>
+      <line x1="32" y1="38.5" x2="32" y2="44" stroke="#DD344C" stroke-width="1.8"/>
+      <!-- Protection Flames rising above the wall -->
+      <path d="M22 27C22 23 24 21 26 17C28 21 29 22 29 27" stroke="#DD344C" stroke-width="2" stroke-linecap="round" fill="none"/>
+      <path d="M30 27C30 21 33 19 35 15C37 20 38 22 38 27" stroke="#DD344C" stroke-width="2" stroke-linecap="round" fill="none"/>
+      <path d="M38 27C38 23 40 21 42 18C44 21 45 23 45 27" stroke="#DD344C" stroke-width="2" stroke-linecap="round" fill="none"/>
+      <!-- Inbound / Outbound Packet Inspection Arrows -->
+      <path d="M7 35.5H14M11 32.5L14 35.5L11 38.5" stroke="#DD344C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M50 35.5H57M54 32.5L57 35.5L54 38.5" stroke="#DD344C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>`
   }
 ];

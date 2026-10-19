@@ -21,6 +21,7 @@ import { ChangelogModal } from './components/ChangelogModal';
 import { LATEST_APP_VERSION } from './data/changelogData';
 import { DocumentationModal } from './components/DocumentationModal';
 import { ProfilePreferencesModal } from './components/ProfilePreferencesModal';
+import { MultiCloudLogo } from './components/MultiCloudLogo';
 import { AuthModal } from './components/AuthModal';
 import { AuthScreen } from './components/AuthScreen';
 import { useAuth } from './contexts/AuthContext';
@@ -31,7 +32,7 @@ import { saveArchitectureToStorage, saveAutosaveDraft, getAutosaveDraft } from '
 import { exportArchitecturePdf } from './utils/exportUtils';
 import { fitDiagramToContainer } from './utils/canvasNavigation';
 import { getNextSubnetCidr } from './utils/networkUtils';
-import { CheckCircle2, Cloud, BookOpen } from 'lucide-react';
+import { CheckCircle2, Cloud, BookOpen, Youtube } from 'lucide-react';
 import { ProposalType } from './types';
 
 // Helper to detect OS system theme preference (Dark or Light mode)
@@ -877,9 +878,7 @@ export default function App() {
         }`}
       >
         <div className="flex flex-col items-center space-y-4">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-400 flex items-center justify-center text-white shadow-xl shadow-blue-500/25 animate-pulse">
-            <Cloud className="w-8 h-8" />
-          </div>
+          <MultiCloudLogo className="w-16 h-16 shadow-2xl shadow-indigo-500/30 animate-pulse" />
           <div className="text-center">
             <h1 className="text-base font-bold tracking-tight">MultiCloud Canvas Studio</h1>
             <p className="text-xs text-slate-400 mt-0.5">Carregando ambiente de trabalho...</p>
@@ -1097,8 +1096,6 @@ export default function App() {
               >
                 <span>EdsInfoBR - Consultoria End-to-End em Nuvem & Inteligência Artificial</span>
               </a>
-              <span className="text-slate-500 opacity-50 px-1 hidden sm:inline">•</span>
-              <span className="hidden sm:inline">© 2026 MultiCloud Canvas Studio</span>
             </div>
             <div className="flex items-center space-x-3 text-[11px] shrink-0">
               <button
@@ -1128,6 +1125,18 @@ export default function App() {
                 <span>Feedback & Reportar Erros</span>
               </button>
               <span className="text-slate-500 opacity-50 hidden sm:inline">•</span>
+              <a
+                href="https://www.youtube.com/@edsinfobr"
+                target="_blank"
+                rel="noopener noreferrer"
+                id="footer-link-youtube"
+                className="font-semibold text-red-500 hover:text-red-400 dark:text-red-400 dark:hover:text-red-300 hover:underline transition-colors flex items-center space-x-1"
+                title="Canal no YouTube (@edsinfobr)"
+              >
+                <Youtube className="w-3.5 h-3.5 text-red-500" />
+                <span>YouTube</span>
+              </a>
+              <span className="text-slate-500 opacity-50 hidden sm:inline">•</span>
               <span className="text-slate-500 flex items-center space-x-1">
                 <span>Criado e mantido por</span>
                 <a
@@ -1140,6 +1149,8 @@ export default function App() {
                   @edsinfobr
                 </a>
               </span>
+              <span className="text-slate-500 opacity-50 hidden sm:inline">•</span>
+              <span className="text-slate-500 hidden sm:inline">© 2026 MultiCloud Canvas Studio</span>
             </div>
           </footer>
         </>

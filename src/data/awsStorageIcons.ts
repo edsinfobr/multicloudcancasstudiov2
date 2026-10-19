@@ -1254,5 +1254,33 @@ export const AWS_STORAGE_ICONS: CloudIconDefinition[] = [
       <circle cx="42" cy="36" r="4" stroke="#3F8624" stroke-width="2"/>
       <line x1="26" y1="36" x2="38" y2="36" stroke="#3F8624" stroke-width="2"/>
     </svg>`,
+  },
+
+  // 72. Central Log Archive (S3) - Dedicated immutable multi-account security & audit log repository
+  {
+    key: 'aws_central_log_archive_s3',
+    name: 'Central Log Archive (S3)',
+    provider: 'aws',
+    category: 'storage',
+    brandColor: '#3F8624',
+    defaultResourceType: 'aws_s3_bucket',
+    defaultSpecs: { storageGb: 1000, transferGb: 200, region: 'us-east-1' },
+    description: 'Bucket S3 imutável (Object Lock e KMS CMK) dedicado à retenção e agregação centralizada de logs de auditoria (CloudTrail, VPC Flow Logs e AWS Config)',
+    svg: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="64" height="64" rx="12" fill="#3F8624" fill-opacity="0.12" stroke="#3F8624" stroke-width="1.5"/>
+      <!-- S3 Bucket Cylinder Body -->
+      <path d="M12 21C12 16.5 20.5 13.5 31 13.5C41.5 13.5 50 16.5 50 21V43C50 47.5 41.5 50.5 31 50.5C20.5 50.5 12 47.5 12 43V21Z" stroke="#3F8624" stroke-width="2.5" fill="#3F8624" fill-opacity="0.12"/>
+      <ellipse cx="31" cy="21" rx="19" ry="7" stroke="#3F8624" stroke-width="2.5" fill="white"/>
+      <!-- Internal Audit Log Paper Sheet -->
+      <rect x="22" y="18" width="18" height="24" rx="2" stroke="#3F8624" stroke-width="2" fill="white"/>
+      <line x1="26" y1="24" x2="36" y2="24" stroke="#3F8624" stroke-width="1.8" stroke-linecap="round"/>
+      <line x1="26" y1="29" x2="36" y2="29" stroke="#3F8624" stroke-width="1.8" stroke-linecap="round"/>
+      <line x1="26" y1="34" x2="32" y2="34" stroke="#3F8624" stroke-width="1.8" stroke-linecap="round"/>
+      <!-- Archival Security Vault Padlock (Bottom Right) -->
+      <rect x="34" y="34" width="18" height="15" rx="3" stroke="#DD344C" stroke-width="2.2" fill="white"/>
+      <path d="M38 34V30C38 27.5 40 26 43 26C46 26 48 27.5 48 30V34" stroke="#DD344C" stroke-width="2" fill="none"/>
+      <circle cx="43" cy="40" r="1.5" fill="#DD344C"/>
+      <line x1="43" y1="41.5" x2="43" y2="44.5" stroke="#DD344C" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>`
   }
 ];

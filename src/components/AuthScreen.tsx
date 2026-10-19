@@ -29,6 +29,7 @@ import {
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../i18n/LanguageContext';
 import { LanguageSelector } from './LanguageSelector';
+import { MultiCloudLogo } from './MultiCloudLogo';
 import { LATEST_APP_VERSION } from '../data/changelogData';
 
 interface AuthScreenProps {
@@ -195,9 +196,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
         }`}
       >
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-400 flex items-center justify-center text-white shadow-md shadow-blue-500/25">
-            <Cloud className="w-5 h-5" />
-          </div>
+          <MultiCloudLogo className="w-10 h-10 shadow-lg cursor-pointer" />
           <div>
             <div className="flex items-center space-x-2">
               <span className="font-bold tracking-tight text-sm sm:text-base">

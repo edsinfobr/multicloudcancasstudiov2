@@ -892,6 +892,238 @@ export const STARTER_TEMPLATES: DiagramState[] = [
   // AWS TEMPLATES
   // ==========================================
   {
+    id: 'template_aws_landing_zone_sra',
+    title: 'AWS Landing Zone & Security Architecture (SRA)',
+    description: 'Arquitetura corporativa multi-conta com AWS Control Tower, IAM Identity Center (SSO), Central Log Archive (S3), Amazon GuardDuty, AWS Config e AWS Network Firewall na VPC de inspeção de tráfego.',
+    primaryProvider: 'aws',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    containers: [
+      {
+        id: 'c_mgmt_acc',
+        name: 'Management Account (Organização & Governança)',
+        provider: 'aws',
+        type: 'aws_account',
+        x: 40,
+        y: 40,
+        width: 440,
+        height: 250,
+        color: '#CC2264'
+      },
+      {
+        id: 'c_sec_tooling',
+        name: 'Security Tooling Account (Detecção & Auditoria)',
+        provider: 'aws',
+        type: 'aws_account',
+        x: 510,
+        y: 40,
+        width: 440,
+        height: 250,
+        color: '#DD344C'
+      },
+      {
+        id: 'c_log_archive',
+        name: 'Log Archive Account (Repositório Central Imutável)',
+        provider: 'aws',
+        type: 'aws_account',
+        x: 40,
+        y: 320,
+        width: 440,
+        height: 250,
+        color: '#3F8624'
+      },
+      {
+        id: 'c_network_inspect',
+        name: 'Network Core & Inspection VPC (Perímetro)',
+        provider: 'aws',
+        type: 'vpc',
+        x: 510,
+        y: 320,
+        width: 440,
+        height: 250,
+        color: '#8C4FFF'
+      }
+    ],
+    nodes: [
+      {
+        id: 'node_control_tower',
+        name: 'AWS Control Tower',
+        provider: 'aws',
+        category: 'devops',
+        iconKey: 'aws_control_tower',
+        resourceType: 'aws_controltower_control',
+        x: 80,
+        y: 110,
+        containerId: 'c_mgmt_acc',
+        specs: { count: 1, region: 'us-east-1' },
+        tags: { Role: 'Multi-Account Landing Zone Baseline', Scope: 'Organization' }
+      },
+      {
+        id: 'node_identity_center',
+        name: 'IAM Identity Center',
+        provider: 'aws',
+        category: 'security',
+        iconKey: 'aws_iam_identity_center',
+        resourceType: 'aws_ssoadmin_permission_set',
+        x: 270,
+        y: 110,
+        containerId: 'c_mgmt_acc',
+        specs: { count: 1, region: 'us-east-1' },
+        tags: { Role: 'Central SSO & MFA Access', Federation: 'SAML/OIDC' }
+      },
+      {
+        id: 'node_guardduty',
+        name: 'Amazon GuardDuty',
+        provider: 'aws',
+        category: 'security',
+        iconKey: 'aws_guardduty',
+        resourceType: 'aws_guardduty_detector',
+        x: 550,
+        y: 110,
+        containerId: 'c_sec_tooling',
+        specs: { count: 1, region: 'us-east-1' },
+        tags: { Role: 'Continuous Threat Detection', Datasources: 'DNS, VPC Flow, CloudTrail, EKS' }
+      },
+      {
+        id: 'node_security_hub',
+        name: 'AWS Security Hub',
+        provider: 'aws',
+        category: 'security',
+        iconKey: 'aws_security_hub_finding',
+        resourceType: 'aws_securityhub_account',
+        x: 740,
+        y: 110,
+        containerId: 'c_sec_tooling',
+        specs: { count: 1, region: 'us-east-1' },
+        tags: { Role: 'Security Posture & Compliance' }
+      },
+      {
+        id: 'node_central_log_archive',
+        name: 'Central Log Archive (S3)',
+        provider: 'aws',
+        category: 'storage',
+        iconKey: 'aws_central_log_archive_s3',
+        resourceType: 'aws_s3_bucket',
+        x: 80,
+        y: 390,
+        containerId: 'c_log_archive',
+        specs: { storageGb: 2000, transferGb: 400, region: 'us-east-1' },
+        tags: { Role: 'Immutable Audit Trail', Protection: 'Object Lock & KMS CMK' }
+      },
+      {
+        id: 'node_aws_config',
+        name: 'AWS Config',
+        provider: 'aws',
+        category: 'devops',
+        iconKey: 'aws_config',
+        resourceType: 'aws_config_configuration_recorder',
+        x: 270,
+        y: 390,
+        containerId: 'c_log_archive',
+        specs: { count: 1, region: 'us-east-1' },
+        tags: { Role: 'Configuration History & Compliance Aggregator' }
+      },
+      {
+        id: 'node_network_firewall',
+        name: 'AWS Network Firewall',
+        provider: 'aws',
+        category: 'security',
+        iconKey: 'aws_network_firewall',
+        resourceType: 'aws_networkfirewall_firewall',
+        x: 550,
+        y: 390,
+        containerId: 'c_network_inspect',
+        specs: { count: 1, region: 'us-east-1' },
+        tags: { Role: 'Deep Packet Inspection & Stateful IPS', Policy: 'Suricata Rules' }
+      },
+      {
+        id: 'node_transit_gateway',
+        name: 'Transit Gateway Hub',
+        provider: 'aws',
+        category: 'networking',
+        iconKey: 'aws_transit_gateway',
+        resourceType: 'aws_ec2_transit_gateway',
+        x: 740,
+        y: 390,
+        containerId: 'c_network_inspect',
+        specs: { count: 1, region: 'us-east-1' },
+        tags: { Role: 'Inter-VPC Central Routing' }
+      }
+    ],
+    links: [
+      {
+        id: 'l_ct_to_all',
+        from: 'node_control_tower',
+        to: 'node_identity_center',
+        label: 'SCPs & Org Access',
+        protocol: 'Internal',
+        style: 'solid',
+        arrowHead: 'end',
+        color: '#CC2264'
+      },
+      {
+        id: 'l_ct_to_log',
+        from: 'node_control_tower',
+        to: 'node_central_log_archive',
+        label: 'Audit Trail Forwarding',
+        protocol: 'HTTPS',
+        style: 'dashed',
+        arrowHead: 'end',
+        color: '#3F8624'
+      },
+      {
+        id: 'l_ct_to_config',
+        from: 'node_control_tower',
+        to: 'node_aws_config',
+        label: 'Aggregated Rules',
+        protocol: 'HTTPS',
+        style: 'dashed',
+        arrowHead: 'end',
+        color: '#CC2264'
+      },
+      {
+        id: 'l_gd_to_sechub',
+        from: 'node_guardduty',
+        to: 'node_security_hub',
+        label: 'Threat Findings',
+        protocol: 'Internal',
+        style: 'solid',
+        arrowHead: 'end',
+        color: '#DD344C'
+      },
+      {
+        id: 'l_config_to_log',
+        from: 'node_aws_config',
+        to: 'node_central_log_archive',
+        label: 'Snapshots & History',
+        protocol: 'HTTPS',
+        style: 'solid',
+        arrowHead: 'end',
+        color: '#3F8624'
+      },
+      {
+        id: 'l_tgw_to_fw',
+        from: 'node_transit_gateway',
+        to: 'node_network_firewall',
+        label: 'Inspection Routing',
+        protocol: 'TCP',
+        style: 'solid',
+        arrowHead: 'both',
+        color: '#DD344C'
+      },
+      {
+        id: 'l_fw_to_guardduty',
+        from: 'node_network_firewall',
+        to: 'node_guardduty',
+        label: 'Flow Logs Analysis',
+        protocol: 'HTTPS',
+        style: 'dotted',
+        arrowHead: 'end',
+        color: '#DD344C'
+      }
+    ]
+  },
+  {
     id: 'template_aws_3tier',
     title: 'AWS High Availability 3-Tier Web App (IaaS)',
     description: 'Production-ready 3-tier AWS IaaS architecture with Public Subnet ALB, EC2 Auto Scaling Group in Private Subnets, and Multi-AZ RDS PostgreSQL with S3 & CloudFront.',

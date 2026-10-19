@@ -1404,6 +1404,30 @@ export const generateTerraformCode = (diagram: DiagramState): TerraformProjectFi
         mainTf += `resource "aws_networkfirewall_firewall_policy" "${sanitizeId}_policy" {\n  name = "${sanitizeId.toLowerCase()}-policy"\n  firewall_policy {\n    stateless_default_actions          = ["aws:forward_to_sfe"]\n    stateless_fragment_default_actions = ["aws:forward_to_sfe"]\n  }\n}\n\nresource "aws_networkfirewall_firewall" "${sanitizeId}" {\n  name                = "${sanitizeId.toLowerCase()}-endpoint-fw"\n  firewall_policy_arn = aws_networkfirewall_firewall_policy.${sanitizeId}_policy.arn\n  vpc_id              = "vpc-12345678"\n  subnet_mapping {\n    subnet_id = "subnet-11223344"\n  }\n  tags = {\n    Name = "${name}"\n  }\n}\n\n`;
         break;
 
+      case 'aws_network_firewall':
+        mainTf += `resource "aws_networkfirewall_rule_group" "${sanitizeId}_ips" {\n  capacity = 100\n  name     = "${sanitizeId.toLowerCase()}-ips-rules"\n  type     = "STATEFUL"\n  rule_group {\n    rules_source {\n      stateful_rule {\n        action = "DROP"\n        header {\n          destination      = "ANY"\n          destination_port = "ANY"\n          direction        = "FORWARD"\n          protocol         = "IP"\n          source           = "ANY"\n          source_port      = "ANY"\n        }\n        rule_option {\n          keyword = "sid:1000001;"\n        }\n      }\n    }\n  }\n  tags = {\n    Name = "${name} Stateful IPS"\n  }\n}\n\nresource "aws_networkfirewall_firewall_policy" "${sanitizeId}_policy" {\n  name = "${sanitizeId.toLowerCase()}-policy"\n  firewall_policy {\n    stateless_default_actions          = ["aws:forward_to_sfe"]\n    stateless_fragment_default_actions = ["aws:forward_to_sfe"]\n    stateful_rule_group_reference {\n      resource_arn = aws_networkfirewall_rule_group.${sanitizeId}_ips.arn\n    }\n  }\n}\n\nresource "aws_networkfirewall_firewall" "${sanitizeId}" {\n  name                = "${sanitizeId.toLowerCase()}-firewall"\n  firewall_policy_arn = aws_networkfirewall_firewall_policy.${sanitizeId}_policy.arn\n  vpc_id              = "vpc-landing-zone-inspection"\n  subnet_mapping {\n    subnet_id = "subnet-firewall-az1"\n  }\n  tags = {\n    Name = "${name}"\n  }\n}\n\n`;
+        break;
+
+      case 'aws_control_tower':
+        mainTf += `resource "aws_controltower_control" "${sanitizeId}" {\n  control_identifier = "arn:aws:controltower:us-east-1::control/AWS-GR_DISALLOW_CROSS_REGION_NETWORKING"\n  target_identifier  = "arn:aws:organizations::123456789012:ou/o-example/ou-core"\n}\n\n`;
+        break;
+
+      case 'aws_iam_identity_center':
+        mainTf += `data "aws_ssoadmin_instances" "current" {}\n\nresource "aws_ssoadmin_permission_set" "${sanitizeId}" {\n  name             = "${sanitizeId.toLowerCase()}-admin-set"\n  description      = "Administrator Access permission set managed by ${name}"\n  instance_arn     = tolist(data.aws_ssoadmin_instances.current.arns)[0]\n  session_duration = "PT8H"\n  tags = {\n    Name = "${name}"\n  }\n}\n\nresource "aws_ssoadmin_managed_policy_attachment" "${sanitizeId}_admin" {\n  instance_arn       = tolist(data.aws_ssoadmin_instances.current.arns)[0]\n  managed_policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"\n  permission_set_arn = aws_ssoadmin_permission_set.${sanitizeId}.arn\n}\n\n`;
+        break;
+
+      case 'aws_central_log_archive_s3':
+        mainTf += `resource "aws_kms_key" "${sanitizeId}_kms" {\n  description             = "KMS CMK for Central Log Archive S3 Bucket"\n  deletion_window_in_days = 30\n  enable_key_rotation     = true\n  tags = {\n    Name = "${name} Encryption Key"\n  }\n}\n\nresource "aws_s3_bucket" "${sanitizeId}" {\n  bucket        = "${sanitizeId.toLowerCase()}-central-log-archive-123456"\n  force_destroy = false\n  tags = {\n    Name        = "${name}"\n    Environment = "Security & Audit"\n  }\n}\n\nresource "aws_s3_bucket_versioning" "${sanitizeId}_ver" {\n  bucket = aws_s3_bucket.${sanitizeId}.id\n  versioning_configuration {\n    status = "Enabled"\n  }\n}\n\nresource "aws_s3_bucket_server_side_encryption_configuration" "${sanitizeId}_enc" {\n  bucket = aws_s3_bucket.${sanitizeId}.id\n  rule {\n    apply_server_side_encryption_by_default {\n      kms_master_key_id = aws_kms_key.${sanitizeId}_kms.arn\n      sse_algorithm     = "aws:kms"\n    }\n  }\n}\n\nresource "aws_s3_bucket_public_access_block" "${sanitizeId}_block" {\n  bucket                  = aws_s3_bucket.${sanitizeId}.id\n  block_public_acls       = true\n  block_public_policy     = true\n  ignore_public_acls      = true\n  restrict_public_buckets = true\n}\n\n`;
+        break;
+
+      case 'aws_guardduty':
+        mainTf += `resource "aws_guardduty_detector" "${sanitizeId}" {\n  enable = true\n  datasources {\n    s3_logs {\n      enable = true\n    }\n    kubernetes {\n      audit_logs {\n        enable = true\n      }\n    }\n    malware_protection {\n      scan_ec2_instance_with_findings {\n        ebs_volumes {\n          enable = true\n        }\n      }\n    }\n  }\n  tags = {\n    Name = "${name}"\n  }\n}\n\n`;
+        break;
+
+      case 'aws_config':
+        mainTf += `resource "aws_config_configuration_recorder" "${sanitizeId}" {\n  name     = "${sanitizeId.toLowerCase()}-recorder"\n  role_arn = "arn:aws:iam::123456789012:role/aws-service-role/config.amazonaws.com/AWSServiceRoleForConfig"\n  recording_group {\n    all_supported                 = true\n    include_global_resource_types = true\n  }\n}\n\nresource "aws_config_configuration_recorder_status" "${sanitizeId}_status" {\n  name       = aws_config_configuration_recorder.${sanitizeId}.name\n  is_enabled = true\n  depends_on = [aws_config_configuration_recorder.${sanitizeId}]\n}\n\n`;
+        break;
+
       case 'aws_security_hub_finding':
         mainTf += `resource "aws_securityhub_account" "${sanitizeId}" {}\n\nresource "aws_securityhub_finding_aggregator" "${sanitizeId}_agg" {\n  linking_mode = "ALL_REGIONS"\n  depends_on   = [aws_securityhub_account.${sanitizeId}]\n}\n\n`;
         break;
