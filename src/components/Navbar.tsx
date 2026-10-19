@@ -239,7 +239,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               type="text"
               value={diagram.title || ''}
               onChange={handleTitleChange}
-              className={`text-xs sm:text-sm font-bold bg-transparent border-none outline-none text-center w-28 sm:w-48 md:w-60 lg:w-72 truncate ${
+              className={`text-xs sm:text-sm font-normal bg-transparent border-none outline-none text-center w-28 sm:w-48 md:w-60 lg:w-72 truncate ${
                 theme === 'light'
                   ? 'text-slate-900 placeholder-slate-400'
                   : 'text-white placeholder-slate-500'

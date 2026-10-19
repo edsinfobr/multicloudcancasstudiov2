@@ -1797,7 +1797,7 @@ export const Canvas: React.FC<CanvasProps> = ({
       {!isPresentationMode && (
         <div
           id="canvas-zoom-toolbar"
-          className={`absolute bottom-5 left-1/2 -translate-x-1/2 z-30 border backdrop-blur-md px-2.5 py-1.5 rounded-xl shadow-2xl flex items-center space-x-2 text-xs max-w-[calc(100%-2rem)] overflow-x-auto sm:overflow-visible transition-all ${
+          className={`absolute bottom-5 left-1/2 -translate-x-1/2 z-30 border backdrop-blur-md px-2.5 py-1.5 rounded-xl shadow-2xl flex items-center flex-nowrap space-x-2 text-xs max-w-[calc(100%-2rem)] overflow-x-auto sm:overflow-visible transition-all ${
             isLight
               ? 'bg-white/95 border-slate-300 text-slate-800'
               : 'bg-[#12141A]/90 border-white/15 text-slate-200'
@@ -1893,8 +1893,8 @@ export const Canvas: React.FC<CanvasProps> = ({
           <div className={`w-[1px] h-4 my-auto ${isLight ? 'bg-slate-300' : 'bg-white/10'}`} />
 
           {/* Line Routing Selector Toolbar */}
-          <div className="flex items-center space-x-1">
-            <span className={`text-[10px] font-bold uppercase tracking-wider px-1 ${
+          <div className="flex items-center space-x-1 shrink-0">
+            <span className={`text-[10px] font-bold uppercase tracking-wider px-1 whitespace-nowrap ${
               isLight ? 'text-slate-500' : 'text-slate-400'
             }`}>
               Linhas:
@@ -1912,7 +1912,7 @@ export const Canvas: React.FC<CanvasProps> = ({
                   key={item.id}
                   type="button"
                   onClick={() => setPreferredLineType(item.id as any)}
-                  className={`px-2 py-1 rounded-lg text-xs font-bold border flex items-center space-x-1 transition-all ${
+                  className={`px-2 py-1 rounded-lg text-xs font-bold border flex items-center space-x-1 transition-all whitespace-nowrap shrink-0 ${
                     isAct
                       ? isLight
                         ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
@@ -1924,7 +1924,7 @@ export const Canvas: React.FC<CanvasProps> = ({
                   title={`${item.title} (Clique para definir estilo padrão)`}
                 >
                   <Icon className="w-3.5 h-3.5" />
-                  <span className="hidden sm:inline">{item.label}</span>
+                  <span className="hidden sm:inline whitespace-nowrap">{item.label}</span>
                 </button>
               );
             })}
@@ -1933,14 +1933,14 @@ export const Canvas: React.FC<CanvasProps> = ({
               <button
                 type="button"
                 onClick={() => handleApplyLineTypeToAll(preferredLineType)}
-                className={`px-2 py-1 rounded-lg text-[11px] font-bold border transition-all ${
+                className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border transition-all whitespace-nowrap shrink-0 flex items-center ${
                   isLight
                     ? 'bg-amber-50 text-amber-900 border-amber-300 hover:bg-amber-100 shadow-sm'
                     : 'bg-amber-500/20 text-amber-300 border-amber-500/40 hover:bg-amber-500/30 shadow-sm'
                 }`}
                 title={`Aplicar estilo ${preferredLineType} a todas as ${diagram.links.length} ligações do diagrama`}
               >
-                <span>Aplicar a Todas</span>
+                <span className="whitespace-nowrap">Aplicar a Todas</span>
               </button>
             )}
           </div>
@@ -1951,7 +1951,7 @@ export const Canvas: React.FC<CanvasProps> = ({
             type="button"
             id="btn-toggle-snap-grid"
             onClick={() => setIsGridMenuOpen(!isGridMenuOpen)}
-            className={`px-2.5 py-1 rounded-lg text-xs font-bold border flex items-center space-x-1.5 transition-all shadow-sm ${
+            className={`px-2.5 py-1 rounded-lg text-xs font-bold border flex items-center space-x-1.5 transition-all shadow-sm whitespace-nowrap shrink-0 ${
               gridType !== 'none'
                 ? isLight
                   ? 'bg-blue-600 text-white border-blue-600 shadow-blue-500/20'
@@ -1962,9 +1962,9 @@ export const Canvas: React.FC<CanvasProps> = ({
             }`}
             title="Opções de Grade da Lousa (Quadriculado, Pontilhado, Cruzes, Milimetrado, Em Branco)"
           >
-            <Grid className={`w-3.5 h-3.5 ${gridType !== 'none' ? (isLight ? 'text-white' : 'text-blue-400') : 'text-slate-400'}`} />
-            <span>Grade: {gridType === 'none' ? 'OFF' : GRID_OPTIONS.find((o) => o.id === gridType)?.label || 'ON'}</span>
-            <ChevronDown className={`w-3 h-3 transition-transform duration-150 ${isGridMenuOpen ? 'rotate-180' : ''}`} />
+            <Grid className={`w-3.5 h-3.5 shrink-0 ${gridType !== 'none' ? (isLight ? 'text-white' : 'text-blue-400') : 'text-slate-400'}`} />
+            <span className="whitespace-nowrap">Grade: {gridType === 'none' ? 'OFF' : GRID_OPTIONS.find((o) => o.id === gridType)?.label || 'ON'}</span>
+            <ChevronDown className={`w-3 h-3 shrink-0 transition-transform duration-150 ${isGridMenuOpen ? 'rotate-180' : ''}`} />
           </button>
 
           {/* Grid Options Popover Menu */}
@@ -2785,13 +2785,13 @@ export const Canvas: React.FC<CanvasProps> = ({
                     if (e.key === 'Escape') setEditingId(null);
                   }}
                   onClick={(e) => e.stopPropagation()}
-                  className={`border rounded px-1 text-xs text-center outline-none w-full mt-1 ${
-                    isLight ? 'bg-slate-100 border-blue-500 text-slate-950 font-bold' : 'bg-black/60 border-blue-500 text-slate-100'
+                  className={`border rounded px-1 text-xs text-center outline-none w-full mt-1 font-normal ${
+                    isLight ? 'bg-slate-100 border-blue-500 text-slate-950' : 'bg-black/60 border-blue-500 text-slate-100'
                   }`}
                 />
               ) : (
-                <span className={`text-xs font-bold text-center leading-tight mt-1 line-clamp-2 w-full break-words ${
-                  isLight ? 'text-slate-950' : 'text-slate-100'
+                <span className={`text-xs font-normal text-center leading-tight mt-1 line-clamp-2 w-full break-words ${
+                  isLight ? 'text-slate-900' : 'text-slate-100'
                 }`}>
                   {node.name}
                 </span>
