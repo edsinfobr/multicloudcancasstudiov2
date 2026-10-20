@@ -1601,11 +1601,11 @@ export const Canvas: React.FC<CanvasProps> = ({
           {selectedNodeIds.length === 1 && !connectingSourceId && (
             <button
               onClick={(e) => handleStartConnection(e, selectedNodeIds[0])}
-              className="flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-indigo-600/40 hover:bg-indigo-600/70 text-indigo-200 border border-indigo-500/50 transition-all font-semibold"
+              className="flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-indigo-600/40 hover:bg-indigo-600/70 text-indigo-200 border border-indigo-500/50 transition-all font-semibold whitespace-nowrap shrink-0"
               title="Ligar este componente a outro"
             >
               <Zap className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
-              <span>Conectar a...</span>
+              <span className="whitespace-nowrap">Conectar</span>
             </button>
           )}
 
@@ -2058,7 +2058,8 @@ export const Canvas: React.FC<CanvasProps> = ({
             type="button"
             id="btn-toggle-snap-grid"
             onClick={() => setIsGridMenuOpen(!isGridMenuOpen)}
-            className={`px-2.5 py-1 rounded-lg text-xs font-bold border flex items-center space-x-1.5 transition-all shadow-sm whitespace-nowrap shrink-0 ${
+            style={{ whiteSpace: 'nowrap', minWidth: 'max-content', flexShrink: 0 }}
+            className={`px-2.5 py-1 rounded-lg text-xs font-bold border inline-flex flex-row flex-nowrap items-center space-x-1.5 transition-all shadow-sm whitespace-nowrap shrink-0 ${
               gridType !== 'none'
                 ? isLight
                   ? 'bg-[#0077B6] text-white border-[#0096C7] shadow-[#0077B6]/20'
@@ -2070,7 +2071,12 @@ export const Canvas: React.FC<CanvasProps> = ({
             title="Opções de Grade da Lousa (Quadriculado, Pontilhado, Cruzes, Milimetrado, Em Branco)"
           >
             <Grid className={`w-3.5 h-3.5 shrink-0 ${gridType !== 'none' ? (isLight ? 'text-white' : 'text-[#48CAE4]') : 'text-slate-400'}`} />
-            <span className="whitespace-nowrap">Grade: {gridType === 'none' ? 'OFF' : GRID_OPTIONS.find((o) => o.id === gridType)?.label || 'ON'}</span>
+            <span
+              className="whitespace-nowrap inline-block shrink-0"
+              style={{ whiteSpace: 'nowrap', display: 'inline-block' }}
+            >
+              Grade:&nbsp;{gridType === 'none' ? 'OFF' : GRID_OPTIONS.find((o) => o.id === gridType)?.label || 'ON'}
+            </span>
             <ChevronDown className={`w-3 h-3 shrink-0 transition-transform duration-150 ${isGridMenuOpen ? 'rotate-180' : ''}`} />
           </button>
 

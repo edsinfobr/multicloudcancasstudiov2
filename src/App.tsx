@@ -59,6 +59,19 @@ const calculateNextVersionTag = (versionsList: DiagramState[], currentVer: strin
   return `${currentVer || 'v1.0'}-v2`;
 };
 
+const sanitizeDiagramNodes = (diag: DiagramState): DiagramState => ({
+  ...diag,
+  nodes: (diag.nodes || []).map((node) => {
+    if (node.name === 'Clients & Frontend' && (node.specs?.count || 1) > 1) {
+      return {
+        ...node,
+        specs: { ...node.specs, count: 1 }
+      };
+    }
+    return node;
+  })
+});
+
 export default function App() {
   // Versions list state: maintains all version tabs for the current project
   const [versions, setVersions] = useState<DiagramState[]>(() => {
@@ -67,7 +80,7 @@ export default function App() {
       if (cached) {
         const parsed = JSON.parse(cached);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed.map((item: DiagramState, idx: number) => ({
+          return parsed.map((item: DiagramState, idx: number) => sanitizeDiagramNodes({
             ...item,
             version: item.version || `v1.${idx}`
           }));
@@ -79,9 +92,9 @@ export default function App() {
 
     const draft = getAutosaveDraft();
     if (draft) {
-      return [{ ...draft, version: draft.version || 'v1.0' }];
+      return [sanitizeDiagramNodes({ ...draft, version: draft.version || 'v1.0' })];
     }
-    return [{ ...STARTER_TEMPLATES[0], version: 'v1.0' }];
+    return [sanitizeDiagramNodes({ ...STARTER_TEMPLATES[0], version: 'v1.0' })];
   });
 
   const [activeVersionId, setActiveVersionId] = useState<string>(() => versions[0]?.id || `diag_${Date.now()}`);

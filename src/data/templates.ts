@@ -58,7 +58,7 @@ export const STARTER_TEMPLATES: DiagramState[] = [
         x: 80,
         y: 80,
         containerId: 'c_oai_clients',
-        specs: { count: 10000 }
+        specs: { count: 1 }
       },
       {
         id: 'no_apigw',
@@ -1177,7 +1177,7 @@ export const STARTER_TEMPLATES: DiagramState[] = [
         resourceType: 'generic_user',
         x: 460,
         y: 0,
-        specs: { count: 10000 }
+        specs: { count: 1 }
       },
       {
         id: 'n_cloudfront',
@@ -1293,7 +1293,7 @@ export const STARTER_TEMPLATES: DiagramState[] = [
         x: 100,
         y: 120,
         containerId: 'c_aws_sls_vpc',
-        specs: { count: 10000 }
+        specs: { count: 1 }
       },
       {
         id: 'n_cognito',

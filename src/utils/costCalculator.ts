@@ -119,6 +119,10 @@ export const calculateNodeCost = (node: DiagramNode): CostItem => {
     unitCostHr = 0.25;
     monthlyCost = unitCostHr * hours * count + storageGb * 0.11;
     details = `${count}x DB Instance @ ~$${unitCostHr}/hr + ${storageGb} GB Storage`;
+  } else if (node.iconKey === 'generic_user' || node.resourceType === 'generic_user' || node.name === 'Clients & Frontend' || node.iconKey === 'generic_internet') {
+    monthlyCost = 0;
+    unitCostHr = 0;
+    details = `Clientes / Usuários Externos (Tráfego de cliente / Sem custo de infraestrutura)`;
   } else if (node.category === 'networking') {
     unitCostHr = 0.025;
     monthlyCost = unitCostHr * hours * count + transferGb * 0.085;
