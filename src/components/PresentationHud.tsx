@@ -20,7 +20,8 @@ import {
   HardDrive,
   Cpu,
   Globe,
-  Tag
+  Tag,
+  Activity
 } from 'lucide-react';
 
 interface PresentationHudProps {
@@ -35,6 +36,8 @@ interface PresentationHudProps {
   onExitPresentation: () => void;
   selectedNode: DiagramNode | null;
   onCloseSelectedNode: () => void;
+  onToggleFlowAnimation?: () => void;
+  onToggleConnectionLabels?: () => void;
 }
 
 export const PresentationHud: React.FC<PresentationHudProps> = ({
@@ -48,7 +51,9 @@ export const PresentationHud: React.FC<PresentationHudProps> = ({
   onToggleFullscreen,
   onExitPresentation,
   selectedNode,
-  onCloseSelectedNode
+  onCloseSelectedNode,
+  onToggleFlowAnimation,
+  onToggleConnectionLabels
 }) => {
   const isLight = theme === 'light';
   const [showHint, setShowHint] = useState<boolean>(true);
@@ -154,6 +159,56 @@ export const PresentationHud: React.FC<PresentationHudProps> = ({
             <Maximize2 className="w-3.5 h-3.5" />
             <span className="hidden md:inline">Enquadrar</span>
           </button>
+
+          {/* Flow Animation (Draw.io Style) Button */}
+          {onToggleFlowAnimation && (
+            <button
+              id="btn-pres-flow"
+              onClick={onToggleFlowAnimation}
+              className={`flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all border ${
+                diagram.animateConnections
+                  ? isLight
+                    ? 'bg-emerald-600 text-white border-emerald-700 shadow-emerald-600/30 ring-2 ring-emerald-400/50'
+                    : 'bg-emerald-500/30 text-emerald-300 border-emerald-500/60 ring-2 ring-emerald-400/40 shadow-emerald-950/50'
+                  : isLight
+                  ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'
+                  : 'bg-white/5 hover:bg-white/10 text-slate-300 border-white/10'
+              }`}
+              title={
+                diagram.animateConnections
+                  ? 'Animação de Fluxo Ativa (Estilo Draw.io). Clique para pausar.'
+                  : 'Ativar Animação das Setas de Conexões (Estilo Draw.io / Dan Rezende). Ao ativar, os rótulos de conexões são desativados automaticamente.'
+              }
+            >
+              <Activity className={`w-3.5 h-3.5 ${diagram.animateConnections ? 'animate-pulse text-white' : ''}`} />
+              <span className="hidden lg:inline">{diagram.animateConnections ? 'Fluxo: ON' : 'Animar Fluxo'}</span>
+            </button>
+          )}
+
+          {/* Toggle Connection Labels Button */}
+          {onToggleConnectionLabels && (
+            <button
+              id="btn-pres-labels"
+              onClick={onToggleConnectionLabels}
+              className={`flex items-center space-x-1 px-2 py-1.5 rounded-lg text-xs font-semibold transition-all border ${
+                diagram.showConnectionLabels !== false
+                  ? isLight
+                    ? 'bg-blue-50 text-blue-800 border-blue-200'
+                    : 'bg-[#0077B6]/30 text-blue-200 border-[#0096C7]/50'
+                  : isLight
+                  ? 'bg-slate-100 text-slate-400 border-slate-300 line-through'
+                  : 'bg-white/5 text-slate-500 border-white/10 line-through'
+              }`}
+              title={
+                diagram.showConnectionLabels !== false
+                  ? 'Rótulos visíveis. Clique para ocultar.'
+                  : 'Rótulos ocultados. Clique para exibir.'
+              }
+            >
+              <Tag className="w-3.5 h-3.5" />
+              <span className="hidden xl:inline">{diagram.showConnectionLabels !== false ? 'Rótulos' : 'Sem Rótulos'}</span>
+            </button>
+          )}
         </div>
 
         {/* Separator */}

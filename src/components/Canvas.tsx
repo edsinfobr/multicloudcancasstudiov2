@@ -4,7 +4,7 @@ import { getIconByKey } from '../data/cloudIcons';
 import { getCloudLogoSvg, getCloudProviderMeta } from '../data/cloudLogos';
 import { inferProtocolForLink } from '../utils/protocolInfer';
 import { calculateLinkRoute, getNodeIntersection } from '../utils/linkRouting';
-import { Trash2, Copy, Move, ZoomIn, ZoomOut, Maximize2, CheckSquare, Link as LinkIcon, Zap, X, ArrowRight, FolderPlus, FolderMinus, Boxes, Layers, FileSignature, Sparkles, Grid, Rows, Columns, Spline, CornerDownRight, Minus, Waypoints, Presentation, RotateCcw, Compass, Hand, MousePointer, Undo2, Redo2, Network, Server, AppWindow, Box, Shield, FolderKanban, Globe, CircleDot, Hash, LayoutGrid, Square, Check, Magnet, ChevronDown } from 'lucide-react';
+import { Trash2, Copy, Move, ZoomIn, ZoomOut, Maximize2, CheckSquare, Link as LinkIcon, Zap, X, ArrowRight, FolderPlus, FolderMinus, Boxes, Layers, FileSignature, Sparkles, Grid, Rows, Columns, Spline, CornerDownRight, Minus, Waypoints, Presentation, RotateCcw, Compass, Hand, MousePointer, Undo2, Redo2, Network, Server, AppWindow, Box, Shield, FolderKanban, Globe, CircleDot, Hash, LayoutGrid, Square, Check, Magnet, ChevronDown, Activity, Tag } from 'lucide-react';
 import { PresentationHud } from './PresentationHud';
 import { fitDiagramToContainer } from '../utils/canvasNavigation';
 import { OrphanNodesModal } from './OrphanNodesModal';
@@ -299,6 +299,25 @@ export const Canvas: React.FC<CanvasProps> = ({
     setDiagram((prev) => ({
       ...prev,
       links: prev.links.map((l) => ({ ...l, lineType }))
+    }));
+  };
+
+  // Flow animation handler (Draw.io style): automatically disables connection labels when activated!
+  const handleToggleFlowAnimation = () => {
+    onRecordHistory();
+    const willAnimate = !diagram.animateConnections;
+    setDiagram((prev) => ({
+      ...prev,
+      animateConnections: willAnimate,
+      showConnectionLabels: willAnimate ? false : prev.showConnectionLabels
+    }));
+  };
+
+  const handleToggleConnectionLabels = () => {
+    onRecordHistory();
+    setDiagram((prev) => ({
+      ...prev,
+      showConnectionLabels: prev.showConnectionLabels === false ? true : false
     }));
   };
 
@@ -1499,6 +1518,8 @@ export const Canvas: React.FC<CanvasProps> = ({
           onExitPresentation={onExitPresentation || (() => {})}
           selectedNode={diagram.nodes.find((n) => n.id === selectedNodeId) || null}
           onCloseSelectedNode={() => setSelectedNodeId(null)}
+          onToggleFlowAnimation={handleToggleFlowAnimation}
+          onToggleConnectionLabels={handleToggleConnectionLabels}
         />
       )}
 
@@ -1762,6 +1783,45 @@ export const Canvas: React.FC<CanvasProps> = ({
                 return null;
               })()}
 
+              {/* Quick Flow Animation Toggle for Selected Link */}
+              {(() => {
+                const currentLink = diagram.links.find((l) => l.id === selectedLinkId);
+                const isAnim = Boolean(diagram.animateConnections || currentLink?.animated);
+                return (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onRecordHistory();
+                      const willAnim = !isAnim;
+                      setDiagram((prev) => ({
+                        ...prev,
+                        showConnectionLabels: willAnim ? false : prev.showConnectionLabels,
+                        links: prev.links.map((l) =>
+                          l.id === selectedLinkId ? { ...l, animated: willAnim } : l
+                        )
+                      }));
+                    }}
+                    className={`flex items-center space-x-1 px-2 py-1 rounded-lg border text-xs font-bold transition-all shadow-sm ${
+                      isAnim
+                        ? isLight
+                          ? 'bg-emerald-600 border-emerald-600 text-white shadow-emerald-600/30 ring-1 ring-emerald-400/50'
+                          : 'bg-emerald-500/30 border-emerald-500/60 text-emerald-200 ring-1 ring-emerald-400/40'
+                        : isLight
+                        ? 'bg-slate-100 border-slate-300 text-slate-700 hover:bg-slate-200'
+                        : 'bg-white/5 border-white/10 text-slate-400 hover:text-slate-200'
+                    }`}
+                    title={
+                      isAnim
+                        ? 'Animação de fluxo ativa nesta conexão (Clique para desativar)'
+                        : 'Ativar animação de fluxo (Estilo Draw.io). Ao ativar, os rótulos de conexão são desativados automaticamente.'
+                    }
+                  >
+                    <Activity className={`w-3.5 h-3.5 ${isAnim ? 'animate-pulse text-white' : ''}`} />
+                    <span className="whitespace-nowrap">{isAnim ? 'Fluxo: ON' : 'Animar'}</span>
+                  </button>
+                );
+              })()}
+
               <span className={`text-[10px] hidden md:inline ml-1 font-medium ${
                 isLight ? 'text-amber-700' : 'text-amber-400'
               }`}>
@@ -1940,6 +2000,59 @@ export const Canvas: React.FC<CanvasProps> = ({
           </div>
 
           <div className={`w-[1px] h-4 my-auto ${isLight ? 'bg-[#ADE8F4]' : 'bg-[#023E8A]/50'}`} />
+
+          {/* Flow Animation (Draw.io Style) & Connection Labels Controls */}
+          <div className="flex items-center space-x-1 shrink-0">
+            <button
+              type="button"
+              id="btn-toggle-flow-animation"
+              onClick={handleToggleFlowAnimation}
+              className={`px-2.5 py-1 rounded-lg text-xs font-bold border flex items-center space-x-1.5 transition-all shadow-sm whitespace-nowrap shrink-0 ${
+                diagram.animateConnections
+                  ? isLight
+                    ? 'bg-emerald-600 text-white border-emerald-700 shadow-emerald-600/30 ring-2 ring-emerald-400/50'
+                    : 'bg-emerald-500/30 text-emerald-300 border-emerald-500/60 ring-2 ring-emerald-400/40 shadow-emerald-950/50'
+                  : isLight
+                  ? 'bg-white text-[#023E8A] border-[#ADE8F4] hover:bg-[#ADE8F4]/30'
+                  : 'bg-[#023E8A]/30 text-slate-300 border-[#023E8A]/40 hover:text-white hover:bg-[#023E8A]/50'
+              }`}
+              title={
+                diagram.animateConnections
+                  ? 'Animação de Fluxo Ativa (Estilo Draw.io). Clique para pausar.'
+                  : 'Ativar Animação das Setas de Conexões (Estilo Draw.io / Dan Rezende). Ao ativar, os rótulos de conexões são desativados automaticamente.'
+              }
+            >
+              <Activity className={`w-3.5 h-3.5 shrink-0 ${diagram.animateConnections ? 'animate-pulse text-white' : isLight ? 'text-[#0077B6]' : 'text-[#48CAE4]'}`} />
+              <span className="whitespace-nowrap">
+                {diagram.animateConnections ? 'Fluxo: ON' : 'Animar Fluxo'}
+              </span>
+            </button>
+
+            <button
+              type="button"
+              id="btn-toggle-connection-labels"
+              onClick={handleToggleConnectionLabels}
+              className={`px-2 py-1 rounded-lg text-xs font-semibold border flex items-center space-x-1 transition-all shadow-sm whitespace-nowrap shrink-0 ${
+                diagram.showConnectionLabels !== false
+                  ? isLight
+                    ? 'bg-blue-50 text-blue-800 border-blue-200 hover:bg-blue-100'
+                    : 'bg-[#0077B6]/30 text-blue-200 border-[#0096C7]/50 hover:bg-[#0077B6]/50'
+                  : isLight
+                  ? 'bg-slate-100 text-slate-400 border-slate-300 hover:bg-slate-200 line-through'
+                  : 'bg-white/5 text-slate-500 border-white/10 hover:bg-white/10 line-through'
+              }`}
+              title={
+                diagram.showConnectionLabels !== false
+                  ? 'Rótulos e protocolos das conexões visíveis. Clique para ocultar.'
+                  : 'Rótulos e protocolos das conexões ocultados. Clique para exibir.'
+              }
+            >
+              <Tag className={`w-3 h-3 shrink-0 ${diagram.showConnectionLabels !== false ? (isLight ? 'text-blue-600' : 'text-blue-400') : 'text-slate-400 opacity-60'}`} />
+              <span className="hidden sm:inline whitespace-nowrap">
+                {diagram.showConnectionLabels !== false ? 'Rótulos' : 'Sem Rótulos'}
+              </span>
+            </button>
+          </div>
 
           <button
             type="button"
@@ -2195,6 +2308,9 @@ export const Canvas: React.FC<CanvasProps> = ({
             const labelWidth = labelText ? Math.max(26, Math.min(140, Math.round(labelText.length * 4.9 + 12))) : 0;
             const labelHeight = 15;
 
+            const isLinkAnimated = Boolean(diagram.animateConnections || link.animated);
+            const showConnectionLabels = diagram.showConnectionLabels !== false;
+
             return (
               <g
                 key={link.id}
@@ -2228,15 +2344,38 @@ export const Canvas: React.FC<CanvasProps> = ({
                   }}
                 />
                 
-                {/* Visible Connection Line */}
-                <path
-                  d={pathD}
-                  stroke={strokeColor}
-                  strokeWidth={strokeWidth}
-                  strokeDasharray={dashArray}
-                  fill="none"
-                  className="transition-all group-hover:stroke-amber-400"
-                />
+                {/* Visible Connection Line (Static or Draw.io Animated Flow) */}
+                {isLinkAnimated ? (
+                  <>
+                    {/* Underlying track for visual continuity */}
+                    <path
+                      d={pathD}
+                      stroke={strokeColor}
+                      strokeWidth={strokeWidth}
+                      strokeOpacity="0.25"
+                      fill="none"
+                    />
+                    {/* Animated Flow Line (Draw.io Flow Animation) */}
+                    <path
+                      d={pathD}
+                      stroke={strokeColor}
+                      strokeWidth={strokeWidth + 0.5}
+                      fill="none"
+                      className={`transition-all group-hover:stroke-amber-400 drawio-flow-glow ${
+                        arrowMode === 'start' ? 'drawio-flow-reverse' : 'drawio-flow-line'
+                      }`}
+                    />
+                  </>
+                ) : (
+                  <path
+                    d={pathD}
+                    stroke={strokeColor}
+                    strokeWidth={strokeWidth}
+                    strokeDasharray={dashArray}
+                    fill="none"
+                    className="transition-all group-hover:stroke-amber-400"
+                  />
+                )}
 
                 {/* Destination Arrow Head (Pointing into target component) */}
                 {showEndArrow && (
@@ -2247,7 +2386,9 @@ export const Canvas: React.FC<CanvasProps> = ({
                     stroke={strokeColor}
                     strokeWidth="1"
                     strokeLinejoin="round"
-                    className="transition-colors group-hover:fill-amber-400 group-hover:stroke-amber-400"
+                    className={`transition-colors group-hover:fill-amber-400 group-hover:stroke-amber-400 ${
+                      isLinkAnimated ? 'drawio-flow-glow' : ''
+                    }`}
                   />
                 )}
 
@@ -2260,12 +2401,14 @@ export const Canvas: React.FC<CanvasProps> = ({
                     stroke={strokeColor}
                     strokeWidth="1"
                     strokeLinejoin="round"
-                    className="transition-colors group-hover:fill-amber-400 group-hover:stroke-amber-400"
+                    className={`transition-colors group-hover:fill-amber-400 group-hover:stroke-amber-400 ${
+                      isLinkAnimated ? 'drawio-flow-glow' : ''
+                    }`}
                   />
                 )}
 
-                {/* Connection Protocol / Label Badge (Oriented along line: Horizontal or Vertical) */}
-                {labelText && (
+                {/* Connection Protocol / Label Badge (Oriented along line: Hidden when animation is active or labels toggled off) */}
+                {labelText && showConnectionLabels && (
                   <g
                     transform={`translate(${midX}, ${midY}) rotate(${labelRotation})`}
                     className="link-label-badge filter drop-shadow-xs"

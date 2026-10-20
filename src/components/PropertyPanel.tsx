@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { DiagramState, DiagramNode, DiagramContainer, DiagramLink, CloudProvider, LinkRoutingType } from '../types';
 import { inferProtocolForLink } from '../utils/protocolInfer';
 import { CLOUD_ICONS, getIconByKey } from '../data/cloudIcons';
-import { Trash2, Copy, Sliders, Info, Shield, Server, HardDrive, Cpu, Layers, ArrowRight, RefreshCw, Zap, FolderMinus, FolderPlus, FileSignature, FolderKanban, User, Briefcase, Building2, Calendar, ChevronRight, ChevronLeft, Search, Sparkles, Check, Rows, Columns, Spline, CornerDownRight, Minus, Waypoints, Move, RotateCcw } from 'lucide-react';
+import { Trash2, Copy, Sliders, Info, Shield, Server, HardDrive, Cpu, Layers, ArrowRight, RefreshCw, Zap, FolderMinus, FolderPlus, FileSignature, FolderKanban, User, Briefcase, Building2, Calendar, ChevronRight, ChevronLeft, Search, Sparkles, Check, Rows, Columns, Spline, CornerDownRight, Minus, Waypoints, Move, RotateCcw, Activity, Tag } from 'lucide-react';
 
 interface PropertyPanelProps {
   diagram: DiagramState;
@@ -1401,6 +1401,108 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
                     className="w-7 h-7 bg-transparent cursor-pointer rounded overflow-hidden"
                     title="Cor personalizada"
                   />
+                </div>
+              </div>
+
+              {/* Draw.io Flow Animation (Dan Rezende style) & Connection Labels */}
+              <div className={`p-3 rounded-xl border space-y-2.5 ${
+                isLight ? 'bg-emerald-50/70 border-emerald-200' : 'bg-emerald-500/10 border-emerald-500/20'
+              }`}>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-1.5">
+                    <Activity className={`w-3.5 h-3.5 ${selectedLink.animated || diagram.animateConnections ? 'animate-pulse text-emerald-500' : 'text-slate-400'}`} />
+                    <span className={`text-[11px] font-bold ${isLight ? 'text-emerald-950' : 'text-emerald-200'}`}>
+                      Animação de Fluxo (Estilo Draw.io)
+                    </span>
+                  </div>
+                  {(selectedLink.animated || diagram.animateConnections) && (
+                    <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                      Ativa
+                    </span>
+                  )}
+                </div>
+
+                <div className="space-y-1.5">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const willAnimate = !selectedLink.animated;
+                      onRecordHistory();
+                      setDiagram((prev) => ({
+                        ...prev,
+                        showConnectionLabels: willAnimate ? false : prev.showConnectionLabels,
+                        links: prev.links.map((l) =>
+                          l.id === selectedLink.id ? { ...l, animated: willAnimate } : l
+                        )
+                      }));
+                    }}
+                    className={`w-full flex items-center justify-between p-2 rounded-lg border text-xs font-bold transition-all ${
+                      selectedLink.animated
+                        ? isLight
+                          ? 'bg-emerald-600 text-white border-emerald-700 shadow-sm'
+                          : 'bg-emerald-600/30 text-emerald-200 border-emerald-500 shadow-sm'
+                        : isLight
+                        ? 'bg-white border-slate-300 text-slate-800 hover:bg-slate-50'
+                        : 'bg-black/30 border-white/10 text-slate-300 hover:bg-white/5'
+                    }`}
+                  >
+                    <span>Animar Esta Conexão</span>
+                    <span className="text-[10px] font-mono">{selectedLink.animated ? 'ON' : 'OFF'}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const willAnimate = !diagram.animateConnections;
+                      onRecordHistory();
+                      setDiagram((prev) => ({
+                        ...prev,
+                        animateConnections: willAnimate,
+                        showConnectionLabels: willAnimate ? false : prev.showConnectionLabels
+                      }));
+                    }}
+                    className={`w-full flex items-center justify-between p-2 rounded-lg border text-xs font-bold transition-all ${
+                      diagram.animateConnections
+                        ? isLight
+                          ? 'bg-emerald-600 text-white border-emerald-700 shadow-sm'
+                          : 'bg-emerald-600/30 text-emerald-200 border-emerald-500 shadow-sm'
+                        : isLight
+                        ? 'bg-white border-slate-300 text-slate-800 hover:bg-slate-50'
+                        : 'bg-black/30 border-white/10 text-slate-300 hover:bg-white/5'
+                    }`}
+                  >
+                    <span>Animar Todas as Conexões</span>
+                    <span className="text-[10px] font-mono">{diagram.animateConnections ? 'ON' : 'OFF'}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onRecordHistory();
+                      setDiagram((prev) => ({
+                        ...prev,
+                        showConnectionLabels: prev.showConnectionLabels === false ? true : false
+                      }));
+                    }}
+                    className={`w-full flex items-center justify-between p-1.5 rounded-lg border text-xs font-medium transition-all ${
+                      diagram.showConnectionLabels !== false
+                        ? isLight
+                          ? 'bg-blue-50 border-blue-200 text-blue-900 font-semibold'
+                          : 'bg-blue-600/20 border-blue-500/30 text-blue-200 font-semibold'
+                        : isLight
+                        ? 'bg-slate-100 border-slate-300 text-slate-500 line-through'
+                        : 'bg-white/5 border-white/10 text-slate-500 line-through'
+                    }`}
+                    title="Exibir ou ocultar rótulos das conexões do diagrama"
+                  >
+                    <div className="flex items-center space-x-1.5">
+                      <Tag className="w-3.5 h-3.5" />
+                      <span>Exibir Rótulos das Conexões</span>
+                    </div>
+                    <span className="text-[10px] font-mono">
+                      {diagram.showConnectionLabels !== false ? 'Exibindo' : 'Oculto'}
+                    </span>
+                  </button>
                 </div>
               </div>
 

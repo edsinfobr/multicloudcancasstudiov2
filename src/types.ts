@@ -154,6 +154,7 @@ export interface DiagramLink {
   protocol?: 'HTTP' | 'HTTPS' | 'TCP' | 'UDP' | 'gRPC' | 'SQL' | 'Peering' | 'Internal' | 'Docker' | 'Redis' | 'AMQP' | 'Kafka' | 'DynamoDB' | 'SQS' | 'SNS' | 'Custom';
   port?: number | string;
   controlPoint?: { x: number; y: number };
+  animated?: boolean;
 }
 
 export interface DiagramMetadata {
@@ -187,6 +188,8 @@ export interface DiagramState {
   updatedAt: string;
   metadata?: DiagramMetadata;
   version?: string;
+  animateConnections?: boolean;
+  showConnectionLabels?: boolean;
 }
 
 export interface CloudIconDefinition {
