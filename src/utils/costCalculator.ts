@@ -138,6 +138,10 @@ export const calculateNodeCost = (node: DiagramNode): CostItem => {
     unitCostHr = 0.15;
     monthlyCost = unitCostHr * hours * count + (storageGb * 0.08);
     details = `${count}x Analytics/ETL Worker @ ~$${unitCostHr}/hr`;
+  } else if (node.provider === 'onprem') {
+    monthlyCost = 0;
+    unitCostHr = 0;
+    details = `${count}x On-Premise Asset (Infraestrutura Local / CapEx - Sem cobrança de nuvem)`;
   } else {
     monthlyCost = 15.0;
     details = `Standard Base Charge`;

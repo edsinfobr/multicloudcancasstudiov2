@@ -93,6 +93,29 @@ export const CLOUD_PROVIDERS_LIST: CloudProviderMeta[] = [
         <path fill="#FFFFFF" fill-rule="evenodd" clip-rule="evenodd" d="M32.97 66.559C14.77 66.56 0 51.827 0 33.622C0 15.416 14.77.632 32.97.632h38.32c18.204 0 32.963 14.784 32.963 32.99c0 18.205-14.759 32.937-32.964 32.937zm37.468-11.628c11.791 0 21.341-9.524 21.341-21.31S82.228 12.26 70.437 12.26h-36.62c-11.787 0-21.342 9.576-21.342 21.362S22.03 54.93 33.816 54.93z"/>
       </g>
     </svg>`
+  },
+  {
+    id: 'onprem',
+    name: 'On-Premise',
+    brandColor: '#475569',
+    badgeBg: 'rgba(71, 85, 105, 0.15)',
+    textColor: '#94A3B8',
+    description: 'Datacenter Local & Soluções On-Premises',
+    svg: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="32" height="32" rx="7" fill="#1E293B"/>
+      <rect x="5.5" y="6.5" width="21" height="5" rx="1.5" stroke="#94A3B8" stroke-width="1.3" fill="#334155"/>
+      <circle cx="9" cy="9" r="1.1" fill="#10B981"/>
+      <circle cx="12" cy="9" r="1.1" fill="#38BDF8"/>
+      <line x1="16" y1="9" x2="23.5" y2="9" stroke="#94A3B8" stroke-width="1.3" stroke-linecap="round"/>
+      <rect x="5.5" y="13.5" width="21" height="5" rx="1.5" stroke="#94A3B8" stroke-width="1.3" fill="#334155"/>
+      <circle cx="9" cy="16" r="1.1" fill="#10B981"/>
+      <circle cx="12" cy="16" r="1.1" fill="#38BDF8"/>
+      <line x1="16" y1="16" x2="23.5" y2="16" stroke="#94A3B8" stroke-width="1.3" stroke-linecap="round"/>
+      <rect x="5.5" y="20.5" width="21" height="5" rx="1.5" stroke="#94A3B8" stroke-width="1.3" fill="#334155"/>
+      <circle cx="9" cy="23" r="1.1" fill="#10B981"/>
+      <circle cx="12" cy="23" r="1.1" fill="#38BDF8"/>
+      <line x1="16" y1="23" x2="23.5" y2="23" stroke="#94A3B8" stroke-width="1.3" stroke-linecap="round"/>
+    </svg>`
   }
 ];
 

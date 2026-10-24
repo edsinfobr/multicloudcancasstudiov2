@@ -82,7 +82,7 @@ const CONTAINER_OPTIONS: ContainerOptionItem[] = [
     id: 'on_premise',
     btnId: 'btn-container-onpremise',
     type: 'on_premise',
-    provider: 'generic',
+    provider: 'onprem',
     category: 'infra',
     label: 'On-Premise',
     badge: 'Datacenter',
@@ -421,6 +421,7 @@ export const SidebarCatalog: React.FC<SidebarCatalogProps> = ({
       case 'azure': return 'Azure Network';
       case 'gcp': return 'GCP Network';
       case 'oci': return 'OCI Network';
+      case 'onprem': return 'On-Prem Network';
       default: return 'Network';
     }
   };
@@ -431,6 +432,7 @@ export const SidebarCatalog: React.FC<SidebarCatalogProps> = ({
       case 'azure': return 'Azure Subnet';
       case 'gcp': return 'GCP Subnet';
       case 'oci': return 'OCI Subnet';
+      case 'onprem': return 'On-Prem VLAN';
       default: return 'Subnet';
     }
   };
@@ -441,6 +443,8 @@ export const SidebarCatalog: React.FC<SidebarCatalogProps> = ({
       matchesProvider = true;
     } else if (selectedProvider === 'ai') {
       matchesProvider = icon.category === 'ai' || icon.key.startsWith('ai_');
+    } else if (selectedProvider === 'onprem') {
+      matchesProvider = icon.provider === 'onprem';
     } else {
       matchesProvider = icon.provider === selectedProvider || icon.provider === 'generic';
     }
@@ -1054,13 +1058,13 @@ export const SidebarCatalog: React.FC<SidebarCatalogProps> = ({
             </span>
           </div>
 
-          {/* Individual Cloud Group Buttons: AWS, Azure, GCP, OCI */}
-          <div className="grid grid-cols-4 gap-1.5 pt-0.5">
+          {/* Individual Cloud Group Buttons: AWS, Azure, GCP, OCI, On-Premise */}
+          <div className="grid grid-cols-5 gap-1 pt-0.5">
             {/* AWS */}
             <button
               id="btn-group-aws"
               onClick={() => onGroupByCloud ? onGroupByCloud('aws') : onAddContainer('cloud_group', 'aws')}
-              className={`flex flex-col items-center justify-center py-1.5 px-1 rounded-md border text-center transition-all group ${
+              className={`flex flex-col items-center justify-center py-1.5 px-0.5 rounded-md border text-center transition-all group ${
                 isLight
                   ? 'bg-white hover:bg-amber-50 border-slate-300 hover:border-amber-500 text-slate-900 shadow-sm'
                   : 'bg-white/5 hover:bg-amber-500/10 border-white/10 hover:border-amber-500/50 text-slate-200'
@@ -1071,14 +1075,14 @@ export const SidebarCatalog: React.FC<SidebarCatalogProps> = ({
                 className="w-4 h-4 mb-0.5 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform"
                 dangerouslySetInnerHTML={{ __html: getCloudLogoSvg('aws') }}
               />
-              <span className="text-[10px] font-extrabold text-[#FF9900]">AWS</span>
+              <span className="text-[9px] font-extrabold text-[#FF9900]">AWS</span>
             </button>
 
             {/* Azure */}
             <button
               id="btn-group-azure"
               onClick={() => onGroupByCloud ? onGroupByCloud('azure') : onAddContainer('cloud_group', 'azure')}
-              className={`flex flex-col items-center justify-center py-1.5 px-1 rounded-md border text-center transition-all group ${
+              className={`flex flex-col items-center justify-center py-1.5 px-0.5 rounded-md border text-center transition-all group ${
                 isLight
                   ? 'bg-white hover:bg-sky-50 border-slate-300 hover:border-sky-500 text-slate-900 shadow-sm'
                   : 'bg-white/5 hover:bg-sky-500/10 border-white/10 hover:border-sky-500/50 text-slate-200'
@@ -1089,14 +1093,14 @@ export const SidebarCatalog: React.FC<SidebarCatalogProps> = ({
                 className="w-4 h-4 mb-0.5 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform"
                 dangerouslySetInnerHTML={{ __html: getCloudLogoSvg('azure') }}
               />
-              <span className="text-[10px] font-extrabold text-[#0078D4]">Azure</span>
+              <span className="text-[9px] font-extrabold text-[#0078D4]">Azure</span>
             </button>
 
             {/* GCP */}
             <button
               id="btn-group-gcp"
               onClick={() => onGroupByCloud ? onGroupByCloud('gcp') : onAddContainer('cloud_group', 'gcp')}
-              className={`flex flex-col items-center justify-center py-1.5 px-1 rounded-md border text-center transition-all group ${
+              className={`flex flex-col items-center justify-center py-1.5 px-0.5 rounded-md border text-center transition-all group ${
                 isLight
                   ? 'bg-white hover:bg-blue-50 border-slate-300 hover:border-blue-500 text-slate-900 shadow-sm'
                   : 'bg-white/5 hover:bg-blue-500/10 border-white/10 hover:border-blue-500/50 text-slate-200'
@@ -1107,14 +1111,14 @@ export const SidebarCatalog: React.FC<SidebarCatalogProps> = ({
                 className="w-4 h-4 mb-0.5 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform"
                 dangerouslySetInnerHTML={{ __html: getCloudLogoSvg('gcp') }}
               />
-              <span className="text-[10px] font-extrabold text-[#4285F4]">GCP</span>
+              <span className="text-[9px] font-extrabold text-[#4285F4]">GCP</span>
             </button>
 
             {/* OCI */}
             <button
               id="btn-group-oci"
               onClick={() => onGroupByCloud ? onGroupByCloud('oci') : onAddContainer('cloud_group', 'oci')}
-              className={`flex flex-col items-center justify-center py-1.5 px-1 rounded-md border text-center transition-all group ${
+              className={`flex flex-col items-center justify-center py-1.5 px-0.5 rounded-md border text-center transition-all group ${
                 isLight
                   ? 'bg-white hover:bg-red-50 border-slate-300 hover:border-red-500 text-slate-900 shadow-sm'
                   : 'bg-white/5 hover:bg-red-500/10 border-white/10 hover:border-red-500/50 text-slate-200'
@@ -1125,7 +1129,25 @@ export const SidebarCatalog: React.FC<SidebarCatalogProps> = ({
                 className="w-4 h-4 mb-0.5 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform"
                 dangerouslySetInnerHTML={{ __html: getCloudLogoSvg('oci') }}
               />
-              <span className="text-[10px] font-extrabold text-[#C74634]">OCI</span>
+              <span className="text-[9px] font-extrabold text-[#C74634]">OCI</span>
+            </button>
+
+            {/* On-Premise */}
+            <button
+              id="btn-group-onprem"
+              onClick={() => onGroupByCloud ? onGroupByCloud('onprem') : onAddContainer('cloud_group', 'onprem')}
+              className={`flex flex-col items-center justify-center py-1.5 px-0.5 rounded-md border text-center transition-all group ${
+                isLight
+                  ? 'bg-white hover:bg-slate-100 border-slate-300 hover:border-slate-500 text-slate-900 shadow-sm'
+                  : 'bg-white/5 hover:bg-slate-500/10 border-white/10 hover:border-slate-400/50 text-slate-200'
+              }`}
+              title="Container On-Premises (Datacenter / Infra Local)"
+            >
+              <div 
+                className="w-4 h-4 mb-0.5 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform"
+                dangerouslySetInnerHTML={{ __html: getCloudLogoSvg('onprem') }}
+              />
+              <span className="text-[9px] font-extrabold text-slate-500">On-Prem</span>
             </button>
           </div>
         </div>
@@ -1138,6 +1160,7 @@ export const SidebarCatalog: React.FC<SidebarCatalogProps> = ({
         }`}>
           {[
             { id: 'all', label: 'Todos' },
+            { id: 'onprem', label: 'On-Premise', color: isLight ? 'text-indigo-950 font-extrabold' : 'text-indigo-300 font-extrabold' },
             { id: 'ai', label: 'IA', color: isLight ? 'text-purple-900' : 'text-purple-300' },
             { id: 'generic', label: 'Comuns', color: isLight ? 'text-purple-900' : 'text-purple-400' },
             { id: 'aws', label: 'AWS', color: isLight ? 'text-amber-900' : 'text-amber-400' },

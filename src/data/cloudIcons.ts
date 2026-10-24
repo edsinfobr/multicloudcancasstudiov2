@@ -20,8 +20,14 @@ import { AWS_STORAGE_ICONS } from './awsStorageIcons';
 import { GCP_OFFICIAL_ICONS } from './gcpIcons';
 import { GENERIC_ICONS } from './genericIcons';
 import { AI_ICONS } from './aiIcons';
+import { ON_PREMISES_ICONS } from './onPremisesIcons';
 
 export const CLOUD_ICONS: CloudIconDefinition[] = [
+  // ==========================================
+  // On-Premises & Datacenter Solutions (VMware, Nutanix, Hyper-V, Stack Local)
+  // ==========================================
+  ...ON_PREMISES_ICONS,
+
   // ==========================================
   // Artificial Intelligence (AI & GenAI - OpenAI, Claude, Gemini, etc.)
   // ==========================================
