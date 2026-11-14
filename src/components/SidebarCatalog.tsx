@@ -1348,15 +1348,15 @@ export const SidebarCatalog: React.FC<SidebarCatalogProps> = ({
         }`}>
           {[
             { id: 'all', label: 'Todos' },
-            { id: 'c4', label: 'C4 Model', color: isLight ? 'text-blue-900 font-extrabold' : 'text-blue-400 font-extrabold' },
-            { id: 'archimate', label: 'ArchiMate', color: isLight ? 'text-amber-900 font-extrabold' : 'text-amber-400 font-extrabold' },
-            { id: 'togaf', label: 'TOGAF', color: isLight ? 'text-teal-900 font-extrabold' : 'text-teal-400 font-extrabold' },
-            { id: 'onprem', label: 'On-Premise', color: isLight ? 'text-slate-900 font-extrabold' : 'text-slate-300 font-extrabold' },
-            { id: 'ai', label: 'IA', color: isLight ? 'text-purple-900' : 'text-purple-300' },
             { id: 'aws', label: 'AWS', color: isLight ? 'text-amber-900' : 'text-amber-400' },
             { id: 'azure', label: 'Azure', color: isLight ? 'text-sky-900' : 'text-sky-400' },
             { id: 'gcp', label: 'GCP', color: isLight ? 'text-emerald-900' : 'text-emerald-400' },
             { id: 'oci', label: 'OCI', color: isLight ? 'text-red-900' : 'text-red-400' },
+            { id: 'ai', label: 'IA', color: isLight ? 'text-purple-900' : 'text-purple-300' },
+            { id: 'onprem', label: 'On-Premise', color: isLight ? 'text-slate-900 font-extrabold' : 'text-slate-300 font-extrabold' },
+            { id: 'c4', label: 'C4 Model', color: isLight ? 'text-blue-900 font-extrabold' : 'text-blue-400 font-extrabold' },
+            { id: 'archimate', label: 'ArchiMate', color: isLight ? 'text-amber-900 font-extrabold' : 'text-amber-400 font-extrabold' },
+            { id: 'togaf', label: 'TOGAF', color: isLight ? 'text-teal-900 font-extrabold' : 'text-teal-400 font-extrabold' },
             { id: 'generic', label: 'Comuns', color: isLight ? 'text-slate-700' : 'text-slate-400' },
           ].map((tab) => (
             <button
