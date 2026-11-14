@@ -2898,6 +2898,30 @@ export const Canvas: React.FC<CanvasProps> = ({
                   : 'bg-[#12141A] border-white/10 hover:border-blue-500/80 hover:bg-[#1a1d26] hover:scale-105 text-slate-100'
               }`}
             >
+              {/* Live Cloud Status Indicator */}
+              {node.liveState && node.liveState.status !== 'unprovisioned' && (
+                <span
+                  title={`Cloud Live: ${node.liveState.status.toUpperCase()}${
+                    node.liveState.cloudResourceId ? ` • ID: ${node.liveState.cloudResourceId}` : ''
+                  }${node.liveState.publicIp ? ` • IP: ${node.liveState.publicIp}` : ''}`}
+                  className="absolute top-1.5 left-1.5 flex items-center gap-1 pointer-events-none"
+                >
+                  <span
+                    className={`w-2 h-2 rounded-full ${
+                      node.liveState.status === 'running'
+                        ? 'bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.8)]'
+                        : node.liveState.status === 'stopped'
+                        ? 'bg-amber-500'
+                        : node.liveState.status === 'error'
+                        ? 'bg-rose-500'
+                        : node.liveState.status === 'provisioning' || node.liveState.status === 'planned'
+                        ? 'bg-blue-500 animate-pulse'
+                        : 'bg-slate-400'
+                    }`}
+                  />
+                </span>
+              )}
+
               {/* Provider Badge Pill */}
               <span
                 className="text-[8px] font-bold uppercase px-1.5 py-0.2 rounded-full mb-1"

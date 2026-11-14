@@ -21,8 +21,26 @@ import { GCP_OFFICIAL_ICONS } from './gcpIcons';
 import { GENERIC_ICONS } from './genericIcons';
 import { AI_ICONS } from './aiIcons';
 import { ON_PREMISES_ICONS } from './onPremisesIcons';
+import { ARCHIMATE_ICONS } from './archimateIcons';
+import { TOGAF_ICONS } from './togafIcons';
+import { C4_ICONS } from './c4Icons';
 
 export const CLOUD_ICONS: CloudIconDefinition[] = [
+  // ==========================================
+  // ArchiMate 3.2 Enterprise Architecture Standards
+  // ==========================================
+  ...ARCHIMATE_ICONS,
+
+  // ==========================================
+  // TOGAF (The Open Group Architecture Framework - ADM)
+  // ==========================================
+  ...TOGAF_ICONS,
+
+  // ==========================================
+  // C4 Model (Context, Container, Component, Code)
+  // ==========================================
+  ...C4_ICONS,
+
   // ==========================================
   // On-Premises & Datacenter Solutions (VMware, Nutanix, Hyper-V, Stack Local)
   // ==========================================

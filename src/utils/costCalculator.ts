@@ -142,6 +142,10 @@ export const calculateNodeCost = (node: DiagramNode): CostItem => {
     monthlyCost = 0;
     unitCostHr = 0;
     details = `${count}x On-Premise Asset (Infraestrutura Local / CapEx - Sem cobrança de nuvem)`;
+  } else if (node.provider === 'archimate' || node.provider === 'togaf' || node.provider === 'c4') {
+    monthlyCost = 0;
+    unitCostHr = 0;
+    details = `${count}x ${node.provider.toUpperCase()} Model Element (Abstração Arquitetural)`;
   } else {
     monthlyCost = 15.0;
     details = `Standard Base Charge`;

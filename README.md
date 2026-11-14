@@ -1,24 +1,47 @@
 # ☁️ MultiCloud Canvas Studio
 
-Uma plataforma web interativa para modelagem, documentação, estimativa de custos e geração de código de infraestrutura para arquiteturas de nuvem multicloud (**AWS, GCP, Azure, Kubernetes, On-Premises**).
+Uma plataforma web interativa para modelagem, documentação, estimativa de custos, geração de código **Terraform (IaC)** e **deploy/controle de infraestrutura real em nuvem** (**AWS, GCP, Azure, OCI, On-Premises, IA e Frameworks Corporativos**).
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![React](https://img.shields.io/badge/React-18.x-61dafb.svg)
+![React](https://img.shields.io/badge/React-19.x-61dafb.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178c6.svg)
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.x-38bdf8.svg)
+![Terraform](https://img.shields.io/badge/IaC-Terraform%20CLI-7B42BC.svg)
 ![Gemini AI](https://img.shields.io/badge/AI-Google%20Gemini-4285f4.svg)
+![Firebase](https://img.shields.io/badge/Cloud-Firebase%20%26%20Firestore-FFCA28.svg)
 
 ---
 
 ## 🚀 Visão Geral
 
-O **Cloud Architecture Designer** permite que arquitetos de soluções, engenheiros DevOps e desenvolvedores construam diagramas de arquitetura de software ricos, calculem estimativas financeiras mensais em tempo real, gerem código **Terraform (IaC)** pronto para produção e exportem relatórios técnicos profissionais em PDF.
+O **MultiCloud Canvas Studio** permite que arquitetos de soluções, engenheiros DevOps e desenvolvedores desenhem diagramas de arquitetura completos, validem segurança e resiliência, calculem custos comparativos entre provedores, gerem código **Terraform** pronto para produção e executem **provisionamento e controle real** (**Start / Stop / Reboot**) diretamente em contas **AWS, GCP, Azure e OCI**.
 
-A ferramenta conta com um **Assistente de IA integrado (Google Gemini)** capaz de gerar diagramas completos a partir de descrições em linguagem natural e sugerir melhorias de segurança, resiliência e custo para suas arquiteturas.
+A ferramenta também conta com **Assistente de IA integrado (Google Gemini)**, geração de **Propostas Técnicas em DOCX**, versionamento de diagramas e integração com **Firebase**, **Google Drive** e **Gmail**.
 
 ---
 
-## ✨ Funcionalidades e Recursos
+## ⭐ Tabela de Recursos em Destaque
+
+| Categoria | Recurso | Descrição e Capacidades |
+| :--- | :--- | :--- |
+| 🎨 **Canvas & Modelagem** | **Editor Visual Drag & Drop** | Canvas interativo com zoom, pan, minimapa, grade magnética (*snap-to-grid*), *Auto-Layout*, Undo/Redo, painéis retráteis e carimbo técnico de projeto (*Metadata Stamp*). |
+| 🧩 **Catálogo Multi-Cloud** | **AWS, Azure, GCP & OCI** | Biblioteca extensa de serviços de Compute, Containers, Storage, Bancos de Dados, Redes, Segurança, Analytics e DevOps para os 4 grandes provedores. |
+| 🏢 **On-Premises & Híbrido** | **Datacenter & Virtualização** | Ícones dedicados para **VMware (vSphere/vCenter)**, **Nutanix AHV**, **Hyper-V**, servidores Web, Aplicação, Banco de Dados, Firewalls e redes locais. |
+| 📐 **Enterprise Architecture** | **C4 Model, ArchiMate & TOGAF** | Suporte nativo a fronteiras, elementos e templates corporativos para modelagem **C4 (Context/Container/Component)**, **ArchiMate 3.2** e **TOGAF ADM**. |
+| 🔗 **Conexões Inteligentes** | **Protocolos & Animação de Fluxo** | Inferência automática de protocolos (HTTPS, gRPC, SQL, Redis, Kafka, AMQP, Peering), múltiplos roteamentos, detector de nós órfãos e animação de fluxo nas setas. |
+| 🚀 **Cloud Deploy (Live)** | **Conexão Real AWS / GCP / Azure / OCI** | Autenticação real via API oficial (credenciais mantidas apenas em RAM no servidor), descoberta e importação de recursos existentes e controle direto **Start / Stop / Reboot**. |
+| ⚙️ **Motor Terraform CLI** | **Execução Real de IaC** | Execução assíncrona de `init`, `validate`, `plan` (com resumo visual de mudanças), `apply`, `refresh`, `destroy` e ações por recurso com status ao vivo nos nós do canvas. |
+| 🏗️ **Gerador Terraform** | **Exportação `.tf` & `.tfvars`** | Geração automática de `main.tf`, `variables.tf`, `terraform.tfvars` e `outputs.tf` sincronizados com o diagrama e com a região/conta conectada. |
+| 🤖 **IA com Google Gemini** | **Geração & Auditoria por Prompt** | Criação de arquiteturas completas a partir de texto em linguagem natural e auditoria automática com notas para Alta Disponibilidade (HA), Segurança e Custos. |
+| 🛡️ **Segurança & Qualidade** | **Cloud Security Linter** | Inspeção automatizada do diagrama para identificar exposição pública indevida, portas críticas, ausência de redundância (*SPOF*) e boas práticas. |
+| 💰 **FinOps & Custos** | **Estimador & Comparador Multi-Cloud** | Cálculo mensal/anual em tempo real por nó, comparativo de custos entre **AWS, Azure, GCP e OCI** e exportação de planilhas **CSV** e relatórios **PDF**. |
+| 📄 **Documentação & Propostas** | **Exportação DOCX, PDF & SVG/PNG** | Geração de propostas técnicas/comerciais editáveis em **DOCX**, documentação arquitetural, exportação visual em **PNG, JPG, SVG, PDF, JSON** e envio por **Gmail**. |
+| 💾 **Nuvem & Versionamento** | **Firebase, Google Drive & Versões** | Autenticação e persistência no **Firestore**, abas de **versionamento** no mesmo projeto, histórico local automático e salvamento no **Google Drive**. |
+| 🎭 **Experiência & Idiomas** | **Apresentação, Temas & i18n** | **Modo Apresentação** em tela cheia (HUD), biblioteca de **Templates prontos**, tema **Dark / Light** automático e interface em **PT-BR, EN e ES**. |
+
+---
+
+## ✨ Funcionalidades e Recursos Detalhados
 
 ### 🎨 Canvas Interativo & Catálogo Multicloud
 - **Arrastar e Soltar (Drag & Drop):** Adicione nós e serviços das principais nuvens (AWS, GCP, Azure, Kubernetes e genéricos de infraestrutura/redes).

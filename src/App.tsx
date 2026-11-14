@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { DiagramState, DiagramNode, DiagramContainer, ContainerType, CloudIconDefinition, CloudProvider } from './types';
+import { DiagramState, DiagramNode, DiagramContainer, ContainerType, CloudIconDefinition, CloudProvider, CloudConnectionProfile } from './types';
 import { STARTER_TEMPLATES } from './data/templates';
 import { Navbar } from './components/Navbar';
 import { SidebarCatalog } from './components/SidebarCatalog';
 import { Canvas } from './components/Canvas';
 import { PropertyPanel } from './components/PropertyPanel';
 import { TerraformModal } from './components/TerraformModal';
+import { CloudDeployModal } from './components/CloudDeployModal';
 import { CostModal } from './components/CostModal';
 import { AiPromptModal } from './components/AiPromptModal';
 import { TemplateModal } from './components/TemplateModal';
@@ -25,7 +26,8 @@ import { MultiCloudLogo } from './components/MultiCloudLogo';
 import { AuthModal } from './components/AuthModal';
 import { AuthScreen } from './components/AuthScreen';
 import { useAuth } from './contexts/AuthContext';
-import { saveArchitectureToCloud } from './services/cloudStorageService';
+import { saveArchitectureToCloud, getCloudConnectionProfiles } from './services/cloudStorageService';
+import { fetchServerCloudConnections } from './services/cloudDeployService';
 import { safeJsonParse, validateAndSanitizeDiagramSchema } from './utils/schemaValidator';
 import { GoogleUser } from './services/googleDrive';
 import { saveArchitectureToStorage, saveAutosaveDraft, getAutosaveDraft } from './utils/storageUtils';
@@ -431,7 +433,42 @@ export default function App() {
   const [isSecurityLinterOpen, setIsSecurityLinterOpen] = useState(false);
   const [isChangelogModalOpen, setIsChangelogModalOpen] = useState(false);
   const [isDocumentationModalOpen, setIsDocumentationModalOpen] = useState(false);
+  const [isCloudDeployModalOpen, setIsCloudDeployModalOpen] = useState(false);
+  const [cloudDeployInitialTab, setCloudDeployInitialTab] = useState<'accounts' | 'deploy' | 'live'>('accounts');
+  const [cloudConnections, setCloudConnections] = useState<CloudConnectionProfile[]>([]);
+  const [activeCloudConnectionId, setActiveCloudConnectionId] = useState<string | null>(null);
   const [proposalInitialType, setProposalInitialType] = useState<ProposalType>('implementation');
+
+  const handleOpenCloudDeployModal = (tab: 'accounts' | 'deploy' | 'live' = 'accounts') => {
+    setCloudDeployInitialTab(tab);
+    setIsCloudDeployModalOpen(true);
+  };
+
+  useEffect(() => {
+    const syncConnections = async () => {
+      try {
+        const serverConns = await fetchServerCloudConnections().catch(() => [] as CloudConnectionProfile[]);
+        let merged = [...serverConns];
+        if (currentUser?.uid) {
+          const fsConns = await getCloudConnectionProfiles(currentUser.uid).catch(() => []);
+          const map = new Map(serverConns.map((c) => [c.id, c]));
+          fsConns.forEach((fc) => {
+            const active = map.get(fc.id);
+            map.set(fc.id, active ? { ...fc, ...active, hasActiveSession: true } : { ...fc, hasActiveSession: false, status: 'disconnected' });
+          });
+          merged = Array.from(map.values());
+        }
+        setCloudConnections(merged);
+        if (!activeCloudConnectionId && merged.length > 0) {
+          const active = merged.find((c) => c.hasActiveSession) || merged[0];
+          setActiveCloudConnectionId(active.id);
+        }
+      } catch {
+        // ignore initial load error
+      }
+    };
+    syncConnections();
+  }, [currentUser?.uid]);
 
   const handleOpenProposalModal = (type: ProposalType = 'implementation') => {
     setProposalInitialType(type);
@@ -1023,6 +1060,8 @@ export default function App() {
             onToggleTheme={toggleTheme}
             onEnterPresentationMode={handleEnterPresentation}
             onOpenProposalModal={handleOpenProposalModal}
+            onOpenCloudDeployModal={() => handleOpenCloudDeployModal(cloudConnections.some((c) => c.hasActiveSession) ? 'deploy' : 'accounts')}
+            activeCloudConnection={cloudConnections.find((c) => c.id === activeCloudConnectionId) || null}
           />
 
           {/* Main Workspace Body */}
@@ -1085,6 +1124,8 @@ export default function App() {
               theme={theme}
               isCollapsed={rightSidebarCollapsed}
               onToggleCollapse={handleToggleRightSidebar}
+              activeConnectionId={activeCloudConnectionId}
+              onOpenCloudDeploy={handleOpenCloudDeployModal}
             />
           </div>
 
@@ -1200,8 +1241,25 @@ export default function App() {
           diagram={diagram}
           onClose={() => setIsTerraformModalOpen(false)}
           theme={theme}
+          onOpenCloudDeploy={() => handleOpenCloudDeployModal(cloudConnections.some((c) => c.hasActiveSession) ? 'deploy' : 'accounts')}
         />
       )}
+
+      <CloudDeployModal
+        isOpen={isCloudDeployModalOpen}
+        onClose={() => setIsCloudDeployModalOpen(false)}
+        diagram={diagram}
+        setDiagram={setDiagram}
+        connections={cloudConnections}
+        setConnections={setCloudConnections}
+        activeConnectionId={activeCloudConnectionId}
+        setActiveConnectionId={setActiveCloudConnectionId}
+        userId={currentUser?.uid}
+        theme={theme}
+        initialTab={cloudDeployInitialTab}
+        showToast={showToast}
+        onRecordHistory={recordHistory}
+      />
 
       {isCostModalOpen && (
         <CostModal

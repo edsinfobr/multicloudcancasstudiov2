@@ -89,6 +89,8 @@ interface NavbarProps {
   onToggleTheme?: () => void;
   onEnterPresentationMode?: () => void;
   onOpenProposalModal?: (type?: ProposalType) => void;
+  onOpenCloudDeployModal?: () => void;
+  activeCloudConnection?: { provider: string; label: string; hasActiveSession?: boolean } | null;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -128,7 +130,9 @@ export const Navbar: React.FC<NavbarProps> = ({
   theme = 'dark',
   onToggleTheme,
   onEnterPresentationMode,
-  onOpenProposalModal
+  onOpenProposalModal,
+  onOpenCloudDeployModal,
+  activeCloudConnection
 }) => {
   const { currentUser, logout, userPreferences } = useAuth();
   const { t } = useLanguage();
@@ -980,7 +984,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             id="btn-cost-calculator"
             onClick={onOpenCostModal}
-            className={`flex items-center space-x-1.5 px-2.5 py-1.5 rounded-md text-xs font-semibold transition-all border ${
+            className={`flex items-center space-x-1.5 px-2.5 py-1.5 rounded-md text-xs font-semibold transition-all border whitespace-nowrap ${
               theme === 'light'
                 ? 'bg-amber-50 hover:bg-amber-100 border-amber-300 text-amber-950 font-bold'
                 : 'bg-amber-500/10 hover:bg-amber-500/20 border-amber-500/30 text-amber-300'
@@ -990,6 +994,31 @@ export const Navbar: React.FC<NavbarProps> = ({
             <DollarSign className={`w-3.5 h-3.5 ${theme === 'light' ? 'text-amber-700' : 'text-amber-400'}`} />
             <span className="hidden sm:inline">{t.nav.costs}</span>
           </button>
+
+          {/* Cloud Deploy & Controle Live Button */}
+          {onOpenCloudDeployModal && (
+            <button
+              id="btn-cloud-deploy"
+              onClick={onOpenCloudDeployModal}
+              className={`flex items-center space-x-1.5 px-2.5 py-1.5 rounded-md text-xs font-bold transition-all border whitespace-nowrap ${
+                activeCloudConnection?.hasActiveSession
+                  ? theme === 'light'
+                    ? 'bg-emerald-600 hover:bg-emerald-500 border-emerald-700 text-white shadow-sm'
+                    : 'bg-emerald-600 hover:bg-emerald-500 border-emerald-500 text-white shadow-sm'
+                  : theme === 'light'
+                  ? 'bg-emerald-50 hover:bg-emerald-100 border-emerald-300 text-emerald-950'
+                  : 'bg-emerald-500/10 hover:bg-emerald-500/20 border-emerald-500/30 text-emerald-300'
+              }`}
+              title="Conectar AWS, GCP, Azure ou OCI, executar Terraform e controlar infraestrutura live"
+            >
+              <Rocket className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">
+                {activeCloudConnection?.hasActiveSession
+                  ? `Deploy (${activeCloudConnection.provider.toUpperCase()})`
+                  : 'Cloud Deploy'}
+              </span>
+            </button>
+          )}
 
           {/* Hub Unificado de Exportação & Propostas */}
           <div className="relative">

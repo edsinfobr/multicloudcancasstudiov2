@@ -113,6 +113,48 @@
         }
       },
       "required": ["id", "userId", "name", "diagram", "createdAt", "updatedAt"]
+    },
+    "CloudConnectionProfile": {
+      "title": "CloudConnectionProfile",
+      "description": "Non-secret cloud provider account connection profile (AWS, GCP, Azure, OCI)",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "label": { "type": "string" },
+        "provider": { "type": "string", "description": "aws, gcp, azure, or oci" },
+        "region": { "type": "string" },
+        "accountHint": { "type": "string", "description": "Safe masked identifier or project ID" },
+        "status": { "type": "string" },
+        "lastTestedAt": { "type": "string" },
+        "metadata": { "type": "object" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "userId", "label", "provider", "region", "accountHint", "status", "createdAt", "updatedAt"]
+    },
+    "TerraformDeployment": {
+      "title": "TerraformDeployment",
+      "description": "Terraform provisioning execution summary and state outputs",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "architectureId": { "type": "string" },
+        "architectureTitle": { "type": "string" },
+        "workspaceId": { "type": "string" },
+        "connectionId": { "type": "string" },
+        "provider": { "type": "string" },
+        "action": { "type": "string" },
+        "status": { "type": "string" },
+        "summaryText": { "type": "string" },
+        "planSummary": { "type": "object" },
+        "outputs": { "type": "object" },
+        "resourcesCount": { "type": "number" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "userId", "architectureId", "workspaceId", "provider", "action", "status", "createdAt", "updatedAt"]
     }
   },
   "firestore": {
@@ -123,6 +165,14 @@
     "/users/{userId}/architectures/{architectureId}": {
       "schema": "Architecture",
       "description": "Architectures saved by the user with diagram state and metadata"
+    },
+    "/users/{userId}/cloudConnections/{connectionId}": {
+      "schema": "CloudConnectionProfile",
+      "description": "Non-secret cloud account connection profiles for AWS, GCP, Azure, and OCI"
+    },
+    "/users/{userId}/deployments/{deploymentId}": {
+      "schema": "TerraformDeployment",
+      "description": "Terraform deployment runs and state output summaries"
     }
   }
 }

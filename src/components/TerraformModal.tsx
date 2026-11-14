@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Copy, Download, Code, Sparkles, Check, FileCode, Terminal } from 'lucide-react';
+import { X, Copy, Download, Code, Sparkles, Check, FileCode, Terminal, Rocket } from 'lucide-react';
 import { DiagramState } from '../types';
 import { generateTerraformCode, TerraformProjectFiles } from '../utils/terraformGenerator';
 
@@ -7,9 +7,10 @@ interface TerraformModalProps {
   diagram: DiagramState;
   onClose: () => void;
   theme?: 'dark' | 'light';
+  onOpenCloudDeploy?: () => void;
 }
 
-export const TerraformModal: React.FC<TerraformModalProps> = ({ diagram, onClose, theme }) => {
+export const TerraformModal: React.FC<TerraformModalProps> = ({ diagram, onClose, theme, onOpenCloudDeploy }) => {
   const isLight = theme === 'light';
   const files: TerraformProjectFiles = generateTerraformCode(diagram);
   type FileKey = keyof TerraformProjectFiles;
@@ -102,10 +103,25 @@ export const TerraformModal: React.FC<TerraformModalProps> = ({ diagram, onClose
           </div>
 
           <div className="flex items-center space-x-2">
+            {onOpenCloudDeploy && (
+              <button
+                type="button"
+                id="btn-terraform-modal-deploy"
+                onClick={() => {
+                  onClose();
+                  onOpenCloudDeploy();
+                }}
+                className="flex items-center space-x-1.5 bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-md text-xs font-bold shadow-sm transition-all whitespace-nowrap"
+              >
+                <Rocket className="w-4 h-4" />
+                <span>Deploy na Nuvem</span>
+              </button>
+            )}
+
             <button
               onClick={handleAiOptimize}
               disabled={isOptimizing}
-              className="flex items-center space-x-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white px-3 py-1.5 rounded-md text-xs font-semibold transition-all disabled:opacity-50"
+              className="flex items-center space-x-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white px-3 py-1.5 rounded-md text-xs font-semibold transition-all disabled:opacity-50 whitespace-nowrap"
             >
               <Sparkles className="w-4 h-4 text-amber-300" />
               <span>{isOptimizing ? 'Auditing Code...' : 'AI Security Audit'}</span>
@@ -113,7 +129,7 @@ export const TerraformModal: React.FC<TerraformModalProps> = ({ diagram, onClose
 
             <button
               onClick={handleDownloadAll}
-              className={`flex items-center space-x-1.5 border px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+              className={`flex items-center space-x-1.5 border px-3 py-1.5 rounded-md text-xs font-semibold transition-all whitespace-nowrap ${
                 isLight
                   ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-800'
                   : 'bg-white/5 hover:bg-white/10 border-white/10 text-slate-200'

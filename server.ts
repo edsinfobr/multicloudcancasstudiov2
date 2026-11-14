@@ -3,12 +3,42 @@ import path from "path";
 import fs from "fs";
 import { GoogleGenAI, Type } from "@google/genai";
 import dotenv from "dotenv";
+import {
+  ActiveCloudSecrets,
+  RealCloudProvider,
+  deleteCloudSession,
+  getCloudSession,
+  listSanitizedCloudSessions,
+  sanitizeConnectionForClient,
+  upsertCloudSession,
+} from "./server/cloudSessionStore";
+import {
+  controlCloudResource,
+  discoverCloudResources,
+  verifyCloudConnection,
+} from "./server/cloudAuthVerifier";
+import {
+  getTerraformJob,
+  getTerraformStatus,
+  readTerraformState,
+  startTerraformJob,
+  syncWorkspaceFiles,
+} from "./server/terraformEngine";
 
 dotenv.config();
 
 async function startServer() {
   const app = express();
-  const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+  const portArgIndex = process.argv.indexOf("--port");
+  const cliPort =
+    portArgIndex !== -1 && process.argv[portArgIndex + 1]
+      ? parseInt(process.argv[portArgIndex + 1], 10)
+      : NaN;
+  const PORT = !Number.isNaN(cliPort)
+    ? cliPort
+    : process.env.NODE_ENV === "production" && process.env.PORT
+      ? parseInt(process.env.PORT, 10)
+      : 3000;
 
   app.use(express.json({ limit: "10mb" }));
 
@@ -275,6 +305,241 @@ Return JSON matching the schema.`;
     } catch (err: any) {
       console.error("AI Audit Error:", err);
       res.status(500).json({ error: err.message || "Failed to review architecture" });
+    }
+  });
+
+  // =========================================================================
+  // MULTI-CLOUD CONNECTION, DISCOVERY & LIVE CONTROL API
+  // =========================================================================
+
+  app.get("/api/cloud/connections", (_req, res) => {
+    res.json({ success: true, connections: listSanitizedCloudSessions() });
+  });
+
+  app.post("/api/cloud/connect", async (req, res) => {
+    try {
+      const body = req.body || {};
+      const provider = body.provider as RealCloudProvider;
+      if (!["aws", "gcp", "azure", "oci"].includes(provider)) {
+        return res.status(400).json({ error: "Provedor inválido. Use aws, gcp, azure ou oci." });
+      }
+
+      const region = String(
+        body.region ||
+          (provider === "aws"
+            ? "us-east-1"
+            : provider === "azure"
+            ? "eastus"
+            : provider === "gcp"
+            ? "us-central1"
+            : "us-ashburn-1")
+      ).trim();
+
+      const secrets: ActiveCloudSecrets = {
+        provider,
+        region,
+        awsAccessKeyId: body.awsAccessKeyId,
+        awsSecretAccessKey: body.awsSecretAccessKey,
+        awsSessionToken: body.awsSessionToken,
+        gcpProjectId: body.gcpProjectId,
+        gcpServiceAccountJson: body.gcpServiceAccountJson,
+        azureTenantId: body.azureTenantId,
+        azureClientId: body.azureClientId,
+        azureClientSecret: body.azureClientSecret,
+        azureSubscriptionId: body.azureSubscriptionId,
+        ociTenancyOcid: body.ociTenancyOcid,
+        ociUserOcid: body.ociUserOcid,
+        ociFingerprint: body.ociFingerprint,
+        ociPrivateKeyPem: body.ociPrivateKeyPem,
+        ociCompartmentId: body.ociCompartmentId,
+      };
+
+      const verification = await verifyCloudConnection(secrets);
+      const now = new Date().toISOString();
+      const id =
+        typeof body.id === "string" && body.id.trim()
+          ? body.id.trim().replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 80)
+          : `conn_${provider}_${Date.now()}`;
+
+      const stored = upsertCloudSession({
+        id,
+        label: String(body.label || `${provider.toUpperCase()} (${region})`).slice(0, 100),
+        provider,
+        region,
+        accountHint: verification.accountHint,
+        status: "connected",
+        lastTestedAt: now,
+        createdAt: now,
+        updatedAt: now,
+        metadata: verification.metadata,
+        secrets,
+      });
+
+      res.json({
+        success: true,
+        message: verification.message,
+        connection: sanitizeConnectionForClient(stored),
+      });
+    } catch (err: any) {
+      console.error("[/api/cloud/connect] Error:", err);
+      res.status(400).json({
+        success: false,
+        error: err?.message || "Falha ao validar credenciais na nuvem.",
+      });
+    }
+  });
+
+  app.post("/api/cloud/test/:id", async (req, res) => {
+    try {
+      const session = getCloudSession(req.params.id);
+      if (!session) {
+        return res.status(404).json({
+          success: false,
+          error: "Sessão não encontrada em memória. Reinsira a chave secreta para reconectar.",
+        });
+      }
+      const verification = await verifyCloudConnection(session.secrets);
+      session.status = "connected";
+      session.lastTestedAt = new Date().toISOString();
+      session.updatedAt = session.lastTestedAt;
+      session.accountHint = verification.accountHint;
+      session.metadata = { ...session.metadata, ...verification.metadata };
+      upsertCloudSession(session);
+
+      res.json({
+        success: true,
+        message: verification.message,
+        connection: sanitizeConnectionForClient(session),
+      });
+    } catch (err: any) {
+      res.status(400).json({
+        success: false,
+        error: err?.message || "Falha no teste de conexão.",
+      });
+    }
+  });
+
+  app.delete("/api/cloud/connections/:id", (req, res) => {
+    const deleted = deleteCloudSession(req.params.id);
+    res.json({ success: true, deleted });
+  });
+
+  app.get("/api/cloud/resources/:connectionId", async (req, res) => {
+    try {
+      const session = getCloudSession(req.params.connectionId);
+      if (!session) {
+        return res.status(404).json({
+          success: false,
+          error: "Sessão de credenciais não ativa. Reconecte a conta cloud primeiro.",
+        });
+      }
+      const resources = await discoverCloudResources(session.secrets);
+      res.json({ success: true, resources, region: session.region, provider: session.provider });
+    } catch (err: any) {
+      res.status(500).json({
+        success: false,
+        error: err?.message || "Falha ao listar recursos da conta cloud.",
+      });
+    }
+  });
+
+  app.post("/api/cloud/control", async (req, res) => {
+    try {
+      const { connectionId, resourceId, resourceType, action } = req.body || {};
+      if (!connectionId || !resourceId || !["start", "stop", "reboot"].includes(action)) {
+        return res.status(400).json({
+          success: false,
+          error: "connectionId, resourceId e action (start|stop|reboot) são obrigatórios.",
+        });
+      }
+      const session = getCloudSession(connectionId);
+      if (!session) {
+        return res.status(404).json({
+          success: false,
+          error: "Sessão da conta cloud não está ativa no servidor. Reconecte suas credenciais.",
+        });
+      }
+      const result = await controlCloudResource(
+        session.secrets,
+        String(resourceId),
+        String(resourceType || ""),
+        action
+      );
+      res.json({ success: true, ...result });
+    } catch (err: any) {
+      res.status(400).json({
+        success: false,
+        error: err?.message || "Falha ao executar comando no recurso cloud.",
+      });
+    }
+  });
+
+  // =========================================================================
+  // REAL TERRAFORM EXECUTION ENGINE API
+  // =========================================================================
+
+  app.get("/api/terraform/status", async (_req, res) => {
+    const status = await getTerraformStatus();
+    res.json({ success: true, ...status });
+  });
+
+  app.post("/api/terraform/workspace", async (req, res) => {
+    try {
+      const { workspaceId, files, hclElementMap } = req.body || {};
+      if (!workspaceId || !files || typeof files !== "object") {
+        return res.status(400).json({ error: "workspaceId e files são obrigatórios." });
+      }
+      const result = syncWorkspaceFiles(String(workspaceId), files, hclElementMap);
+      const tfStatus = await getTerraformStatus();
+      res.json({ success: true, ...result, terraform: tfStatus });
+    } catch (err: any) {
+      res.status(500).json({ success: false, error: err?.message || "Erro ao sincronizar workspace." });
+    }
+  });
+
+  app.post("/api/terraform/run", (req, res) => {
+    try {
+      const { workspaceId, connectionId, action, targetAddress } = req.body || {};
+      const validActions = [
+        "init",
+        "validate",
+        "plan",
+        "apply",
+        "refresh",
+        "destroy",
+        "replace-target",
+        "destroy-target",
+      ];
+      if (!workspaceId || !validActions.includes(action)) {
+        return res.status(400).json({ error: "workspaceId e action válidos são obrigatórios." });
+      }
+      const job = startTerraformJob({
+        workspaceId: String(workspaceId),
+        connectionId: connectionId ? String(connectionId) : undefined,
+        action,
+        targetAddress: targetAddress ? String(targetAddress) : undefined,
+      });
+      res.json({ success: true, job });
+    } catch (err: any) {
+      res.status(500).json({ success: false, error: err?.message || "Erro ao iniciar execução Terraform." });
+    }
+  });
+
+  app.get("/api/terraform/jobs/:jobId", (req, res) => {
+    const job = getTerraformJob(req.params.jobId);
+    if (!job) {
+      return res.status(404).json({ success: false, error: "Job Terraform não encontrado." });
+    }
+    res.json({ success: true, job });
+  });
+
+  app.get("/api/terraform/state/:workspaceId", async (req, res) => {
+    try {
+      const connectionId = req.query.connectionId ? String(req.query.connectionId) : undefined;
+      const state = await readTerraformState(req.params.workspaceId, connectionId);
+      res.json({ success: true, ...state });
+    } catch (err: any) {
+      res.status(500).json({ success: false, error: err?.message || "Erro ao ler estado Terraform." });
     }
   });
 

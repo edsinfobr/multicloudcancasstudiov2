@@ -65,6 +65,42 @@ service cloud.firestore {
              (!('tags' in data) || (data.tags is list && data.tags.size() <= 30));
     }
 
+    function isValidCloudConnection(data) {
+      return data.keys().hasAll(['id', 'userId', 'label', 'provider', 'region', 'accountHint', 'status', 'createdAt', 'updatedAt']) &&
+             data.keys().hasOnly(['id', 'userId', 'label', 'provider', 'region', 'accountHint', 'status', 'lastTestedAt', 'metadata', 'createdAt', 'updatedAt']) &&
+             data.id is string && data.id.size() > 0 && data.id.size() <= 128 &&
+             data.userId is string && data.userId == request.auth.uid &&
+             data.label is string && data.label.size() > 0 && data.label.size() <= 100 &&
+             data.provider in ['aws', 'gcp', 'azure', 'oci'] &&
+             data.region is string && data.region.size() > 0 && data.region.size() <= 64 &&
+             data.accountHint is string && data.accountHint.size() <= 150 &&
+             data.status in ['connected', 'disconnected', 'error'] &&
+             (!('lastTestedAt' in data) || (data.lastTestedAt is string && data.lastTestedAt.size() <= 64)) &&
+             (!('metadata' in data) || data.metadata is map) &&
+             data.createdAt is string && data.createdAt.size() <= 64 &&
+             data.updatedAt is string && data.updatedAt.size() <= 64;
+    }
+
+    function isValidDeployment(data) {
+      return data.keys().hasAll(['id', 'userId', 'architectureId', 'workspaceId', 'provider', 'action', 'status', 'createdAt', 'updatedAt']) &&
+             data.keys().hasOnly(['id', 'userId', 'architectureId', 'architectureTitle', 'workspaceId', 'connectionId', 'provider', 'action', 'status', 'summaryText', 'planSummary', 'outputs', 'resourcesCount', 'createdAt', 'updatedAt']) &&
+             data.id is string && data.id.size() > 0 && data.id.size() <= 128 &&
+             data.userId is string && data.userId == request.auth.uid &&
+             data.architectureId is string && data.architectureId.size() > 0 && data.architectureId.size() <= 128 &&
+             (!('architectureTitle' in data) || (data.architectureTitle is string && data.architectureTitle.size() <= 150)) &&
+             data.workspaceId is string && data.workspaceId.size() > 0 && data.workspaceId.size() <= 128 &&
+             (!('connectionId' in data) || (data.connectionId is string && data.connectionId.size() <= 128)) &&
+             data.provider in ['aws', 'gcp', 'azure', 'oci', 'multicloud'] &&
+             data.action in ['init', 'validate', 'plan', 'apply', 'refresh', 'destroy', 'replace-target', 'destroy-target'] &&
+             data.status in ['queued', 'running', 'succeeded', 'failed'] &&
+             (!('summaryText' in data) || (data.summaryText is string && data.summaryText.size() <= 1000)) &&
+             (!('planSummary' in data) || data.planSummary is map) &&
+             (!('outputs' in data) || data.outputs is map) &&
+             (!('resourcesCount' in data) || (data.resourcesCount is number && data.resourcesCount >= 0)) &&
+             data.createdAt is string && data.createdAt.size() <= 64 &&
+             data.updatedAt is string && data.updatedAt.size() <= 64;
+    }
+
     // User profile and personal preferences
     match /users/{userId} {
       allow get: if isOwner(userId);
@@ -80,6 +116,24 @@ service cloud.firestore {
         allow create: if isOwner(userId) && isValidId(architectureId) && isValidArchitecture(incoming());
         allow update: if isOwner(userId) && isValidId(architectureId) && isValidArchitecture(incoming()) && incoming().userId == existing().userId && incoming().id == existing().id;
         allow delete: if isOwner(userId) && isValidId(architectureId);
+      }
+
+      // Non-secret cloud account connection profiles
+      match /cloudConnections/{connectionId} {
+        allow get: if isOwner(userId) && isValidId(connectionId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidId(connectionId) && isValidCloudConnection(incoming());
+        allow update: if isOwner(userId) && isValidId(connectionId) && isValidCloudConnection(incoming()) && incoming().userId == existing().userId && incoming().id == existing().id;
+        allow delete: if isOwner(userId) && isValidId(connectionId);
+      }
+
+      // Terraform deployment history records
+      match /deployments/{deploymentId} {
+        allow get: if isOwner(userId) && isValidId(deploymentId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidId(deploymentId) && isValidDeployment(incoming());
+        allow update: if isOwner(userId) && isValidId(deploymentId) && isValidDeployment(incoming()) && incoming().userId == existing().userId && incoming().id == existing().id;
+        allow delete: if isOwner(userId) && isValidId(deploymentId);
       }
     }
   }

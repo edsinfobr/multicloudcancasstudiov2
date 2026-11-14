@@ -138,6 +138,81 @@ const CONTAINER_OPTIONS: ContainerOptionItem[] = [
     description: 'Container genérico livre',
     icon: <Box className="w-3.5 h-3.5 text-teal-500 shrink-0" />
   },
+  // C4 Model Boundaries
+  {
+    id: 'c4_boundary_enterprise',
+    btnId: 'btn-container-c4enterprise',
+    type: 'c4_boundary_enterprise',
+    provider: 'c4',
+    category: 'scope',
+    label: 'C4 Enterprise Boundary',
+    badge: 'C4 L1 Context',
+    badgeColor: 'text-blue-400 bg-blue-500/10 border-blue-500/20',
+    description: 'Fronteira corporativa / limite da organização',
+    icon: <Globe className="w-3.5 h-3.5 text-blue-500 shrink-0" />
+  },
+  {
+    id: 'c4_boundary_system',
+    btnId: 'btn-container-c4system',
+    type: 'c4_boundary_system',
+    provider: 'c4',
+    category: 'scope',
+    label: 'C4 System Boundary',
+    badge: 'C4 L2 Container',
+    badgeColor: 'text-sky-400 bg-sky-500/10 border-sky-500/20',
+    description: 'Fronteira do Software System agrupando containers',
+    icon: <Boxes className="w-3.5 h-3.5 text-sky-500 shrink-0" />
+  },
+  {
+    id: 'c4_boundary_container',
+    btnId: 'btn-container-c4container',
+    type: 'c4_boundary_container',
+    provider: 'c4',
+    category: 'scope',
+    label: 'C4 Container Boundary',
+    badge: 'C4 L3 Component',
+    badgeColor: 'text-indigo-400 bg-indigo-500/10 border-indigo-500/20',
+    description: 'Fronteira de Container agrupando componentes internos',
+    icon: <AppWindow className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
+  },
+  // ArchiMate Groups & Plateaus
+  {
+    id: 'archimate_group',
+    btnId: 'btn-container-archimategroup',
+    type: 'archimate_group',
+    provider: 'archimate',
+    category: 'scope',
+    label: 'ArchiMate Group',
+    badge: 'ArchiMate',
+    badgeColor: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
+    description: 'Agrupamento visual ou conceitual de elementos ArchiMate',
+    icon: <Layers className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+  },
+  {
+    id: 'archimate_plateau',
+    btnId: 'btn-container-archimateplateau',
+    type: 'archimate_plateau',
+    provider: 'archimate',
+    category: 'scope',
+    label: 'ArchiMate Plateau',
+    badge: 'ArchiMate',
+    badgeColor: 'text-pink-400 bg-pink-500/10 border-pink-500/20',
+    description: 'Fronteira de Estado Arquitetural (Baseline / Target / Transition)',
+    icon: <FolderKanban className="w-3.5 h-3.5 text-pink-500 shrink-0" />
+  },
+  // TOGAF ADM & Continuum
+  {
+    id: 'togaf_adm_phase',
+    btnId: 'btn-container-togafphase',
+    type: 'togaf_adm_phase',
+    provider: 'togaf',
+    category: 'scope',
+    label: 'TOGAF ADM Phase Boundary',
+    badge: 'TOGAF ADM',
+    badgeColor: 'text-teal-400 bg-teal-500/10 border-teal-500/20',
+    description: 'Fronteira de Fase ADM (Fase A, B, C, D, E, F, G ou H)',
+    icon: <Sparkles className="w-3.5 h-3.5 text-teal-500 shrink-0" />
+  },
   {
     id: 'asg',
     btnId: 'btn-container-asg',
@@ -422,6 +497,9 @@ export const SidebarCatalog: React.FC<SidebarCatalogProps> = ({
       case 'gcp': return 'GCP Network';
       case 'oci': return 'OCI Network';
       case 'onprem': return 'On-Prem Network';
+      case 'c4': return 'C4 System Boundary';
+      case 'archimate': return 'ArchiMate Boundary';
+      case 'togaf': return 'TOGAF ADM Boundary';
       default: return 'Network';
     }
   };
@@ -433,6 +511,9 @@ export const SidebarCatalog: React.FC<SidebarCatalogProps> = ({
       case 'gcp': return 'GCP Subnet';
       case 'oci': return 'OCI Subnet';
       case 'onprem': return 'On-Prem VLAN';
+      case 'c4': return 'C4 Container Boundary';
+      case 'archimate': return 'ArchiMate Group';
+      case 'togaf': return 'TOGAF Phase';
       default: return 'Subnet';
     }
   };
@@ -445,6 +526,12 @@ export const SidebarCatalog: React.FC<SidebarCatalogProps> = ({
       matchesProvider = icon.category === 'ai' || icon.key.startsWith('ai_');
     } else if (selectedProvider === 'onprem') {
       matchesProvider = icon.provider === 'onprem';
+    } else if (selectedProvider === 'c4') {
+      matchesProvider = icon.provider === 'c4';
+    } else if (selectedProvider === 'archimate') {
+      matchesProvider = icon.provider === 'archimate';
+    } else if (selectedProvider === 'togaf') {
+      matchesProvider = icon.provider === 'togaf';
     } else {
       matchesProvider = icon.provider === selectedProvider || icon.provider === 'generic';
     }
@@ -457,6 +544,9 @@ export const SidebarCatalog: React.FC<SidebarCatalogProps> = ({
   });
 
   const isAiView = selectedCategory === 'ai' || selectedProvider === 'ai';
+  const isC4View = selectedProvider === 'c4';
+  const isArchimateView = selectedProvider === 'archimate';
+  const isTogafView = selectedProvider === 'togaf';
 
   const groupedAiIcons = useMemo(() => {
     if (!isAiView) return null;
@@ -491,6 +581,104 @@ export const SidebarCatalog: React.FC<SidebarCatalogProps> = ({
       .map((name) => ({ name, icons: map[name] || [] }))
       .filter((grp) => grp.icons.length > 0);
   }, [isAiView, filteredIcons]);
+
+  const groupedC4Icons = useMemo(() => {
+    if (!isC4View) return null;
+    const groupOrder = [
+      'Nível 1: Contexto de Sistema (System Context)',
+      'Nível 2: Containers de Software (Containers)',
+      'Nível 3: Componentes de Aplicação (Components)',
+      'Nível 4: Código & Interfaces (Code)'
+    ];
+    const map: Record<string, CloudIconDefinition[]> = {};
+    groupOrder.forEach((g) => { map[g] = []; });
+
+    filteredIcons.forEach((icon) => {
+      const k = icon.key;
+      if (k.startsWith('c4_person') || k.startsWith('c4_software_system') || k.startsWith('c4_external_system')) {
+        map['Nível 1: Contexto de Sistema (System Context)'].push(icon);
+      } else if (k.startsWith('c4_container')) {
+        map['Nível 2: Containers de Software (Containers)'].push(icon);
+      } else if (k.startsWith('c4_component')) {
+        map['Nível 3: Componentes de Aplicação (Components)'].push(icon);
+      } else if (k.startsWith('c4_code')) {
+        map['Nível 4: Código & Interfaces (Code)'].push(icon);
+      } else {
+        map['Nível 1: Contexto de Sistema (System Context)'].push(icon);
+      }
+    });
+
+    return groupOrder
+      .map((name) => ({ name, color: '#1168BD', icons: map[name] || [] }))
+      .filter((grp) => grp.icons.length > 0);
+  }, [isC4View, filteredIcons]);
+
+  const groupedArchimateIcons = useMemo(() => {
+    if (!isArchimateView) return null;
+    const groupOrder = [
+      'Camada de Motivação & Estratégia',
+      'Camada de Negócio (Business Layer)',
+      'Camada de Aplicação (Application Layer)',
+      'Camada de Tecnologia (Technology Layer)',
+      'Implementação & Migração (Implementation Layer)'
+    ];
+    const map: Record<string, CloudIconDefinition[]> = {};
+    groupOrder.forEach((g) => { map[g] = []; });
+
+    filteredIcons.forEach((icon) => {
+      const k = icon.key;
+      if (k.includes('stakeholder') || k.includes('driver') || k.includes('goal') || k.includes('principle') || k.includes('requirement') || k.includes('capability') || k.includes('value_stream')) {
+        map['Camada de Motivação & Estratégia'].push(icon);
+      } else if (k.includes('business')) {
+        map['Camada de Negócio (Business Layer)'].push(icon);
+      } else if (k.includes('app_') || k.includes('data_object')) {
+        map['Camada de Aplicação (Application Layer)'].push(icon);
+      } else if (k.includes('node') || k.includes('device') || k.includes('system_software') || k.includes('artifact') || k.includes('comm_network')) {
+        map['Camada de Tecnologia (Technology Layer)'].push(icon);
+      } else if (k.includes('work_package') || k.includes('plateau') || k.includes('gap')) {
+        map['Implementação & Migração (Implementation Layer)'].push(icon);
+      } else {
+        map['Camada de Aplicação (Application Layer)'].push(icon);
+      }
+    });
+
+    return groupOrder
+      .map((name) => ({
+        name,
+        color: name.includes('Motivação') ? '#8B5CF6' : name.includes('Negócio') ? '#CA8A04' : name.includes('Aplicação') ? '#0284C7' : name.includes('Tecnologia') ? '#16A34A' : '#DB2777',
+        icons: map[name] || []
+      }))
+      .filter((grp) => grp.icons.length > 0);
+  }, [isArchimateView, filteredIcons]);
+
+  const groupedTogafIcons = useMemo(() => {
+    if (!isTogafView) return null;
+    const groupOrder = [
+      'Blocos de Construção (ABB & SBB)',
+      'Fases ADM: Visão & Negócio (A & B)',
+      'Fases ADM: Sistemas de Informação & Tecnologia (C & D)',
+      'Fases ADM: Oportunidades, Migração & Governança (E, F, G, H)'
+    ];
+    const map: Record<string, CloudIconDefinition[]> = {};
+    groupOrder.forEach((g) => { map[g] = []; });
+
+    filteredIcons.forEach((icon) => {
+      const k = icon.key;
+      if (k === 'togaf_abb' || k === 'togaf_sbb') {
+        map['Blocos de Construção (ABB & SBB)'].push(icon);
+      } else if (k === 'togaf_phase_a' || k === 'togaf_phase_b') {
+        map['Fases ADM: Visão & Negócio (A & B)'].push(icon);
+      } else if (k === 'togaf_phase_c' || k === 'togaf_phase_d') {
+        map['Fases ADM: Sistemas de Informação & Tecnologia (C & D)'].push(icon);
+      } else {
+        map['Fases ADM: Oportunidades, Migração & Governança (E, F, G, H)'].push(icon);
+      }
+    });
+
+    return groupOrder
+      .map((name) => ({ name, color: '#0D9488', icons: map[name] || [] }))
+      .filter((grp) => grp.icons.length > 0);
+  }, [isTogafView, filteredIcons]);
 
   if (isCollapsed) {
     return (
@@ -1160,13 +1348,16 @@ export const SidebarCatalog: React.FC<SidebarCatalogProps> = ({
         }`}>
           {[
             { id: 'all', label: 'Todos' },
-            { id: 'onprem', label: 'On-Premise', color: isLight ? 'text-indigo-950 font-extrabold' : 'text-indigo-300 font-extrabold' },
+            { id: 'c4', label: 'C4 Model', color: isLight ? 'text-blue-900 font-extrabold' : 'text-blue-400 font-extrabold' },
+            { id: 'archimate', label: 'ArchiMate', color: isLight ? 'text-amber-900 font-extrabold' : 'text-amber-400 font-extrabold' },
+            { id: 'togaf', label: 'TOGAF', color: isLight ? 'text-teal-900 font-extrabold' : 'text-teal-400 font-extrabold' },
+            { id: 'onprem', label: 'On-Premise', color: isLight ? 'text-slate-900 font-extrabold' : 'text-slate-300 font-extrabold' },
             { id: 'ai', label: 'IA', color: isLight ? 'text-purple-900' : 'text-purple-300' },
-            { id: 'generic', label: 'Comuns', color: isLight ? 'text-purple-900' : 'text-purple-400' },
             { id: 'aws', label: 'AWS', color: isLight ? 'text-amber-900' : 'text-amber-400' },
             { id: 'azure', label: 'Azure', color: isLight ? 'text-sky-900' : 'text-sky-400' },
             { id: 'gcp', label: 'GCP', color: isLight ? 'text-emerald-900' : 'text-emerald-400' },
             { id: 'oci', label: 'OCI', color: isLight ? 'text-red-900' : 'text-red-400' },
+            { id: 'generic', label: 'Comuns', color: isLight ? 'text-slate-700' : 'text-slate-400' },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -1301,75 +1492,81 @@ export const SidebarCatalog: React.FC<SidebarCatalogProps> = ({
           <div className={`text-center py-12 text-xs font-medium ${isLight ? 'text-slate-700' : 'text-slate-500'}`}>
             Nenhum serviço em nuvem ou modelo encontrado para "{searchTerm}"
           </div>
-        ) : isAiView && groupedAiIcons && groupedAiIcons.length > 0 ? (
-          /* AGRUPAMENTO DEDICADO PARA IA */
+        ) : ((isAiView && groupedAiIcons && groupedAiIcons.length > 0) ||
+            (isC4View && groupedC4Icons && groupedC4Icons.length > 0) ||
+            (isArchimateView && groupedArchimateIcons && groupedArchimateIcons.length > 0) ||
+            (isTogafView && groupedTogafIcons && groupedTogafIcons.length > 0)) ? (
+          /* AGRUPAMENTO DEDICADO (IA / C4 MODEL / ARCHIMATE / TOGAF) */
           <div className="space-y-4">
-            {groupedAiIcons.map((group) => (
-              <div key={group.name} className="space-y-1.5">
-                <div className="flex items-center justify-between px-0.5 pt-1">
-                  <div className="flex items-center space-x-1.5">
-                    <span className="w-1.5 h-3 rounded-full bg-purple-500"></span>
-                    <span className={`text-[11px] font-bold tracking-tight uppercase ${
-                      isLight ? 'text-purple-950' : 'text-purple-300'
+            {(((isAiView ? groupedAiIcons : isC4View ? groupedC4Icons : isArchimateView ? groupedArchimateIcons : groupedTogafIcons)) || []).map((group: any) => {
+              const groupColor = group.color || '#8B5CF6';
+              return (
+                <div key={group.name} className="space-y-1.5">
+                  <div className="flex items-center justify-between px-0.5 pt-1">
+                    <div className="flex items-center space-x-1.5">
+                      <span className="w-1.5 h-3 rounded-full" style={{ backgroundColor: groupColor }} />
+                      <span className={`text-[11px] font-bold tracking-tight uppercase ${
+                        isLight ? 'text-slate-900' : 'text-slate-200'
+                      }`}>
+                        {group.name}
+                      </span>
+                    </div>
+                    <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded-full border ${
+                      isLight ? 'bg-slate-100 border-slate-300 text-slate-800' : 'bg-white/10 border-white/20 text-slate-300'
                     }`}>
-                      {group.name}
+                      {group.icons.length}
                     </span>
                   </div>
-                  <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded-full border ${
-                    isLight ? 'bg-purple-100 border-purple-200 text-purple-800' : 'bg-purple-500/20 border-purple-500/30 text-purple-300'
-                  }`}>
-                    {group.icons.length}
-                  </span>
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  {group.icons.map((icon) => (
-                    <div
-                      key={icon.key}
-                      id={`icon-card-${icon.key}`}
-                      onClick={() => onAddNode(icon)}
-                      draggable
-                      onDragStart={(e) => handleDragStart(e, icon)}
-                      onDragEnd={handleDragEnd}
-                      className={`group relative border rounded-lg p-2.5 flex flex-col items-center justify-between text-center cursor-pointer transition-all duration-150 hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 ${
-                        draggingIconKey === icon.key
-                          ? 'opacity-40 border-dashed border-purple-500 scale-95 bg-purple-500/10 ring-2 ring-purple-500/30'
-                          : isLight
-                          ? 'bg-white border-slate-300 hover:border-purple-500 hover:bg-purple-50/40 text-slate-900 shadow-xs'
-                          : 'bg-white/5 border-white/5 hover:border-purple-500/50 hover:bg-white/10 text-slate-200'
-                      }`}
-                    >
-                      {/* Provider Badge */}
-                      <span
-                        className="absolute top-2 right-2 text-[9px] font-bold uppercase px-1.5 py-0.2 rounded opacity-90 group-hover:opacity-100"
-                        style={{ backgroundColor: `${icon.brandColor}20`, color: icon.brandColor }}
-                      >
-                        {icon.provider === 'generic' && icon.category === 'ai' ? 'AI' : icon.provider}
-                      </span>
-
-                      {/* SVG Icon */}
+                  <div className="grid grid-cols-2 gap-2">
+                    {group.icons.map((icon: CloudIconDefinition) => (
                       <div
-                        className="w-10 h-10 my-1 flex items-center justify-center p-1 rounded group-hover:scale-105 transition-transform"
-                        dangerouslySetInnerHTML={{ __html: icon.svg }}
-                      />
+                        key={icon.key}
+                        id={`icon-card-${icon.key}`}
+                        onClick={() => onAddNode(icon)}
+                        draggable
+                        onDragStart={(e) => handleDragStart(e, icon)}
+                        onDragEnd={handleDragEnd}
+                        className={`group relative border rounded-lg p-2.5 flex flex-col items-center justify-between text-center cursor-pointer transition-all duration-150 hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 ${
+                          draggingIconKey === icon.key
+                            ? 'opacity-40 border-dashed border-blue-500 scale-95 bg-blue-500/10 ring-2 ring-blue-500/30'
+                            : isLight
+                            ? 'bg-white border-slate-300 hover:border-blue-500 hover:bg-blue-50/40 text-slate-900 shadow-xs'
+                            : 'bg-white/5 border-white/5 hover:border-blue-500/50 hover:bg-white/10 text-slate-200'
+                        }`}
+                      >
+                        {/* Provider Badge */}
+                        <span
+                          className="absolute top-2 right-2 text-[8px] font-bold uppercase px-1.5 py-0.2 rounded opacity-90 group-hover:opacity-100"
+                          style={{ backgroundColor: `${icon.brandColor}20`, color: icon.brandColor }}
+                        >
+                          {icon.provider}
+                        </span>
 
-                      {/* Label */}
-                      <div className="w-full mt-1">
-                        <span className={`block text-xs font-bold truncate ${
-                          isLight ? 'text-slate-950 group-hover:text-purple-700' : 'text-slate-200 group-hover:text-white'
-                        }`}>
-                          {icon.name}
-                        </span>
-                        <span className={`block text-[10px] truncate mt-0.5 ${
-                          isLight ? 'text-slate-700 font-medium' : 'text-slate-500'
-                        }`} title={icon.description}>
-                          {icon.description}
-                        </span>
+                        {/* SVG Icon */}
+                        <div
+                          className="w-10 h-10 my-1 flex items-center justify-center p-1 rounded group-hover:scale-105 transition-transform"
+                          dangerouslySetInnerHTML={{ __html: icon.svg }}
+                        />
+
+                        {/* Label */}
+                        <div className="w-full mt-1">
+                          <span className={`block text-xs font-bold truncate ${
+                            isLight ? 'text-slate-950 group-hover:text-blue-700' : 'text-slate-200 group-hover:text-white'
+                          }`}>
+                            {icon.name}
+                          </span>
+                          <span className={`block text-[10px] truncate mt-0.5 ${
+                            isLight ? 'text-slate-700 font-medium' : 'text-slate-500'
+                          }`} title={icon.description}>
+                            {icon.description}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-2">

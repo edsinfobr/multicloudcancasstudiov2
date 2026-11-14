@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { DiagramState, DiagramNode, DiagramContainer, DiagramLink, CloudProvider, LinkRoutingType } from '../types';
 import { inferProtocolForLink } from '../utils/protocolInfer';
 import { CLOUD_ICONS, getIconByKey } from '../data/cloudIcons';
-import { Trash2, Copy, Sliders, Info, Shield, Server, HardDrive, Cpu, Layers, ArrowRight, RefreshCw, Zap, FolderMinus, FolderPlus, FileSignature, FolderKanban, User, Briefcase, Building2, Calendar, ChevronRight, ChevronLeft, Search, Sparkles, Check, Rows, Columns, Spline, CornerDownRight, Minus, Waypoints, Move, RotateCcw, Activity, Tag } from 'lucide-react';
+import { Trash2, Copy, Sliders, Info, Shield, Server, HardDrive, Cpu, Layers, ArrowRight, RefreshCw, Zap, FolderMinus, FolderPlus, FileSignature, FolderKanban, User, Briefcase, Building2, Calendar, ChevronRight, ChevronLeft, Search, Sparkles, Check, Rows, Columns, Spline, CornerDownRight, Minus, Waypoints, Move, RotateCcw, Activity, Tag, Rocket, Power, Square, ExternalLink } from 'lucide-react';
+import { executeCloudResourceControl } from '../services/cloudDeployService';
 
 interface PropertyPanelProps {
   diagram: DiagramState;
@@ -17,6 +18,8 @@ interface PropertyPanelProps {
   theme?: 'dark' | 'light';
   isCollapsed?: boolean;
   onToggleCollapse?: (collapsed: boolean) => void;
+  activeConnectionId?: string | null;
+  onOpenCloudDeploy?: (tab?: 'accounts' | 'deploy' | 'live') => void;
 }
 
 export const PropertyPanel: React.FC<PropertyPanelProps> = ({
@@ -31,7 +34,9 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
   onRecordHistory,
   theme = 'dark',
   isCollapsed: controlledIsCollapsed,
-  onToggleCollapse
+  onToggleCollapse,
+  activeConnectionId,
+  onOpenCloudDeploy
 }) => {
   const isLight = theme === 'light';
   const [internalCollapsed, setInternalCollapsed] = useState(false);
@@ -43,6 +48,8 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
   const [isIconSelectorOpen, setIsIconSelectorOpen] = useState(false);
   const [iconSearchTerm, setIconSearchTerm] = useState('');
   const [iconProviderFilter, setIconProviderFilter] = useState<CloudProvider | 'all'>('all');
+  const [liveControlBusy, setLiveControlBusy] = useState(false);
+  const [liveControlMsg, setLiveControlMsg] = useState<string | null>(null);
 
   const selectedNode = diagram.nodes.find((n) => n.id === selectedNodeId);
   const selectedContainer = diagram.containers.find((c) => c.id === selectedContainerId);
@@ -812,6 +819,176 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
                 }`}
               />
             </div>
+
+            {/* Controle de Infraestrutura Live */}
+            {['aws', 'gcp', 'azure', 'oci'].includes(selectedNode.provider) && (
+              <div
+                className={`p-3 rounded-xl border space-y-2.5 ${
+                  isLight ? 'bg-slate-50 border-slate-200' : 'bg-black/30 border-white/10'
+                }`}
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <span className={`text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5 ${isLight ? 'text-slate-800' : 'text-slate-300'}`}>
+                    <Activity className="w-3.5 h-3.5 text-emerald-500" />
+                    <span>Infraestrutura Live</span>
+                  </span>
+                  <span
+                    className={`font-mono text-[10px] font-bold uppercase ${
+                      selectedNode.liveState?.status === 'running'
+                        ? 'text-emerald-500'
+                        : selectedNode.liveState?.status === 'stopped'
+                        ? 'text-amber-500'
+                        : selectedNode.liveState?.status === 'error'
+                        ? 'text-rose-500'
+                        : 'text-slate-400'
+                    }`}
+                  >
+                    {selectedNode.liveState?.status || 'não provisionado'}
+                  </span>
+                </div>
+
+                {selectedNode.liveState?.cloudResourceId ? (
+                  <div className="space-y-1.5 font-mono text-[11px] tabular-nums">
+                    <div className="truncate">
+                      <span className="text-slate-400">ID: </span>
+                      <span>{selectedNode.liveState.cloudResourceId}</span>
+                    </div>
+                    {(selectedNode.liveState.publicIp || selectedNode.liveState.endpoint) && (
+                      <div className="truncate">
+                        <span className="text-slate-400">Endpoint: </span>
+                        <span>{selectedNode.liveState.publicIp || selectedNode.liveState.endpoint}</span>
+                      </div>
+                    )}
+
+                    {(selectedNode.liveState.connectionId || activeConnectionId) && (
+                      <div className="grid grid-cols-3 gap-1.5 pt-1 font-sans">
+                        <button
+                          type="button"
+                          disabled={liveControlBusy}
+                          onClick={async () => {
+                            const connId = selectedNode.liveState?.connectionId || activeConnectionId;
+                            if (!connId || !selectedNode.liveState?.cloudResourceId) return;
+                            setLiveControlBusy(true);
+                            setLiveControlMsg(null);
+                            try {
+                              const res = await executeCloudResourceControl({
+                                connectionId: connId,
+                                resourceId: selectedNode.liveState.cloudResourceId,
+                                resourceType: selectedNode.resourceType,
+                                action: 'start',
+                              });
+                              updateNode((n) => ({
+                                ...n,
+                                liveState: { ...n.liveState!, status: 'running', lastSyncedAt: new Date().toISOString() },
+                              }));
+                              setLiveControlMsg(res.message);
+                            } catch (err: any) {
+                              setLiveControlMsg(err?.message || 'Erro ao iniciar');
+                            } finally {
+                              setLiveControlBusy(false);
+                            }
+                          }}
+                          className="flex items-center justify-center gap-1 rounded bg-emerald-600 hover:bg-emerald-500 px-2 py-1 text-[10px] font-bold text-white whitespace-nowrap"
+                        >
+                          <Power className="w-3 h-3" />
+                          <span>Iniciar</span>
+                        </button>
+                        <button
+                          type="button"
+                          disabled={liveControlBusy}
+                          onClick={async () => {
+                            const connId = selectedNode.liveState?.connectionId || activeConnectionId;
+                            if (!connId || !selectedNode.liveState?.cloudResourceId) return;
+                            setLiveControlBusy(true);
+                            setLiveControlMsg(null);
+                            try {
+                              const res = await executeCloudResourceControl({
+                                connectionId: connId,
+                                resourceId: selectedNode.liveState.cloudResourceId,
+                                resourceType: selectedNode.resourceType,
+                                action: 'stop',
+                              });
+                              updateNode((n) => ({
+                                ...n,
+                                liveState: { ...n.liveState!, status: 'stopped', lastSyncedAt: new Date().toISOString() },
+                              }));
+                              setLiveControlMsg(res.message);
+                            } catch (err: any) {
+                              setLiveControlMsg(err?.message || 'Erro ao parar');
+                            } finally {
+                              setLiveControlBusy(false);
+                            }
+                          }}
+                          className="flex items-center justify-center gap-1 rounded bg-amber-600 hover:bg-amber-500 px-2 py-1 text-[10px] font-bold text-white whitespace-nowrap"
+                        >
+                          <Square className="w-3 h-3" />
+                          <span>Parar</span>
+                        </button>
+                        <button
+                          type="button"
+                          disabled={liveControlBusy}
+                          onClick={async () => {
+                            const connId = selectedNode.liveState?.connectionId || activeConnectionId;
+                            if (!connId || !selectedNode.liveState?.cloudResourceId) return;
+                            setLiveControlBusy(true);
+                            setLiveControlMsg(null);
+                            try {
+                              const res = await executeCloudResourceControl({
+                                connectionId: connId,
+                                resourceId: selectedNode.liveState.cloudResourceId,
+                                resourceType: selectedNode.resourceType,
+                                action: 'reboot',
+                              });
+                              setLiveControlMsg(res.message);
+                            } catch (err: any) {
+                              setLiveControlMsg(err?.message || 'Erro ao reiniciar');
+                            } finally {
+                              setLiveControlBusy(false);
+                            }
+                          }}
+                          className="flex items-center justify-center gap-1 rounded border border-blue-500/40 bg-blue-500/15 px-2 py-1 text-[10px] font-bold text-blue-500 hover:bg-blue-500/25 whitespace-nowrap"
+                        >
+                          <RotateCcw className="w-3 h-3" />
+                          <span>Reboot</span>
+                        </button>
+                      </div>
+                    )}
+
+                    {selectedNode.liveState.consoleUrl && (
+                      <a
+                        href={selectedNode.liveState.consoleUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-[11px] font-sans font-semibold text-blue-500 hover:underline pt-0.5"
+                      >
+                        <ExternalLink className="w-3 h-3" />
+                        <span>Abrir no Console {selectedNode.provider.toUpperCase()}</span>
+                      </a>
+                    )}
+                    {liveControlMsg && (
+                      <div className="font-sans text-[10px] text-emerald-500 pt-0.5">
+                        {liveControlMsg}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <p className={`text-[11px] leading-snug ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+                    Conecte sua conta e faça o deploy via Terraform para controlar este recurso direto do Canvas.
+                  </p>
+                )}
+
+                {onOpenCloudDeploy && (
+                  <button
+                    type="button"
+                    onClick={() => onOpenCloudDeploy(selectedNode.liveState?.cloudResourceId ? 'live' : 'deploy')}
+                    className="w-full flex items-center justify-center gap-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 px-3 py-1.5 text-xs font-bold text-white whitespace-nowrap"
+                  >
+                    <Rocket className="w-3.5 h-3.5" />
+                    <span>Abrir Console Cloud Deploy</span>
+                  </button>
+                )}
+              </div>
+            )}
           </>
         )}
 

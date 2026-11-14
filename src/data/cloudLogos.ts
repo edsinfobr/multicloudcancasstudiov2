@@ -116,6 +116,63 @@ export const CLOUD_PROVIDERS_LIST: CloudProviderMeta[] = [
       <circle cx="12" cy="23" r="1.1" fill="#38BDF8"/>
       <line x1="16" y1="23" x2="23.5" y2="23" stroke="#94A3B8" stroke-width="1.3" stroke-linecap="round"/>
     </svg>`
+  },
+  {
+    id: 'archimate',
+    name: 'ArchiMate',
+    brandColor: '#F59E0B',
+    badgeBg: 'rgba(245, 158, 11, 0.15)',
+    textColor: '#F59E0B',
+    description: 'The Open Group ArchiMate 3.2 Enterprise Standard',
+    svg: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="32" height="32" rx="7" fill="#1E1B4B"/>
+      <!-- ArchiMate 3 Layer Stack Glyph (Strategy, Business, Application, Tech) -->
+      <rect x="6" y="7" width="20" height="4" rx="1.5" fill="#A855F7"/>
+      <rect x="6" y="13" width="20" height="4" rx="1.5" fill="#EAB308"/>
+      <rect x="6" y="19" width="20" height="4" rx="1.5" fill="#38BDF8"/>
+      <rect x="6" y="25" width="20" height="4" rx="1.5" fill="#4ADE80"/>
+      <!-- Small linking vertical line -->
+      <line x1="16" y1="9" x2="16" y2="27" stroke="#FFFFFF" stroke-width="1.2" stroke-linecap="round" opacity="0.8"/>
+    </svg>`
+  },
+  {
+    id: 'togaf',
+    name: 'TOGAF',
+    brandColor: '#0D9488',
+    badgeBg: 'rgba(13, 148, 136, 0.15)',
+    textColor: '#0D9488',
+    description: 'The Open Group Architecture Framework (ADM)',
+    svg: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="32" height="32" rx="7" fill="#134E4A"/>
+      <!-- TOGAF ADM Circular Cycle -->
+      <circle cx="16" cy="16" r="10" stroke="#2DD4BF" stroke-width="2" stroke-dasharray="3 2" fill="none"/>
+      <!-- Central Preliminary / Requirements node -->
+      <circle cx="16" cy="16" r="4.5" fill="#2DD4BF"/>
+      <text x="16" y="18.5" fill="#134E4A" font-size="6" font-weight="900" text-anchor="middle">A</text>
+      <!-- Phase nodes on circumference -->
+      <circle cx="16" cy="6" r="2" fill="#5EEAD4"/>
+      <circle cx="26" cy="16" r="2" fill="#5EEAD4"/>
+      <circle cx="16" cy="26" r="2" fill="#5EEAD4"/>
+      <circle cx="6" cy="16" r="2" fill="#5EEAD4"/>
+    </svg>`
+  },
+  {
+    id: 'c4',
+    name: 'C4 Model',
+    brandColor: '#1168BD',
+    badgeBg: 'rgba(17, 104, 189, 0.15)',
+    textColor: '#60A5FA',
+    description: 'C4 Model (Context, Containers, Components, Code)',
+    svg: `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="32" height="32" rx="7" fill="#0A2540"/>
+      <!-- 4 Zoomed Quadrant Blocks of C4 Model -->
+      <rect x="6" y="6" width="9" height="9" rx="2" fill="#1168BD"/>
+      <rect x="17" y="6" width="9" height="9" rx="2" fill="#438DD5"/>
+      <rect x="6" y="17" width="9" height="9" rx="2" fill="#85BBF0"/>
+      <rect x="17" y="17" width="9" height="9" rx="2" fill="#BAE6FD"/>
+      <!-- C4 Bold Text -->
+      <text x="16" y="21" fill="#FFFFFF" font-size="9" font-weight="900" font-family="monospace" text-anchor="middle" opacity="0.9">C4</text>
+    </svg>`
   }
 ];
 

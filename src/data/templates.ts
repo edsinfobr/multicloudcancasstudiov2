@@ -1,6 +1,12 @@
 import { DiagramState } from '../types';
+import { ENTERPRISE_TEMPLATES } from './enterpriseTemplates';
 
 export const STARTER_TEMPLATES: DiagramState[] = [
+  // ==========================================
+  // ENTERPRISE ARCHITECTURE FRAMEWORKS
+  // TOGAF ADM, ArchiMate 3.2, C4 Model Levels 1-4
+  // ==========================================
+  ...ENTERPRISE_TEMPLATES,
   // ==========================================
   // ARTIFICIAL INTELLIGENCE (GenAI & LLMs)
   // OpenAI, Anthropic Claude, Google Gemini & Meta Llama

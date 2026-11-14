@@ -21,7 +21,7 @@ interface TemplateModalProps {
   theme?: 'dark' | 'light';
 }
 
-type CategoryTab = 'all' | 'ai' | 'aws' | 'azure' | 'gcp' | 'oci' | 'multicloud';
+type CategoryTab = 'all' | 'enterprise' | 'ai' | 'aws' | 'azure' | 'gcp' | 'oci' | 'multicloud';
 
 export const TemplateModal: React.FC<TemplateModalProps> = ({
   setDiagram,
@@ -30,7 +30,7 @@ export const TemplateModal: React.FC<TemplateModalProps> = ({
   theme
 }) => {
   const isLight = theme === 'light';
-  const [activeCategory, setActiveCategory] = useState<CategoryTab>('ai');
+  const [activeCategory, setActiveCategory] = useState<CategoryTab>('enterprise');
   const [searchQuery, setSearchQuery] = useState('');
 
   const handleSelectTemplate = (template: DiagramState) => {
@@ -51,21 +51,32 @@ export const TemplateModal: React.FC<TemplateModalProps> = ({
     );
   };
 
+  const isEnterpriseTemplate = (t: DiagramState): boolean => {
+    return (
+      t.id.startsWith('template_c4_') ||
+      t.id.startsWith('template_archimate_') ||
+      t.id.startsWith('template_togaf_') ||
+      ['c4', 'archimate', 'togaf'].includes(t.primaryProvider)
+    );
+  };
+
   const filteredTemplates = useMemo(() => {
     return STARTER_TEMPLATES.filter((tmpl) => {
       // Category filter
-      if (activeCategory === 'ai') {
-        if (!isAiTemplate(tmpl)) return false;
+      if (activeCategory === 'enterprise') {
+        if (!isEnterpriseTemplate(tmpl)) return false;
+      } else if (activeCategory === 'ai') {
+        if (!isAiTemplate(tmpl) || isEnterpriseTemplate(tmpl)) return false;
       } else if (activeCategory === 'aws') {
-        if (tmpl.primaryProvider !== 'aws' || isAiTemplate(tmpl)) return false;
+        if (tmpl.primaryProvider !== 'aws' || isAiTemplate(tmpl) || isEnterpriseTemplate(tmpl)) return false;
       } else if (activeCategory === 'azure') {
-        if (tmpl.primaryProvider !== 'azure') return false;
+        if (tmpl.primaryProvider !== 'azure' || isEnterpriseTemplate(tmpl)) return false;
       } else if (activeCategory === 'gcp') {
-        if (tmpl.primaryProvider !== 'gcp' || isAiTemplate(tmpl)) return false;
+        if (tmpl.primaryProvider !== 'gcp' || isAiTemplate(tmpl) || isEnterpriseTemplate(tmpl)) return false;
       } else if (activeCategory === 'oci') {
-        if (tmpl.primaryProvider !== 'oci') return false;
+        if (tmpl.primaryProvider !== 'oci' || isEnterpriseTemplate(tmpl)) return false;
       } else if (activeCategory === 'multicloud') {
-        if (!tmpl.id.includes('multicloud') && tmpl.containers.length < 3) return false;
+        if (isEnterpriseTemplate(tmpl) || (!tmpl.id.includes('multicloud') && tmpl.containers.length < 3)) return false;
       }
 
       // Search query
@@ -169,6 +180,26 @@ export const TemplateModal: React.FC<TemplateModalProps> = ({
         }`}>
           {/* Category Tabs */}
           <div className="flex flex-wrap items-center gap-1.5">
+            <button
+              id="filter-tab-enterprise"
+              onClick={() => setActiveCategory('enterprise')}
+              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
+                activeCategory === 'enterprise'
+                  ? 'bg-gradient-to-r from-teal-600 via-indigo-600 to-amber-600 text-white border-transparent shadow-md shadow-indigo-500/25'
+                  : isLight
+                  ? 'bg-white hover:bg-slate-100 text-slate-800 border-slate-300'
+                  : 'bg-white/5 hover:bg-white/10 text-slate-200 border-white/10'
+              }`}
+            >
+              <Layers className="w-3.5 h-3.5 text-amber-300" />
+              <span>Enterprise (TOGAF, ArchiMate & C4)</span>
+              <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
+                activeCategory === 'enterprise' ? 'bg-white/20 text-white' : 'bg-indigo-500/20 text-indigo-300'
+              }`}>
+                3
+              </span>
+            </button>
+
             <button
               id="filter-tab-ai"
               onClick={() => setActiveCategory('ai')}

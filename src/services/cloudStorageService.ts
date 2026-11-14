@@ -9,7 +9,12 @@ import {
   orderBy
 } from 'firebase/firestore';
 import { db, handleFirestoreError, OperationType } from '../lib/firebase';
-import { DiagramState, DefaultStampPreferences } from '../types';
+import {
+  DiagramState,
+  DefaultStampPreferences,
+  CloudConnectionProfile,
+  TerraformDeploymentRecord,
+} from '../types';
 import { SavedArchitectureItem } from '../utils/storageUtils';
 
 export interface UserPreferences {
@@ -217,3 +222,110 @@ export async function deleteCloudArchitecture(userId: string, architectureId: st
     handleFirestoreError(error, OperationType.DELETE, path);
   }
 }
+
+/**
+ * Save a non-secret Cloud Connection Profile to Firestore (NEVER stores raw keys/PEMs)
+ */
+export async function saveCloudConnectionProfile(
+  userId: string,
+  profile: CloudConnectionProfile
+): Promise<void> {
+  const safeId = profile.id.replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 128);
+  const docPath = `users/${userId}/cloudConnections/${safeId}`;
+  try {
+    const ref = doc(db, 'users', userId, 'cloudConnections', safeId);
+    const now = new Date().toISOString();
+    const payload: Record<string, any> = {
+      id: safeId,
+      userId,
+      label: (profile.label || `${profile.provider.toUpperCase()} (${profile.region})`).slice(0, 100),
+      provider: profile.provider,
+      region: (profile.region || 'us-east-1').slice(0, 64),
+      accountHint: (profile.accountHint || '').slice(0, 150),
+      status: profile.status || 'connected',
+      createdAt: profile.createdAt || now,
+      updatedAt: now,
+    };
+    if (profile.lastTestedAt) payload.lastTestedAt = profile.lastTestedAt.slice(0, 64);
+    if (profile.metadata && typeof profile.metadata === 'object') payload.metadata = profile.metadata;
+
+    await setDoc(ref, payload, { merge: true });
+  } catch (error) {
+    handleFirestoreError(error, OperationType.WRITE, docPath);
+  }
+}
+
+export async function getCloudConnectionProfiles(userId: string): Promise<CloudConnectionProfile[]> {
+  const docPath = `users/${userId}/cloudConnections`;
+  try {
+    const colRef = collection(db, 'users', userId, 'cloudConnections');
+    const q = query(colRef, orderBy('updatedAt', 'desc'));
+    const snapshot = await getDocs(q);
+    const items: CloudConnectionProfile[] = [];
+    snapshot.forEach((docSnap) => {
+      items.push(docSnap.data() as CloudConnectionProfile);
+    });
+    return items;
+  } catch (error) {
+    handleFirestoreError(error, OperationType.LIST, docPath);
+  }
+}
+
+export async function deleteCloudConnectionProfile(userId: string, connectionId: string): Promise<void> {
+  const docPath = `users/${userId}/cloudConnections/${connectionId}`;
+  try {
+    await deleteDoc(doc(db, 'users', userId, 'cloudConnections', connectionId));
+  } catch (error) {
+    handleFirestoreError(error, OperationType.DELETE, docPath);
+  }
+}
+
+export async function saveTerraformDeploymentRecord(
+  userId: string,
+  record: TerraformDeploymentRecord
+): Promise<void> {
+  const safeId = record.id.replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 128);
+  const docPath = `users/${userId}/deployments/${safeId}`;
+  try {
+    const ref = doc(db, 'users', userId, 'deployments', safeId);
+    const now = new Date().toISOString();
+    const payload: Record<string, any> = {
+      id: safeId,
+      userId,
+      architectureId: record.architectureId.slice(0, 128),
+      architectureTitle: (record.architectureTitle || 'Arquitetura').slice(0, 150),
+      workspaceId: record.workspaceId.slice(0, 128),
+      provider: record.provider,
+      action: record.action,
+      status: record.status,
+      summaryText: (record.summaryText || '').slice(0, 1000),
+      resourcesCount: Math.max(0, record.resourcesCount || 0),
+      createdAt: record.createdAt || now,
+      updatedAt: now,
+    };
+    if (record.connectionId) payload.connectionId = record.connectionId.slice(0, 128);
+    if (record.planSummary) payload.planSummary = record.planSummary;
+    if (record.outputs) payload.outputs = record.outputs;
+
+    await setDoc(ref, payload);
+  } catch (error) {
+    handleFirestoreError(error, OperationType.WRITE, docPath);
+  }
+}
+
+export async function getTerraformDeployments(userId: string): Promise<TerraformDeploymentRecord[]> {
+  const docPath = `users/${userId}/deployments`;
+  try {
+    const colRef = collection(db, 'users', userId, 'deployments');
+    const q = query(colRef, orderBy('updatedAt', 'desc'));
+    const snapshot = await getDocs(q);
+    const items: TerraformDeploymentRecord[] = [];
+    snapshot.forEach((docSnap) => {
+      items.push(docSnap.data() as TerraformDeploymentRecord);
+    });
+    return items;
+  } catch (error) {
+    handleFirestoreError(error, OperationType.LIST, docPath);
+  }
+}
+
