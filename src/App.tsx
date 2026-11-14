@@ -34,7 +34,7 @@ import { saveArchitectureToStorage, saveAutosaveDraft, getAutosaveDraft } from '
 import { exportArchitecturePdf } from './utils/exportUtils';
 import { fitDiagramToContainer } from './utils/canvasNavigation';
 import { getNextSubnetCidr } from './utils/networkUtils';
-import { CheckCircle2, Cloud, BookOpen, Youtube } from 'lucide-react';
+import { CheckCircle2, Cloud, BookOpen, Youtube, Github } from 'lucide-react';
 import { ProposalType } from './types';
 
 // Helper to detect OS system theme preference (Dark or Light mode)
@@ -1195,6 +1195,18 @@ export default function App() {
               >
                 <Youtube className="w-3.5 h-3.5 text-red-500" />
                 <span>YouTube</span>
+              </a>
+              <span className="text-slate-500 opacity-50 hidden sm:inline">•</span>
+              <a
+                href="https://github.com/edsinfobr/multicloudcancasstudiov2"
+                target="_blank"
+                rel="noopener noreferrer"
+                id="footer-link-github"
+                className="font-semibold text-slate-700 hover:text-slate-900 dark:text-slate-200 dark:hover:text-white hover:underline transition-colors flex items-center space-x-1"
+                title="Projeto no GitHub (https://github.com/edsinfobr/multicloudcancasstudiov2)"
+              >
+                <Github className="w-3.5 h-3.5" />
+                <span>GitHub</span>
               </a>
               <span className="text-slate-500 opacity-50 hidden sm:inline">•</span>
               <span className="text-slate-500 flex items-center space-x-1">

@@ -25,6 +25,7 @@ import {
   ChevronUp,
   BookOpen,
   Globe,
+  Github,
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../i18n/LanguageContext';
@@ -830,6 +831,20 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({
               </button>
             </>
           )}
+          <span className="opacity-40">•</span>
+          <a
+            id="link-auth-github-footer"
+            href="https://github.com/edsinfobr/multicloudcancasstudiov2"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`font-semibold hover:underline transition-colors flex items-center space-x-1 ${
+              isLight ? 'text-slate-700 hover:text-slate-950' : 'text-slate-300 hover:text-white'
+            }`}
+            title="Projeto no GitHub (https://github.com/edsinfobr/multicloudcancasstudiov2)"
+          >
+            <Github className="w-3.5 h-3.5 inline" />
+            <span>Projeto no GitHub</span>
+          </a>
         </p>
       </footer>
     </div>
