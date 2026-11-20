@@ -1,5 +1,6 @@
 import { DiagramState } from '../types';
 import { ENTERPRISE_TEMPLATES } from './enterpriseTemplates';
+import { MGC_TEMPLATES } from './mgcTemplates';
 
 export const STARTER_TEMPLATES: DiagramState[] = [
   // ==========================================
@@ -2610,6 +2611,11 @@ export const STARTER_TEMPLATES: DiagramState[] = [
       { id: 'ml2', from: 'mn_aws_s3', to: 'mn_gcp_bq', label: 'BigQuery Storage Transfer', style: 'dashed', protocol: 'Internal' },
       { id: 'ml3', from: 'mn_aws_ec2', to: 'mn_oci_autodb', label: 'FastConnect / Peering', style: 'solid', protocol: 'SQL' }
     ]
-  }
+  },
+
+  // ==========================================
+  // MGC (MAGALU CLOUD) TEMPLATES
+  // ==========================================
+  ...MGC_TEMPLATES
 ];
 

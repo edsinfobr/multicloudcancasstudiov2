@@ -31,7 +31,15 @@ const BASE_PRICING: Record<string, number> = {
   'VM.Standard2.1': 0.0638,
   'VM.Standard.E4.Flex': 0.048,
   'oci_autonomous_db': 0.33,
-  'oci_object_gb': 0.0255
+  'oci_object_gb': 0.0255,
+
+  // Magalu Cloud (USD equivalents)
+  'BV2-4-20': 0.038,
+  'BV4-8-40': 0.076,
+  'cloud-k8s.gp1.medium': 0.068,
+  'DP2-4-40': 0.095,
+  'magalu_s3_gb': 0.015,
+  'magalu_block_gb': 0.075
 };
 
 export const calculateNodeCost = (node: DiagramNode): CostItem => {
@@ -119,6 +127,22 @@ export const calculateNodeCost = (node: DiagramNode): CostItem => {
     unitCostHr = 0.25;
     monthlyCost = unitCostHr * hours * count + storageGb * 0.11;
     details = `${count}x DB Instance @ ~$${unitCostHr}/hr + ${storageGb} GB Storage`;
+  } else if (node.iconKey === 'magalu_vpc') {
+    monthlyCost = 0;
+    unitCostHr = 0;
+    details = `MGC VPC (Rede Virtual Privada — sem custo base de VPC)`;
+  } else if (node.iconKey === 'magalu_block_storage') {
+    const pricePerGb = BASE_PRICING['magalu_block_gb'] || 0.075;
+    monthlyCost = storageGb * pricePerGb * count;
+    details = `${count}x MGC Block Storage (${storageGb} GB NVMe/SSD @ $${pricePerGb}/GB)`;
+  } else if (node.iconKey === 'magalu_object_storage') {
+    const pricePerGb = BASE_PRICING['magalu_s3_gb'] || 0.015;
+    monthlyCost = storageGb * pricePerGb + transferGb * 0.04;
+    details = `MGC Object Storage (${storageGb} GB @ $${pricePerGb}/GB + ${transferGb} GB Tráfego)`;
+  } else if (node.iconKey === 'magalu_container_registry') {
+    const pricePerGb = 0.05;
+    monthlyCost = (storageGb || 100) * pricePerGb * count;
+    details = `MGC Container Registry (${storageGb || 100} GB Imagens OCI @ $${pricePerGb}/GB)`;
   } else if (node.iconKey === 'generic_user' || node.resourceType === 'generic_user' || node.name === 'Clients & Frontend' || node.iconKey === 'generic_internet') {
     monthlyCost = 0;
     unitCostHr = 0;

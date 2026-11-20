@@ -95,6 +95,15 @@ export const CLOUD_PROVIDERS_LIST: CloudProviderMeta[] = [
     </svg>`
   },
   {
+    id: 'magalu',
+    name: 'MGC',
+    brandColor: '#0086FF',
+    badgeBg: 'rgba(0, 134, 255, 0.15)',
+    textColor: '#0086FF',
+    description: 'MGC (Nuvem Brasileira)',
+    svg: `<img src="/assets/aistudio/image_2c6cea36.png" alt="MGC" class="w-full h-full object-contain rounded-[4px]" />`
+  },
+  {
     id: 'onprem',
     name: 'On-Premise',
     brandColor: '#475569',
@@ -178,7 +187,8 @@ export const CLOUD_PROVIDERS_LIST: CloudProviderMeta[] = [
 
 export const getCloudProviderMeta = (provider: string): CloudProviderMeta | undefined => {
   const norm = (provider || '').toLowerCase().trim();
-  return CLOUD_PROVIDERS_LIST.find((p) => p.id === norm || p.name.toLowerCase() === norm);
+  const normalizedId = norm === 'mgc' || norm === 'magalu cloud' ? 'magalu' : norm;
+  return CLOUD_PROVIDERS_LIST.find((p) => p.id === normalizedId || p.name.toLowerCase() === norm);
 };
 
 export const getCloudLogoSvg = (provider: string): string => {

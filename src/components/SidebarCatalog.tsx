@@ -67,6 +67,18 @@ const CONTAINER_OPTIONS: ContainerOptionItem[] = [
     icon: <Globe className="w-3.5 h-3.5 text-red-500 shrink-0" />
   },
   {
+    id: 'magalu_region',
+    btnId: 'btn-container-magaluregion',
+    type: 'region',
+    provider: 'magalu',
+    category: 'region',
+    label: 'MGC Region',
+    badge: 'MGC',
+    badgeColor: 'text-sky-400 bg-sky-500/10 border-sky-500/20',
+    description: 'Região MGC (ex: br-se1, br-ne1)',
+    icon: <Globe className="w-3.5 h-3.5 text-[#0086FF] shrink-0" />
+  },
+  {
     id: 'compartment',
     btnId: 'btn-container-compartment',
     type: 'compartment',
@@ -308,6 +320,18 @@ const CONTAINER_OPTIONS: ContainerOptionItem[] = [
     badgeColor: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
     description: 'Sub-rede (Subnet) da Amazon VPC',
     icon: <Box className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+  },
+  {
+    id: 'magalu_subnet',
+    btnId: 'btn-container-magalusubnet',
+    type: 'subnet',
+    provider: 'magalu',
+    category: 'subnet',
+    label: 'MGC Subnet',
+    badge: 'MGC VPC',
+    badgeColor: 'text-sky-400 bg-sky-500/10 border-sky-500/20',
+    description: 'Sub-rede (Subnet) da MGC VPC',
+    icon: <Box className="w-3.5 h-3.5 text-[#0086FF] shrink-0" />
   }
 ];
 
@@ -456,7 +480,7 @@ export const SidebarCatalog: React.FC<SidebarCatalogProps> = ({
       </div>
       <div style="display: flex; flex-direction: column;">
         <span style="font-size: 12px; font-weight: 800; color: ${isLight ? '#0f172a' : '#f8fafc'};">${icon.name}</span>
-        <span style="font-size: 9px; font-weight: 800; text-transform: uppercase; color: ${icon.brandColor || '#3b82f6'};">${icon.provider}</span>
+        <span style="font-size: 9px; font-weight: 800; text-transform: uppercase; color: ${icon.brandColor || '#3b82f6'};">${icon.provider === 'magalu' ? 'MGC' : icon.provider}</span>
       </div>
     `;
     
@@ -496,6 +520,7 @@ export const SidebarCatalog: React.FC<SidebarCatalogProps> = ({
       case 'azure': return 'Azure Network';
       case 'gcp': return 'GCP Network';
       case 'oci': return 'OCI Network';
+      case 'magalu': return 'MGC VPC';
       case 'onprem': return 'On-Prem Network';
       case 'c4': return 'C4 System Boundary';
       case 'archimate': return 'ArchiMate Boundary';
@@ -510,6 +535,7 @@ export const SidebarCatalog: React.FC<SidebarCatalogProps> = ({
       case 'azure': return 'Azure Subnet';
       case 'gcp': return 'GCP Subnet';
       case 'oci': return 'OCI Subnet';
+      case 'magalu': return 'MGC Subnet';
       case 'onprem': return 'On-Prem VLAN';
       case 'c4': return 'C4 Container Boundary';
       case 'archimate': return 'ArchiMate Group';
@@ -524,6 +550,8 @@ export const SidebarCatalog: React.FC<SidebarCatalogProps> = ({
       matchesProvider = true;
     } else if (selectedProvider === 'ai') {
       matchesProvider = icon.category === 'ai' || icon.key.startsWith('ai_');
+    } else if (selectedProvider === 'magalu') {
+      matchesProvider = icon.provider === 'magalu';
     } else if (selectedProvider === 'onprem') {
       matchesProvider = icon.provider === 'onprem';
     } else if (selectedProvider === 'c4') {
@@ -866,6 +894,22 @@ export const SidebarCatalog: React.FC<SidebarCatalogProps> = ({
                     </div>
                     <span className={`text-[10px] ${isLight ? 'text-slate-600 font-medium' : 'text-slate-500'}`}>Virtual Cloud Network</span>
                   </button>
+
+                  <button
+                    onClick={() => {
+                      onAddContainer('vpc', 'magalu');
+                      setIsNetworkDropdownOpen(false);
+                    }}
+                    className={`w-full text-left px-3 py-1.5 flex items-center justify-between text-xs transition-colors ${
+                      isLight ? 'hover:bg-slate-100 text-slate-900' : 'hover:bg-white/10 text-slate-200'
+                    }`}
+                  >
+                    <div className="flex items-center space-x-2">
+                      <span className="w-2 h-2 rounded-full bg-[#0086FF] inline-block"></span>
+                      <span className={`font-semibold ${isLight ? 'text-blue-950' : 'text-sky-300'}`}>MGC VPC</span>
+                    </div>
+                    <span className={`text-[10px] ${isLight ? 'text-slate-600 font-medium' : 'text-slate-500'}`}>Virtual Private Cloud</span>
+                  </button>
                 </div>
               </div>
             )}
@@ -887,7 +931,7 @@ export const SidebarCatalog: React.FC<SidebarCatalogProps> = ({
                 ? 'bg-white hover:bg-slate-100 border-slate-300 text-slate-900'
                 : 'bg-white/5 hover:bg-white/10 border-white/5 text-slate-300'
             }`}
-            title="Adicionar Subnet (AWS, Azure, GCP ou OCI)"
+            title="Adicionar Subnet (AWS, Azure, GCP, OCI ou MGC)"
           >
             <div className="flex items-center space-x-1.5 truncate">
               <Box className={`w-3.5 h-3.5 shrink-0 ${
@@ -895,6 +939,7 @@ export const SidebarCatalog: React.FC<SidebarCatalogProps> = ({
                 selectedProvider === 'azure' ? 'text-sky-500' :
                 selectedProvider === 'gcp' ? 'text-blue-500' :
                 selectedProvider === 'oci' ? 'text-red-500' :
+                selectedProvider === 'magalu' ? 'text-[#0086FF]' :
                 'text-emerald-500'
               }`} />
               <span className="truncate">{getSubnetButtonText()}</span>
@@ -997,11 +1042,29 @@ export const SidebarCatalog: React.FC<SidebarCatalogProps> = ({
                   </div>
                   <span className={`text-[10px] ${isLight ? 'text-slate-600 font-medium' : 'text-slate-500'}`}>VPC Subnet</span>
                 </button>
+
+                {/* MGC Subnet */}
+                <button
+                  id="btn-add-subnet-magalu"
+                  onClick={() => {
+                    onAddContainer('subnet', 'magalu');
+                    setIsSubnetDropdownOpen(false);
+                  }}
+                  className={`w-full text-left px-3 py-1.5 flex items-center justify-between text-xs transition-colors ${
+                    isLight ? 'hover:bg-slate-100 text-slate-900' : 'hover:bg-white/10 text-slate-200'
+                  }`}
+                >
+                  <div className="flex items-center space-x-2">
+                    <span className="w-2 h-2 rounded-full bg-[#0086FF] inline-block shrink-0"></span>
+                    <span className={`font-semibold ${isLight ? 'text-blue-950' : 'text-sky-300'}`}>MGC Subnet</span>
+                  </div>
+                  <span className={`text-[10px] ${isLight ? 'text-slate-600 font-medium' : 'text-slate-500'}`}>MGC VPC Subnet</span>
+                </button>
               </div>
             </div>
           )}
 
-          {/* Container Scopes / Groups List Dropdown (AWS Region, Azure Region, GCP Region, OCI Region, Compartment, ASG, etc.) */}
+          {/* Container Scopes / Groups List Dropdown (AWS Region, Azure Region, GCP Region, OCI Region, Magalu Region, Compartment, ASG, etc.) */}
           <div className="relative" ref={containerDropdownRef}>
             {(() => {
               const currentContainerOption = (() => {
@@ -1013,6 +1076,7 @@ export const SidebarCatalog: React.FC<SidebarCatalogProps> = ({
                 if (selectedProvider === 'azure') return CONTAINER_OPTIONS.find((o) => o.id === 'azure_region') || CONTAINER_OPTIONS[0];
                 if (selectedProvider === 'gcp') return CONTAINER_OPTIONS.find((o) => o.id === 'gcp_region') || CONTAINER_OPTIONS[0];
                 if (selectedProvider === 'oci') return CONTAINER_OPTIONS.find((o) => o.id === 'oci_region') || CONTAINER_OPTIONS[0];
+                if (selectedProvider === 'magalu') return CONTAINER_OPTIONS.find((o) => o.id === 'magalu_region') || CONTAINER_OPTIONS[0];
                 return CONTAINER_OPTIONS.find((o) => o.id === 'aws_region') || CONTAINER_OPTIONS[0];
               })();
 
@@ -1065,7 +1129,7 @@ export const SidebarCatalog: React.FC<SidebarCatalogProps> = ({
                           isLight ? 'text-blue-900' : 'text-blue-400'
                         }`}>
                           <span>Regiões de Nuvem (Regions)</span>
-                          <span className="text-[8px] font-mono bg-blue-500/10 px-1 rounded">4 clouds</span>
+                          <span className="text-[8px] font-mono bg-blue-500/10 px-1 rounded">5 clouds</span>
                         </div>
                         <div className="space-y-0.5 mt-0.5">
                           {regions.map((opt) => (
@@ -1246,8 +1310,8 @@ export const SidebarCatalog: React.FC<SidebarCatalogProps> = ({
             </span>
           </div>
 
-          {/* Individual Cloud Group Buttons: AWS, Azure, GCP, OCI, On-Premise */}
-          <div className="grid grid-cols-5 gap-1 pt-0.5">
+          {/* Individual Cloud Group Buttons: AWS, Azure, GCP, OCI, Magalu, On-Premise */}
+          <div className="grid grid-cols-6 gap-1 pt-0.5">
             {/* AWS */}
             <button
               id="btn-group-aws"
@@ -1320,6 +1384,24 @@ export const SidebarCatalog: React.FC<SidebarCatalogProps> = ({
               <span className="text-[9px] font-extrabold text-[#C74634]">OCI</span>
             </button>
 
+            {/* MGC */}
+            <button
+              id="btn-group-magalu"
+              onClick={() => onGroupByCloud ? onGroupByCloud('magalu') : onAddContainer('cloud_group', 'magalu')}
+              className={`flex flex-col items-center justify-center py-1.5 px-0.5 rounded-md border text-center transition-all group ${
+                isLight
+                  ? 'bg-white hover:bg-sky-50 border-slate-300 hover:border-[#0086FF] text-slate-900 shadow-sm'
+                  : 'bg-white/5 hover:bg-[#0086FF]/15 border-white/10 hover:border-[#0086FF]/60 text-slate-200'
+              }`}
+              title="Container MGC (com título e ícone no topo à esquerda)"
+            >
+              <div
+                className="w-4 h-4 mb-0.5 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform"
+                dangerouslySetInnerHTML={{ __html: getCloudLogoSvg('magalu') }}
+              />
+              <span className="text-[9px] font-extrabold text-[#0086FF]">MGC</span>
+            </button>
+
             {/* On-Premise */}
             <button
               id="btn-group-onprem"
@@ -1352,6 +1434,7 @@ export const SidebarCatalog: React.FC<SidebarCatalogProps> = ({
             { id: 'azure', label: 'Azure', color: isLight ? 'text-sky-900' : 'text-sky-400' },
             { id: 'gcp', label: 'GCP', color: isLight ? 'text-emerald-900' : 'text-emerald-400' },
             { id: 'oci', label: 'OCI', color: isLight ? 'text-red-900' : 'text-red-400' },
+            { id: 'magalu', label: 'MGC', color: isLight ? 'text-[#0066CC] font-extrabold' : 'text-[#38BDF8] font-extrabold' },
             { id: 'ai', label: 'IA', color: isLight ? 'text-purple-900' : 'text-purple-300' },
             { id: 'onprem', label: 'On-Premise', color: isLight ? 'text-slate-900 font-extrabold' : 'text-slate-300 font-extrabold' },
             { id: 'c4', label: 'C4 Model', color: isLight ? 'text-blue-900 font-extrabold' : 'text-blue-400 font-extrabold' },
@@ -1539,7 +1622,7 @@ export const SidebarCatalog: React.FC<SidebarCatalogProps> = ({
                           className="absolute top-2 right-2 text-[8px] font-bold uppercase px-1.5 py-0.2 rounded opacity-90 group-hover:opacity-100"
                           style={{ backgroundColor: `${icon.brandColor}20`, color: icon.brandColor }}
                         >
-                          {icon.provider}
+                          {icon.provider === 'magalu' ? 'MGC' : icon.provider}
                         </span>
 
                         {/* SVG Icon */}
@@ -1591,7 +1674,7 @@ export const SidebarCatalog: React.FC<SidebarCatalogProps> = ({
                     className="absolute top-2 right-2 text-[9px] font-bold uppercase px-1.5 py-0.2 rounded opacity-90 group-hover:opacity-100"
                     style={{ backgroundColor: `${icon.brandColor}20`, color: icon.brandColor }}
                   >
-                    {icon.provider === 'generic' && icon.category === 'ai' ? 'AI' : icon.provider}
+                    {icon.provider === 'generic' && icon.category === 'ai' ? 'AI' : icon.provider === 'magalu' ? 'MGC' : icon.provider}
                   </span>
 
                   {/* SVG Icon */}

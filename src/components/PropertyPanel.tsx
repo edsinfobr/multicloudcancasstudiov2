@@ -553,6 +553,7 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
                   <option value="azure">Azure</option>
                   <option value="gcp">GCP</option>
                   <option value="oci">OCI</option>
+                  <option value="magalu">MGC</option>
                   <option value="generic">Generic</option>
                 </select>
               </div>
@@ -580,7 +581,7 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
                   <span>Icon Selector</span>
                 </div>
                 <span className="text-[9px] text-blue-500 font-mono font-bold uppercase">
-                  {selectedNode.provider} Icons
+                  {selectedNode.provider === 'magalu' ? 'MGC' : selectedNode.provider} Icons
                 </span>
               </label>
 
@@ -651,12 +652,13 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
                       }`}
                       title="Filtrar ícones por provedor"
                     >
-                      <option value={selectedNode.provider}>{selectedNode.provider.toUpperCase()}</option>
+                      <option value={selectedNode.provider}>{selectedNode.provider === 'magalu' ? 'MGC' : selectedNode.provider.toUpperCase()}</option>
                       <option value="all">TODOS</option>
                       <option value="aws">AWS</option>
                       <option value="azure">AZURE</option>
                       <option value="gcp">GCP</option>
                       <option value="oci">OCI</option>
+                      <option value="magalu">MGC</option>
                       <option value="generic">GENERIC</option>
                     </select>
                   </div>
@@ -691,7 +693,7 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
                               resourceType: icon.defaultResourceType || n.resourceType
                             }));
                           }}
-                          title={`${icon.name} (${icon.provider.toUpperCase()}) - ${icon.description}`}
+                          title={`${icon.name} (${icon.provider === 'magalu' ? 'MGC' : icon.provider.toUpperCase()}) - ${icon.description}`}
                           className={`p-2 rounded-xl border flex flex-col items-center justify-center text-center transition-all group relative ${
                             isSelectedIcon
                               ? 'ring-2 ring-blue-500 border-blue-500 ' + (isLight ? 'bg-blue-50/80' : 'bg-blue-500/20')
@@ -1046,15 +1048,15 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
                 value={selectedContainer.provider}
                 onChange={(e) => {
                   const newProvider = e.target.value as CloudProvider;
-                  const provColor = newProvider === 'aws' ? '#FF9900' : newProvider === 'azure' ? '#0078D4' : newProvider === 'gcp' ? '#4285F4' : newProvider === 'oci' ? '#F80000' : '#8B5CF6';
+                  const provColor = newProvider === 'aws' ? '#FF9900' : newProvider === 'azure' ? '#0078D4' : newProvider === 'gcp' ? '#4285F4' : newProvider === 'oci' ? '#F80000' : newProvider === 'magalu' ? '#0086FF' : '#8B5CF6';
                   updateContainer((c) => ({
                     ...c,
                     provider: newProvider,
                     color: c.color ? provColor : undefined,
-                    name: (c.type === 'subnet' && ['AWS Subnet', 'Azure Subnet', 'GCP Subnet', 'OCI Subnet', 'Subnet'].includes(c.name))
-                      ? (newProvider === 'aws' ? 'AWS Subnet' : newProvider === 'azure' ? 'Azure Subnet' : newProvider === 'gcp' ? 'GCP Subnet' : newProvider === 'oci' ? 'OCI Subnet' : 'Subnet')
+                    name: (c.type === 'subnet' && ['AWS Subnet', 'Azure Subnet', 'GCP Subnet', 'OCI Subnet', 'Magalu Subnet', 'MGC Subnet', 'Subnet'].includes(c.name))
+                      ? (newProvider === 'aws' ? 'AWS Subnet' : newProvider === 'azure' ? 'Azure Subnet' : newProvider === 'gcp' ? 'GCP Subnet' : newProvider === 'oci' ? 'OCI Subnet' : newProvider === 'magalu' ? 'MGC Subnet' : 'Subnet')
                       : (c.type === 'region' && c.name.includes('Region'))
-                      ? (newProvider === 'aws' ? 'AWS Region (us-east-1)' : newProvider === 'azure' ? 'Azure Region (East US)' : newProvider === 'gcp' ? 'GCP Region (us-central1)' : newProvider === 'oci' ? 'OCI Region (us-ashburn-1)' : 'Cloud Region')
+                      ? (newProvider === 'aws' ? 'AWS Region (us-east-1)' : newProvider === 'azure' ? 'Azure Region (East US)' : newProvider === 'gcp' ? 'GCP Region (us-central1)' : newProvider === 'oci' ? 'OCI Region (us-ashburn-1)' : newProvider === 'magalu' ? 'MGC Region (br-se1)' : 'Cloud Region')
                       : c.name
                   }));
                 }}
@@ -1066,6 +1068,7 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({
                 <option value="azure">Microsoft Azure</option>
                 <option value="gcp">Google Cloud Platform (GCP)</option>
                 <option value="oci">Oracle Cloud Infrastructure (OCI)</option>
+                <option value="magalu">MGC</option>
                 <option value="generic">Genérico / Multi-Cloud</option>
               </select>
             </div>

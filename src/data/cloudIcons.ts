@@ -24,6 +24,7 @@ import { ON_PREMISES_ICONS } from './onPremisesIcons';
 import { ARCHIMATE_ICONS } from './archimateIcons';
 import { TOGAF_ICONS } from './togafIcons';
 import { C4_ICONS } from './c4Icons';
+import { MAGALU_ICONS } from './magaluIcons';
 
 export const CLOUD_ICONS: CloudIconDefinition[] = [
   // ==========================================
@@ -40,6 +41,11 @@ export const CLOUD_ICONS: CloudIconDefinition[] = [
   // C4 Model (Context, Container, Component, Code)
   // ==========================================
   ...C4_ICONS,
+
+  // ==========================================
+  // Magalu Cloud (Nuvem Brasileira)
+  // ==========================================
+  ...MAGALU_ICONS,
 
   // ==========================================
   // On-Premises & Datacenter Solutions (VMware, Nutanix, Hyper-V, Stack Local)

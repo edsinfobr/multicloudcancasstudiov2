@@ -21,7 +21,7 @@ interface TemplateModalProps {
   theme?: 'dark' | 'light';
 }
 
-type CategoryTab = 'all' | 'enterprise' | 'ai' | 'aws' | 'azure' | 'gcp' | 'oci' | 'multicloud';
+type CategoryTab = 'all' | 'enterprise' | 'ai' | 'aws' | 'azure' | 'gcp' | 'oci' | 'magalu' | 'multicloud';
 
 export const TemplateModal: React.FC<TemplateModalProps> = ({
   setDiagram,
@@ -75,6 +75,8 @@ export const TemplateModal: React.FC<TemplateModalProps> = ({
         if (tmpl.primaryProvider !== 'gcp' || isAiTemplate(tmpl) || isEnterpriseTemplate(tmpl)) return false;
       } else if (activeCategory === 'oci') {
         if (tmpl.primaryProvider !== 'oci' || isEnterpriseTemplate(tmpl)) return false;
+      } else if (activeCategory === 'magalu') {
+        if (tmpl.primaryProvider !== 'magalu' || isEnterpriseTemplate(tmpl)) return false;
       } else if (activeCategory === 'multicloud') {
         if (isEnterpriseTemplate(tmpl) || (!tmpl.id.includes('multicloud') && tmpl.containers.length < 3)) return false;
       }
@@ -84,8 +86,9 @@ export const TemplateModal: React.FC<TemplateModalProps> = ({
         const query = searchQuery.toLowerCase().trim();
         const matchesTitle = tmpl.title.toLowerCase().includes(query);
         const matchesDesc = tmpl.description.toLowerCase().includes(query);
+        const matchesProvider = tmpl.primaryProvider === 'magalu' && (query === 'mgc' || query.includes('magalu'));
         const matchesNodes = tmpl.nodes.some((n) => n.name.toLowerCase().includes(query) || n.iconKey.toLowerCase().includes(query));
-        return matchesTitle || matchesDesc || matchesNodes;
+        return matchesTitle || matchesDesc || matchesProvider || matchesNodes;
       }
 
       return true;
@@ -94,6 +97,10 @@ export const TemplateModal: React.FC<TemplateModalProps> = ({
 
   const aiTemplatesCount = useMemo(() => {
     return STARTER_TEMPLATES.filter(isAiTemplate).length;
+  }, []);
+
+  const mgcTemplatesCount = useMemo(() => {
+    return STARTER_TEMPLATES.filter((t) => t.primaryProvider === 'magalu').length;
   }, []);
 
   const getAiBadge = (tmplId: string) => {
@@ -158,7 +165,7 @@ export const TemplateModal: React.FC<TemplateModalProps> = ({
                 </span>
               </div>
               <p className={`text-xs mt-0.5 ${isLight ? 'text-slate-600 font-medium' : 'text-slate-400'}`}>
-                Selecione modelos completos para OpenAI, Claude, Gemini, Meta Llama, AWS, Azure, GCP e Multi-Cloud
+                Selecione modelos completos para OpenAI, Claude, Gemini, Meta Llama, AWS, Azure, GCP, OCI, MGC e Multi-Cloud
               </p>
             </div>
           </div>
@@ -277,6 +284,40 @@ export const TemplateModal: React.FC<TemplateModalProps> = ({
             </button>
 
             <button
+              id="filter-tab-oci"
+              onClick={() => setActiveCategory('oci')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
+                activeCategory === 'oci'
+                  ? 'bg-red-600 text-white border-red-600 shadow-md shadow-red-500/20'
+                  : isLight
+                  ? 'bg-white hover:bg-slate-100 text-slate-700 border-slate-200'
+                  : 'bg-white/5 hover:bg-white/10 text-slate-300 border-white/10'
+              }`}
+            >
+              OCI
+            </button>
+
+            <button
+              id="filter-tab-mgc"
+              onClick={() => setActiveCategory('magalu')}
+              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
+                activeCategory === 'magalu'
+                  ? 'bg-[#0086FF] text-white border-[#0086FF] shadow-md shadow-[#0086FF]/25'
+                  : isLight
+                  ? 'bg-white hover:bg-sky-50 text-slate-800 border-slate-200 hover:border-[#0086FF]/50'
+                  : 'bg-white/5 hover:bg-[#0086FF]/15 text-slate-200 border-white/10 hover:border-[#0086FF]/50'
+              }`}
+            >
+              <img src="/assets/aistudio/image_2c6cea36.png" alt="MGC" className="w-3.5 h-3.5 object-contain rounded-[3px]" />
+              <span>MGC</span>
+              <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
+                activeCategory === 'magalu' ? 'bg-white/20 text-white' : 'bg-[#0086FF]/20 text-[#38BDF8]'
+              }`}>
+                {mgcTemplatesCount}
+              </span>
+            </button>
+
+            <button
               id="filter-tab-multicloud"
               onClick={() => setActiveCategory('multicloud')}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
@@ -344,17 +385,24 @@ export const TemplateModal: React.FC<TemplateModalProps> = ({
                     <div className="flex items-center justify-between mb-2.5 gap-2">
                       <div className="flex items-center space-x-1.5 flex-wrap">
                         <span
-                          className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full border ${
+                          className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full border inline-flex items-center space-x-1 ${
                             tmpl.primaryProvider === 'aws'
                               ? 'bg-amber-500/15 text-amber-500 border-amber-500/30'
                               : tmpl.primaryProvider === 'azure'
                               ? 'bg-sky-500/15 text-sky-500 border-sky-500/30'
                               : tmpl.primaryProvider === 'gcp'
                               ? 'bg-emerald-500/15 text-emerald-500 border-emerald-500/30'
+                              : tmpl.primaryProvider === 'oci'
+                              ? 'bg-red-500/15 text-red-500 border-red-500/30'
+                              : tmpl.primaryProvider === 'magalu'
+                              ? 'bg-[#0086FF]/15 text-[#0086FF] border-[#0086FF]/35'
                               : 'bg-indigo-500/15 text-indigo-400 border-indigo-500/30'
                           }`}
                         >
-                          {tmpl.primaryProvider}
+                          {tmpl.primaryProvider === 'magalu' && (
+                            <img src="/assets/aistudio/image_2c6cea36.png" alt="MGC" className="w-3 h-3 object-contain" />
+                          )}
+                          <span>{tmpl.primaryProvider === 'magalu' ? 'MGC' : tmpl.primaryProvider}</span>
                         </span>
 
                         {aiBadge && (

@@ -1,4 +1,4 @@
-export type CloudProvider = 'aws' | 'azure' | 'gcp' | 'oci' | 'onprem' | 'c4' | 'archimate' | 'togaf' | 'generic';
+export type CloudProvider = 'aws' | 'azure' | 'gcp' | 'oci' | 'magalu' | 'onprem' | 'c4' | 'archimate' | 'togaf' | 'generic';
 
 export type ServiceCategory = 
   | 'compute' 

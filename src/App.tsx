@@ -706,12 +706,14 @@ export default function App() {
       else if (provider === 'azure') containerName = 'Azure';
       else if (provider === 'gcp') containerName = 'GCP';
       else if (provider === 'oci') containerName = 'OCI';
+      else if (provider === 'magalu') containerName = 'MGC';
       else if (provider === 'onprem') containerName = 'On-Premise';
       else containerName = pUpper;
     } else if (type === 'vpc') {
       if (provider === 'azure') containerName = 'Azure VNet';
       else if (provider === 'oci') containerName = 'OCI VCN';
       else if (provider === 'gcp') containerName = 'GCP VPC Network';
+      else if (provider === 'magalu') containerName = 'MGC VPC';
       else if (provider === 'onprem') containerName = 'On-Premise Network';
       else containerName = 'AWS VPC';
     } else if (type === 'subnet') {
@@ -719,6 +721,7 @@ export default function App() {
       else if (provider === 'azure') containerName = 'Azure Subnet';
       else if (provider === 'gcp') containerName = 'GCP Subnet';
       else if (provider === 'oci') containerName = 'OCI Subnet';
+      else if (provider === 'magalu') containerName = 'MGC Subnet';
       else if (provider === 'onprem') containerName = 'On-Prem VLAN';
       else {
         const pLabel = provider === 'generic' ? '' : `${pUpper} `;
@@ -731,7 +734,7 @@ export default function App() {
     } else if (type === 'on_premise') {
       containerName = 'On-Premise Datacenter';
     } else if (type === 'cluster') {
-      containerName = provider === 'aws' ? 'Amazon EKS Cluster' : provider === 'azure' ? 'Azure AKS Cluster' : provider === 'gcp' ? 'GKE Cluster' : provider === 'onprem' ? 'Kubernetes On-Premises Cluster' : 'Kubernetes Cluster';
+      containerName = provider === 'aws' ? 'Amazon EKS Cluster' : provider === 'azure' ? 'Azure AKS Cluster' : provider === 'gcp' ? 'GKE Cluster' : provider === 'magalu' ? 'MGC MKS Cluster' : provider === 'onprem' ? 'Kubernetes On-Premises Cluster' : 'Kubernetes Cluster';
     } else if (type === 'app') {
       containerName = 'Application Scope';
     } else if (type === 'generic') {
@@ -749,6 +752,7 @@ export default function App() {
       else if (provider === 'azure') containerName = 'Azure Region (East US)';
       else if (provider === 'gcp') containerName = 'GCP Region (us-central1)';
       else if (provider === 'oci') containerName = 'OCI Region (us-ashburn-1)';
+      else if (provider === 'magalu') containerName = 'MGC Region (br-se1)';
       else if (provider === 'onprem') containerName = 'Datacenter Primário';
       else containerName = `${pUpper} Region`;
     } else {
@@ -772,6 +776,7 @@ export default function App() {
     else if (provider === 'azure' || type === 'resource_group' || type === 'azure_subscription') containerColor = '#0078D4';
     else if (provider === 'gcp') containerColor = '#4285F4';
     else if (provider === 'oci' || type === 'compartment') containerColor = '#F80000';
+    else if (provider === 'magalu') containerColor = '#0086FF';
     else if (provider === 'onprem' || type === 'on_premise') containerColor = '#475569';
     else if (type === 'ai_stack') containerColor = '#A855F7';
     else if (type === 'cluster') containerColor = '#326CE5';
@@ -805,7 +810,7 @@ export default function App() {
     setDiagram((prev) => {
       const providersToGroup: CloudProvider[] =
         targetProvider === 'all'
-          ? ['aws', 'azure', 'gcp', 'oci', 'onprem']
+          ? ['aws', 'azure', 'gcp', 'oci', 'magalu', 'onprem']
           : [targetProvider];
 
       const cloudNames: Record<string, string> = {
@@ -813,6 +818,7 @@ export default function App() {
         azure: 'Azure',
         gcp: 'GCP',
         oci: 'OCI',
+        magalu: 'MGC',
         onprem: 'On-Premise'
       };
       const brandColors: Record<string, string> = {
@@ -820,6 +826,7 @@ export default function App() {
         azure: '#0078D4',
         gcp: '#4285F4',
         oci: '#F80000',
+        magalu: '#0086FF',
         onprem: '#475569'
       };
 

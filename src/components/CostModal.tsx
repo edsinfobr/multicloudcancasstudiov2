@@ -78,6 +78,8 @@ export const CostModal: React.FC<CostModalProps> = ({ diagram, onClose, onExport
         return { label: 'GCP', bg: isLight ? 'bg-emerald-100 text-emerald-900 border-emerald-300' : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30', border: 'border-emerald-500' };
       case 'oci':
         return { label: 'OCI', bg: isLight ? 'bg-red-100 text-red-900 border-red-300' : 'bg-red-500/20 text-red-300 border-red-500/30', border: 'border-red-500' };
+      case 'magalu':
+        return { label: 'MGC', bg: isLight ? 'bg-sky-100 text-sky-900 border-sky-300' : 'bg-[#0086FF]/20 text-sky-300 border-[#0086FF]/40', border: 'border-[#0086FF]' };
       default:
         return { label: 'Genérico', bg: isLight ? 'bg-slate-100 text-slate-800 border-slate-300' : 'bg-slate-800 text-slate-300 border-slate-700', border: 'border-slate-500' };
     }
@@ -749,6 +751,7 @@ export const CostModal: React.FC<CostModalProps> = ({ diagram, onClose, onExport
                       <option value="azure">Azure</option>
                       <option value="gcp">GCP</option>
                       <option value="oci">OCI</option>
+                      <option value="magalu">MGC</option>
                       <option value="generic">Genérico</option>
                     </select>
 
@@ -805,7 +808,7 @@ export const CostModal: React.FC<CostModalProps> = ({ diagram, onClose, onExport
                             </td>
                             <td className="p-3">
                               <span className={`px-2 py-0.5 rounded text-[10px] font-bold border uppercase ${badge.bg}`}>
-                                {item.provider}
+                                {item.provider === 'magalu' ? 'MGC' : item.provider}
                               </span>
                             </td>
                             <td className="p-3 uppercase text-[10px] font-semibold">

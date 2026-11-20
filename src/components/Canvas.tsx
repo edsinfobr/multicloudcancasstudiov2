@@ -2641,14 +2641,16 @@ export const Canvas: React.FC<CanvasProps> = ({
               {/* Container Label Header with Cloud Icon and Title at Top-Left */}
               {(() => {
                 const normName = (c.name || '').trim().toLowerCase();
-                const matchedProvider = ['aws', 'azure', 'gcp', 'oci'].includes(normName)
+                const matchedProvider = ['aws', 'azure', 'gcp', 'oci', 'magalu'].includes(normName)
                   ? (normName as CloudProvider)
+                  : ['magalu cloud', 'mgc'].includes(normName)
+                  ? ('magalu' as CloudProvider)
                   : c.provider;
                 const cloudMeta = getCloudProviderMeta(matchedProvider) || getCloudProviderMeta(c.name);
                 const cloudSvg = cloudMeta?.svg || getCloudLogoSvg(c.provider);
-                const isCloudGroup = c.type === 'cloud_group' || ['aws', 'azure', 'gcp', 'oci'].includes(normName);
+                const isCloudGroup = c.type === 'cloud_group' || ['aws', 'azure', 'gcp', 'oci', 'magalu', 'magalu cloud', 'mgc'].includes(normName);
                 const displayName = isCloudGroup
-                  ? (matchedProvider === 'aws' ? 'AWS' : matchedProvider === 'azure' ? 'Azure' : matchedProvider === 'gcp' ? 'GCP' : matchedProvider === 'oci' ? 'OCI' : (cloudMeta?.name || c.name))
+                  ? (matchedProvider === 'aws' ? 'AWS' : matchedProvider === 'azure' ? 'Azure' : matchedProvider === 'gcp' ? 'GCP' : matchedProvider === 'oci' ? 'OCI' : matchedProvider === 'magalu' ? 'MGC' : (cloudMeta?.name || c.name))
                   : c.name;
 
                 return (
@@ -2930,7 +2932,7 @@ export const Canvas: React.FC<CanvasProps> = ({
                   color: iconDef?.brandColor || (isLight ? '#1D4ED8' : '#60A5FA')
                 }}
               >
-                {node.provider}
+                {node.provider === 'magalu' ? 'MGC' : node.provider}
               </span>
 
               {/* Icon SVG */}

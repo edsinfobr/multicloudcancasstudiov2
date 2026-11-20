@@ -11,7 +11,7 @@ export interface ValidationResult {
 }
 
 const FORBIDDEN_PROPERTIES = new Set(['__proto__', 'constructor', 'prototype']);
-const VALID_PROVIDERS = new Set<string>(['aws', 'azure', 'gcp', 'oci', 'generic']);
+const VALID_PROVIDERS = new Set<string>(['aws', 'azure', 'gcp', 'oci', 'magalu', 'onprem', 'c4', 'archimate', 'togaf', 'generic']);
 const VALID_CONTAINER_TYPES = new Set<string>([
   'vpc',
   'subnet',
