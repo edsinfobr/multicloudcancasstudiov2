@@ -2649,9 +2649,17 @@ export const Canvas: React.FC<CanvasProps> = ({
                 const cloudMeta = getCloudProviderMeta(matchedProvider) || getCloudProviderMeta(c.name);
                 const cloudSvg = cloudMeta?.svg || getCloudLogoSvg(c.provider);
                 const isCloudGroup = c.type === 'cloud_group' || ['aws', 'azure', 'gcp', 'oci', 'magalu', 'magalu cloud', 'mgc'].includes(normName);
+                const cleanNetworkName = (rawName: string): string => {
+                  if (c.type !== 'vpc' && c.type !== 'subnet' && !c.cidrBlock) return rawName;
+                  return rawName
+                    .replace(/\s*\((?:(?:VCN|VPC|CIDR)\s+)?(?:\d{1,3}\.){3}\d{1,3}\/\d{1,2}\)/gi, '')
+                    .replace(/\s*(?:\d{1,3}\.){3}\d{1,3}\/\d{1,2}/g, '')
+                    .replace(/\s{2,}/g, ' ')
+                    .trim() || rawName;
+                };
                 const displayName = isCloudGroup
                   ? (matchedProvider === 'aws' ? 'AWS' : matchedProvider === 'azure' ? 'Azure' : matchedProvider === 'gcp' ? 'GCP' : matchedProvider === 'oci' ? 'OCI' : matchedProvider === 'magalu' ? 'MGC' : (cloudMeta?.name || c.name))
-                  : c.name;
+                  : cleanNetworkName(c.name);
 
                 return (
                   <div
@@ -2770,7 +2778,7 @@ export const Canvas: React.FC<CanvasProps> = ({
                               if (isPresentationMode) return;
                               e.stopPropagation();
                               setEditingId(c.id);
-                              setEditingName(c.name);
+                              setEditingName(cleanNetworkName(c.name));
                               setEditingCidr(c.cidrBlock || (c.type === 'vpc' ? '10.0.0.0/16' : c.type === 'subnet' ? '10.0.1.0/24' : ''));
                             }}
                             className={`flex items-center space-x-1 px-1.5 py-0.5 rounded text-[10.5px] font-mono font-bold border transition-all cursor-pointer hover:scale-105 ml-1 ${

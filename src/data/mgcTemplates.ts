@@ -26,7 +26,7 @@ export const MGC_TEMPLATES: DiagramState[] = [
       },
       {
         id: 'c_mgc_k8s_vpc',
-        name: 'MGC VPC (10.10.0.0/16)',
+        name: 'MGC VPC',
         provider: 'magalu',
         type: 'vpc',
         cidrBlock: '10.10.0.0/16',
@@ -39,7 +39,7 @@ export const MGC_TEMPLATES: DiagramState[] = [
       },
       {
         id: 'c_mgc_k8s_pub',
-        name: 'MGC Public Subnet (10.10.1.0/24)',
+        name: 'MGC Public Subnet',
         provider: 'magalu',
         type: 'subnet',
         cidrBlock: '10.10.1.0/24',
@@ -53,7 +53,7 @@ export const MGC_TEMPLATES: DiagramState[] = [
       },
       {
         id: 'c_mgc_k8s_priv',
-        name: 'MGC Private Subnet (10.10.2.0/24)',
+        name: 'MGC Private Subnet',
         provider: 'magalu',
         type: 'subnet',
         cidrBlock: '10.10.2.0/24',
@@ -200,7 +200,7 @@ export const MGC_TEMPLATES: DiagramState[] = [
       },
       {
         id: 'c_mgc_web_vpc',
-        name: 'MGC VPC Produção (10.20.0.0/16)',
+        name: 'MGC VPC Produção',
         provider: 'magalu',
         type: 'vpc',
         cidrBlock: '10.20.0.0/16',
@@ -213,7 +213,7 @@ export const MGC_TEMPLATES: DiagramState[] = [
       },
       {
         id: 'c_mgc_web_pub',
-        name: 'Public Subnet (10.20.1.0/24)',
+        name: 'Public Subnet',
         provider: 'magalu',
         type: 'subnet',
         cidrBlock: '10.20.1.0/24',
@@ -227,7 +227,7 @@ export const MGC_TEMPLATES: DiagramState[] = [
       },
       {
         id: 'c_mgc_web_app',
-        name: 'App Subnet (10.20.2.0/24)',
+        name: 'App Subnet',
         provider: 'magalu',
         type: 'subnet',
         cidrBlock: '10.20.2.0/24',
@@ -241,7 +241,7 @@ export const MGC_TEMPLATES: DiagramState[] = [
       },
       {
         id: 'c_mgc_web_data',
-        name: 'Data Subnet (10.20.3.0/24)',
+        name: 'Data Subnet',
         provider: 'magalu',
         type: 'subnet',
         cidrBlock: '10.20.3.0/24',
@@ -388,7 +388,7 @@ export const MGC_TEMPLATES: DiagramState[] = [
       },
       {
         id: 'c_mgc_dl_vpc',
-        name: 'MGC VPC Analytics (10.30.0.0/16)',
+        name: 'MGC VPC Analytics',
         provider: 'magalu',
         type: 'vpc',
         cidrBlock: '10.30.0.0/16',
@@ -546,7 +546,7 @@ export const MGC_TEMPLATES: DiagramState[] = [
       },
       {
         id: 'c_mgc_mc_vpc',
-        name: 'MGC VPC LGPD (10.40.0.0/16)',
+        name: 'MGC VPC LGPD',
         provider: 'magalu',
         type: 'vpc',
         cidrBlock: '10.40.0.0/16',
