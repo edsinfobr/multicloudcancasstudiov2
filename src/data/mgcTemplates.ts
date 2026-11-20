@@ -20,7 +20,7 @@ export const MGC_TEMPLATES: DiagramState[] = [
         borderStyle: 'solid',
         x: 40,
         y: 40,
-        width: 1020,
+        width: 1065,
         height: 600,
         color: '#0086FF'
       },
@@ -33,7 +33,7 @@ export const MGC_TEMPLATES: DiagramState[] = [
         borderStyle: 'dashed',
         x: 245,
         y: 95,
-        width: 785,
+        width: 830,
         height: 515,
         color: '#0086FF'
       },
@@ -47,7 +47,7 @@ export const MGC_TEMPLATES: DiagramState[] = [
         borderStyle: 'dashed',
         x: 275,
         y: 155,
-        width: 225,
+        width: 270,
         height: 425,
         color: '#38BDF8'
       },
@@ -59,7 +59,7 @@ export const MGC_TEMPLATES: DiagramState[] = [
         cidrBlock: '10.10.2.0/24',
         isPublicSubnet: false,
         borderStyle: 'dashed',
-        x: 525,
+        x: 570,
         y: 155,
         width: 475,
         height: 425,
@@ -98,7 +98,7 @@ export const MGC_TEMPLATES: DiagramState[] = [
         category: 'networking',
         iconKey: 'magalu_vpc',
         resourceType: 'mgc_network_vpcs',
-        x: 315,
+        x: 345,
         y: 215,
         containerId: 'c_mgc_k8s_pub',
         specs: { count: 1, region: 'br-se1', cidrBlock: '10.10.0.0/16' }
@@ -110,7 +110,7 @@ export const MGC_TEMPLATES: DiagramState[] = [
         category: 'networking',
         iconKey: 'generic_load_balancer',
         resourceType: 'generic_load_balancer',
-        x: 315,
+        x: 345,
         y: 415,
         containerId: 'c_mgc_k8s_pub',
         specs: { count: 1, isPublic: true }
@@ -122,7 +122,7 @@ export const MGC_TEMPLATES: DiagramState[] = [
         category: 'container',
         iconKey: 'magalu_kubernetes',
         resourceType: 'mgc_kubernetes_cluster',
-        x: 565,
+        x: 615,
         y: 215,
         containerId: 'c_mgc_k8s_priv',
         specs: { instanceType: 'cloud-k8s.gp1.medium', count: 3, region: 'br-se1', clusterVersion: 'v1.30.2', hoursPerMonth: 730 }
@@ -134,7 +134,7 @@ export const MGC_TEMPLATES: DiagramState[] = [
         category: 'container',
         iconKey: 'magalu_container_registry',
         resourceType: 'mgc_container_registry',
-        x: 565,
+        x: 615,
         y: 415,
         containerId: 'c_mgc_k8s_priv',
         specs: { count: 1, storageGb: 150, region: 'br-se1', registryType: 'Private' }
@@ -146,7 +146,7 @@ export const MGC_TEMPLATES: DiagramState[] = [
         category: 'database',
         iconKey: 'magalu_databases',
         resourceType: 'mgc_dbaas_instances',
-        x: 805,
+        x: 850,
         y: 215,
         containerId: 'c_mgc_k8s_priv',
         specs: { instanceType: 'DP2-4-40', engine: 'postgresql', count: 1, storageGb: 200, region: 'br-se1', hoursPerMonth: 730 }
@@ -158,7 +158,7 @@ export const MGC_TEMPLATES: DiagramState[] = [
         category: 'storage',
         iconKey: 'magalu_object_storage',
         resourceType: 'mgc_object_storage_buckets',
-        x: 805,
+        x: 850,
         y: 415,
         containerId: 'c_mgc_k8s_priv',
         specs: { count: 1, storageGb: 500, transferGb: 120, region: 'br-se1' }

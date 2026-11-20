@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { DiagramState } from '../types';
 import { STARTER_TEMPLATES } from '../data/templates';
+import { normalizeTemplateLayout } from '../utils/templateLayout';
 
 interface TemplateModalProps {
   setDiagram: React.Dispatch<React.SetStateAction<DiagramState>>;
@@ -35,8 +36,9 @@ export const TemplateModal: React.FC<TemplateModalProps> = ({
 
   const handleSelectTemplate = (template: DiagramState) => {
     onRecordHistory();
+    const normalized = normalizeTemplateLayout(template);
     setDiagram((prev) => ({
-      ...template,
+      ...normalized,
       id: prev?.id || `diag_${Date.now()}`,
       version: prev?.version || 'v1.0',
       updatedAt: new Date().toISOString()

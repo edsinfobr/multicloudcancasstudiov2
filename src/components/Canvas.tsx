@@ -2741,37 +2741,39 @@ export const Canvas: React.FC<CanvasProps> = ({
                         </button>
                       </div>
                     ) : (
-                      <div className="flex items-center space-x-1.5">
-                        <span
-                          className="font-normal text-[13px] tracking-wide"
-                          style={{ color: c.color || cloudMeta?.brandColor || (isLight ? '#0F172A' : '#F8FAFC') }}
-                        >
-                          {displayName}
-                        </span>
-                        {!isCloudGroup && (
-                          <span className={`uppercase text-[9px] tracking-wider font-semibold px-1.5 py-0.5 rounded ${
-                            isLight ? 'bg-slate-100 text-slate-600' : 'bg-white/10 text-slate-400'
-                          }`}>
-                            {c.type === 'region'
-                              ? 'REGION'
-                              : c.type === 'ai_stack'
-                              ? 'AI STACK'
-                              : c.type === 'on_premise'
-                              ? 'ON-PREMISE'
-                              : c.type === 'resource_group'
-                              ? 'RESOURCE GROUP'
-                              : c.type === 'azure_subscription'
-                              ? 'AZURE SUBSCRIPTION'
-                              : c.type === 'aws_account'
-                              ? 'AWS ACCOUNT'
-                              : c.type === 'asg'
-                              ? 'ASG'
-                              : c.type === 'generic'
-                              ? 'GENÉRICO'
-                              : c.type.replace(/_/g, ' ')}
+                      <div className="flex flex-col items-start gap-1">
+                        <div className="flex items-center space-x-1.5">
+                          <span
+                            className="font-normal text-[13px] tracking-wide leading-tight"
+                            style={{ color: c.color || cloudMeta?.brandColor || (isLight ? '#0F172A' : '#F8FAFC') }}
+                          >
+                            {displayName}
                           </span>
-                        )}
-                        {/* Range IP / CIDR Block badge on Canvas Container */}
+                          {!isCloudGroup && (
+                            <span className={`uppercase text-[9px] tracking-wider font-semibold px-1.5 py-0.5 rounded ${
+                              isLight ? 'bg-slate-100 text-slate-600' : 'bg-white/10 text-slate-400'
+                            }`}>
+                              {c.type === 'region'
+                                ? 'REGION'
+                                : c.type === 'ai_stack'
+                                ? 'AI STACK'
+                                : c.type === 'on_premise'
+                                ? 'ON-PREMISE'
+                                : c.type === 'resource_group'
+                                ? 'RESOURCE GROUP'
+                                : c.type === 'azure_subscription'
+                                ? 'AZURE SUBSCRIPTION'
+                                : c.type === 'aws_account'
+                                ? 'AWS ACCOUNT'
+                                : c.type === 'asg'
+                                ? 'ASG'
+                                : c.type === 'generic'
+                                ? 'GENÉRICO'
+                                : c.type.replace(/_/g, ' ')}
+                            </span>
+                          )}
+                        </div>
+                        {/* Range IP / CIDR Block badge below VPC / Subnet name */}
                         {(c.type === 'vpc' || c.type === 'subnet' || c.cidrBlock) && (
                           <div
                             onClick={(e) => {
@@ -2781,7 +2783,7 @@ export const Canvas: React.FC<CanvasProps> = ({
                               setEditingName(cleanNetworkName(c.name));
                               setEditingCidr(c.cidrBlock || (c.type === 'vpc' ? '10.0.0.0/16' : c.type === 'subnet' ? '10.0.1.0/24' : ''));
                             }}
-                            className={`flex items-center space-x-1 px-1.5 py-0.5 rounded text-[10.5px] font-mono font-bold border transition-all cursor-pointer hover:scale-105 ml-1 ${
+                            className={`flex items-center space-x-1 px-1.5 py-0.5 rounded text-[10.5px] font-mono font-bold border transition-all cursor-pointer hover:scale-105 w-max ${
                               isLight
                                 ? 'bg-blue-50/90 border-blue-300 text-blue-800 hover:bg-blue-100 shadow-xs'
                                 : 'bg-blue-950/40 border-blue-500/30 text-sky-300 hover:bg-blue-900/50 shadow-xs'

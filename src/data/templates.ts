@@ -1,8 +1,9 @@
 import { DiagramState } from '../types';
 import { ENTERPRISE_TEMPLATES } from './enterpriseTemplates';
 import { MGC_TEMPLATES } from './mgcTemplates';
+import { normalizeTemplateLayout } from '../utils/templateLayout';
 
-export const STARTER_TEMPLATES: DiagramState[] = [
+const RAW_STARTER_TEMPLATES: DiagramState[] = [
   // ==========================================
   // ENTERPRISE ARCHITECTURE FRAMEWORKS
   // TOGAF ADM, ArchiMate 3.2, C4 Model Levels 1-4
@@ -2628,4 +2629,6 @@ export const STARTER_TEMPLATES: DiagramState[] = [
   // ==========================================
   ...MGC_TEMPLATES
 ];
+
+export const STARTER_TEMPLATES: DiagramState[] = RAW_STARTER_TEMPLATES.map(normalizeTemplateLayout);
 
